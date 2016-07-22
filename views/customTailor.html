@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>照片蛋糕</title>
+</head>
+
+<body>
+    <div class="page-group">
+        <div id="customTailor" class="page">
+            <style type="text/css">
+            #customTailor {
+                background-color: #fdfefe;
+            }
+            
+            .complete{
+                opacity: 0;
+                transition: all ease .3s
+            }
+
+            #no-picture {
+                text-align: center;
+                margin-top: 8rem;
+            }
+            
+            #upload input~span {
+                z-index: 1
+            }
+            
+            #upload input {
+                position: absolute;
+                width: 100%;
+                height: 2.5rem;
+                left: 0;
+                top: 0;
+                opacity: 0;
+                z-index: 9
+            }
+            
+            #canvasWrap {
+                bottom: 2.5rem;
+                font-size: 0;
+            }
+            
+            #canvasWrap>div {
+                position: absolute;
+                top: 50%;
+                transform: translate(0, -50%);
+            }
+
+            #nav{
+                opacity: 1;
+                transition: all ease .5s
+            }
+            @media screen and (min-width: 614px) {
+                #customTailor {
+                    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+                }
+                #customTailor {
+                    width: 24rem;
+                    margin: 0 auto
+                }
+            }
+            </style>
+            <header class="bar bar-nav">
+                <a class="icon icon-left pull-left back"></a>
+                <h1 class="title">照片蛋糕</h1>
+                <a class="icon icon-check pull-right complete"></a>
+            </header>
+            <div id="canvasWrap" class="content">
+                <div>
+                    <canvas id="canvas">您的设备不支持canvas元素</canvas>
+                </div>
+            </div>
+            <nav id="nav" class="bar bar-tab">
+                <span id="upload" class="tab-item">
+                    <input type="file" accept="image/*"  onchange="drawImage(this);">
+                    <span class="icon icon-picture"></span>
+                </span>
+                <span class="tab-item create-actions">
+                    <span class="icon icon-star"></span>
+                </span>
+                <span class="tab-item">
+                    <span class="icon icon-cart"></span>
+                </span>
+            </nav>
+            <script type="text/javascript">
+            var dpr = window.devicePixelRatio;
+            var canvas = document.getElementById("canvas");
+            var fullWidth = document.getElementById("canvasWrap").clientWidth * dpr;
+            var fullHeight = document.getElementById("canvasWrap").clientHeight * dpr;
+            canvas.style.width = fullWidth / dpr + "px";
+            canvas.style.height = fullHeight / dpr + "px";
+            canvas.width = fullWidth;
+            canvas.height = fullHeight;
+            var context = canvas.getContext("2d");
+            context.beginPath();
+            context.font = "2.2rem 微软雅黑";
+            context.textAlign = "center";
+            context.fillText("请上传图片", fullWidth / 2, fullHeight / 2);
+            var image = new Image();
+
+            function drawImage(obj) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                var img = obj.files['0'];
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var url = reader.result;
+                    image.src = url;
+                    canvas.height = image.height * fullWidth / image.width;
+                    canvas.style.height = canvas.height / dpr + "px";
+                    document.getElementsByClassName("complete")[0].style.opacity = "1";
+                    document.getElementById("nav").style.opacity = "0";
+                    context.drawImage(image, 0, 0, fullWidth, canvas.height);
+                    var cropper = new Cropper(document.getElementById('canvas'), {
+                        aspectRatio: 1 / 1,
+                        crop: function(e) {
+                            var x = e.detail.x / (fullWidth / image.width),
+                                y = e.detail.y / (fullWidth / image.width),
+                                width = e.detail.width / (fullWidth / image.width),
+                                height = e.detail.height / (fullWidth / image.width);
+                            $(document).on('click', '.complete', function() {
+                                cropper.destroy();
+                                canvas.height = fullWidth;
+                                document.getElementsByClassName("complete")[0].style.opacity = "0";
+                                document.getElementById("nav").style.opacity = "1";
+                                canvas.style.height = fullWidth / dpr + "px";
+                                context.clearRect(0, 0, canvas.width, canvas.height);
+                                context.drawImage(image, x, y, width, height, 0, 0, fullWidth, fullWidth);
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(img);
+            }
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>

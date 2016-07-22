@@ -1,0 +1,310 @@
+/*大尺寸屏幕界面优化*/
+@media screen and (min-width: 614px) {
+    .content {
+        width: 24rem;
+        margin: 0 auto
+    }
+    .page>.content {
+        box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+    }
+    .ware-wrap {
+        width: 26% !important;
+        margin: 3% 0 3% 5% !important;
+    }
+    #Tel{
+        width: 24rem !important
+    }
+}
+
+/*通用样式*/
+ul,
+li {
+    list-style: none;
+    margin: 0;
+    padding: 0
+}
+.bar-sec{
+    margin-top: 0.4rem;
+    background-color: #1a7ace
+}
+.bar-sec~.content{
+    top: 2.6rem
+}
+header.bar{
+    background-color: #1a7ace;
+}
+header.bar a,header.bar .title{
+    color: #fdfefe
+}
+.dark-blue{
+    color: #1975c8 !important;
+}
+@font-face {
+    font-family: 'webFont';
+    src: url('/fonts/webFont.eot');
+    src: url('/fonts/webFont.eot?#iefix') format('embedded-opentype'),
+            url('/fonts/webFont.woff') format('woff'),
+            url('/fonts/webFont.ttf') format('truetype'), 
+            url('/fonts/webFont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.webFont{
+    font-family: 'webFont'
+}
+/*主体背景色*/
+#main>.content {
+    background-color: #fdfefe
+}
+
+/*底部导航颜色*/
+nav.bar {
+    background-color: #444a5a;
+}
+.bar-tab .tab-item.active,
+.bar-tab .tab-item:active {
+    color: #1777cb;
+}
+.bar-tab .tab-item {
+    color: #fdfefe;
+}
+.bar-tab:before {
+    background-color: #444a5a
+}
+
+/*主页面*/
+#tab1>.content{
+    background: url("/img/hBg.jpg") no-repeat top center;
+    background-size: contain;
+    bottom: 2.5rem
+}
+#tab1 a{
+    color: #2d2d2d;
+    display: block;
+    width: 3.4rem;
+    height: 5rem;
+    padding:  1rem 1rem;
+    position: absolute;
+    transform: skew(139deg);
+}
+#tab1 a span{
+    font-size: 1rem;
+    transform: skew(41deg);
+    display: block
+}
+#tab1-turn1{
+    background-color: rgba(178,235,173,0.67);
+    bottom: 7rem;
+    left: 12rem
+}
+#tab1-turn2{
+    background-color: rgba(173,235,235,0.67);
+    bottom: 4rem;
+    left: 7.4rem
+}
+#tab1-turn3{
+    background-color: rgba(239,168,146,0.67);
+    bottom: 2.5rem;
+    left: 8.8rem
+}
+#tab1-turn4{
+    background-color: rgba(25,117,200,0.67);
+    bottom: 0;
+    left: 3.6rem;
+}
+
+/*分类蛋糕页面顶部边距*/
+#tab2>.content{
+    bottom: 2.5rem
+}
+#tab2 header~.content {
+    top: 2rem;
+}
+
+/*分类蛋糕顶部导航颜色*/
+#tab2 .buttons-tab .button,
+#tab2 .buttons-tab .button.active {
+    color: #f7f7f7;
+    background-color: #1777cb;
+}
+
+/*分类蛋糕顶部选中类别边框*/
+#tab2 .buttons-tab .button.active {
+    border-color: #5cecec;
+}
+#tab2 .buttons-tab .button {
+    border-bottom: 3px solid transparent
+}
+
+/*分类蛋糕列表样式*/
+#tab2 .webFont{
+    font-weight: bold
+}
+.ware-wrap{
+    float: left;
+    width: 38%;
+    margin: 3% 0 3% 8%;
+    box-sizing: border-box;
+    position: relative;
+}
+.ware-wrap>img {
+    width: 100%;
+    box-shadow: 0px 0px 16px 1px rgba(0, 0, 0, 0.2);
+}
+.ware-detail{
+    background-color: rgba(32,32,32,0.45);
+    position: absolute;
+    bottom: 0.36rem;
+    left: 0;
+    right: 0;
+    color: #fff;
+    padding: 0.2rem;
+}
+.ware-detail>div{
+    max-width: 66%
+}
+.ware-detail h5{
+    margin: 0;
+    font-size:  0.6rem;
+    line-height: 1.6;
+}
+.ware-detail p{
+    margin: 0;
+    font-size: 0.5rem;
+    line-height: 1.3;
+}
+.ware-detail span{
+    font-size: 0.8rem;
+    line-height: 1.3;
+    margin-right:0.5rem 
+}
+.ware-buy{
+    position: absolute;
+    right: 0.2rem;
+    top: 10%;
+}
+
+/*照片定制界面样式*/
+#tab3 .content{
+    background-color: #fbfafa;
+    bottom: 2.5rem
+}
+#tab3 header.bar{
+    background-color: #fbfafa;
+}
+#tab3 header.bar button{
+    background-color: #fbfafa;
+    font-weight: 500;
+    font-size: 0.9rem 
+}
+#tab3 header.bar a{
+    color: #000
+}
+#tab3 .bar:after{
+    height: 0
+}
+#exampleImg-taste{
+    width: 10rem;
+    margin: 0 auto;
+    display: block
+}
+.check-list{
+    position: absolute;
+    width: 100%;
+    top: 10rem;
+    bottom: 0;
+    background: url("/img/cream.png") no-repeat top center;
+    background-size: cover;
+    text-align: center;
+    padding: 2rem 0;
+}
+.check-taste,.check-taste:active{
+    display: block;
+    line-height: 2;
+    margin: 0.4rem 0;
+    color: #000;
+    font-size: 1rem
+}
+.check-list .active{
+    background-color: rgba(21,117,201,0.61);
+    color: #fff
+}
+.line-text{
+    padding: 0 20px 0;
+    margin-top: 16px;
+    line-height: 1px;
+    border-left: 5rem solid #444a5a;
+    border-right: 5rem solid #444a5a;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    z-index: 9
+}
+/*购物车界面样式*/
+#tab4>.content{
+    bottom: 5rem
+}
+#no-ware{
+    color: #1c72c1;
+    text-align: center;
+    margin-top: 8rem;
+}
+#no-ware span{
+    font-size: 1.8rem
+}
+#no-ware h4{
+    margin: 0;
+    font-weight: normal
+}
+
+/*个人中心样式*/
+#tab5>.content{
+    bottom:2.5rem;
+}
+#tab5 .list-block {
+    margin: 0;
+}
+#tab5 .bar {
+    height: 7rem;
+    color: #fdfefe;
+    text-align: center;
+    padding-top: .85rem
+}
+#tab5 .bar img {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 2rem
+}
+#tab5 .bar a {
+    color: #fdfefe
+}
+#tab5 .bar-nav~.content {
+    top: 7rem
+}
+#tab5 .item-title>i {
+    font-style: normal;
+    margin: 0 0.2rem
+}
+#tab5 .list-block .item-content {
+    padding: 0 0.75rem;
+}
+#tab5 .content a{
+    display: block;
+    width: 100%;
+    color: #6d6d72
+}
+#Tel {
+    width: 100%;
+    height: 2.2rem;
+    text-align: center;
+    background-color: #fff;
+    margin-top: 1rem;
+    border:  1px solid #f7f7f7
+}
+#Tel span {
+    font-size: .85rem;
+    line-height: 2.2rem;
+    margin: 0 0.3rem;
+    color: #222
+}

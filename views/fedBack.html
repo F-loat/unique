@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>用户反馈</title>
+</head>
+
+<body>
+    <div class="page-group">
+        <div id="fedBack" class="page">
+            <style type="text/css">
+            .content {
+                background-color: #fdfefe
+            }
+            
+            .content-block {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .item-input textarea{
+            	width: 90%;
+            	height: 8rem;
+            	margin: 1rem 5% 0 5%;
+                	background-color: #fdfefe;
+                	border: none;
+                	box-shadow:none;
+                	transition: all ease .3s
+            }
+            .item-input textarea:focus{
+            	box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.2);
+            }
+            #fed-submit {
+                text-align: center;
+            }
+            
+            #fed-submit a {
+                display: block;
+                width: 4.8rem;
+                height: 2.4rem;
+                background-color: #1975c8;
+                color: #000;
+                line-height: 2.4rem;
+                margin: 0 auto
+            }
+            
+            @media screen and (min-width: 614px) {
+                #fedBack {
+                    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+                }
+                #fedBack {
+                    width: 24rem;
+                    margin: 0 auto
+                }
+            }
+            </style>
+            <header class="bar bar-nav">
+                <a class="icon icon-left pull-left back"></a>
+                <h1 class="title">用户反馈</h1>
+            </header>
+            <div class="content">
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-input">
+                            <textarea placeholder="请留下您对商品货品或平台的建议或意见，我们会努力改进"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div id="fed-submit">
+                    <p><a>提交</a></p>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
