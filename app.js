@@ -1,12 +1,14 @@
 var express = require('express');
+var app = express();
+var compression = require('compression');
+app.use(compression());
 var path = require('path');
 var ejs = require('ejs');
-var app = express();
 var  cookieParser  =  require('cookie-parser'); 
 var  bodyParser  =  require('body-parser'); 
-var  session     =  require('express-session');  
+var  session =  require('express-session');  
 var mongoose = require('mongoose');
-var  RedisStore  =  require('connect-redis')(session);
+var mongoStore = require('connect-mongo')(session)
 
 mongoose.connect('mongodb://localhost/unique');
 
@@ -15,13 +17,17 @@ app.engine('html', ejs.__express);
 app.set('view engine', 'html');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
     secret: 'unique',
-    resave:  true,
+    resave:  false,
     saveUninitialized: true,
-    store:  new  RedisStore({     host:   "127.0.0.1",     port:  6379   })
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+    store: new mongoStore({
+        url: 'mongodb://localhost/unique',
+        collection: 'sessions'
+    })
 }))
 
 app.use('/', require('./routes/index'));

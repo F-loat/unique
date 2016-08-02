@@ -28,7 +28,7 @@ li {
     background-color: #1a7ace
 }
 .bar-sec~.content{
-    top: 2.6rem
+    top: 3rem
 }
 header.bar{
     background-color: #1a7ace;
@@ -36,7 +36,7 @@ header.bar{
 header.bar a,header.bar .title{
     color: #fdfefe
 }
-.dark-blue{
+.dark-blue,.modal-button{
     color: #1975c8 !important;
 }
 @font-face {
@@ -148,7 +148,12 @@ nav.bar {
     box-sizing: border-box;
     position: relative;
 }
-.ware-wrap>img {
+
+.ware-wrap>a{
+    display: block;
+}
+
+.ware-wrap>a>img {
     width: 100%;
     box-shadow: 0px 0px 16px 1px rgba(0, 0, 0, 0.2);
 }
@@ -190,56 +195,30 @@ nav.bar {
     background-color: #fbfafa;
     bottom: 2.5rem
 }
-#tab3 header.bar{
-    background-color: #fbfafa;
+#no-picture {
+    text-align: center;
+    margin-top: 8rem;
 }
-#tab3 header.bar button{
-    background-color: #fbfafa;
-    font-weight: 500;
-    font-size: 0.9rem 
+#upload input~span {
+    z-index: 1
 }
-#tab3 header.bar a{
-    color: #000
-}
-#tab3 .bar:after{
-    height: 0
-}
-#exampleImg-taste{
-    width: 10rem;
-    margin: 0 auto;
-    display: block
-}
-.check-list{
+#upload input {
     position: absolute;
     width: 100%;
-    top: 10rem;
-    bottom: 0;
-    background: url("/img/cream.png") no-repeat top center;
-    background-size: cover;
-    text-align: center;
-    padding: 2rem 0;
-}
-.check-taste,.check-taste:active{
-    display: block;
-    line-height: 2;
-    margin: 0.4rem 0;
-    color: #000;
-    font-size: 1rem
-}
-.check-list .active{
-    background-color: rgba(21,117,201,0.61);
-    color: #fff
-}
-.line-text{
-    padding: 0 20px 0;
-    margin-top: 16px;
-    line-height: 1px;
-    border-left: 5rem solid #444a5a;
-    border-right: 5rem solid #444a5a;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.9rem;
+    height: 2.5rem;
+    left: 0;
+    top: 0;
+    opacity: 0;
     z-index: 9
+}
+#canvasWrap {
+    bottom: 2.5rem;
+    font-size: 0;
+}
+#canvasWrap>div {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
 }
 /*购物车界面样式*/
 #tab4>.content{
@@ -257,7 +236,81 @@ nav.bar {
     margin: 0;
     font-weight: normal
 }
-
+#tab4 .bar-sec .col-50{
+    text-align: center;
+    line-height: 2.2rem;
+    color: #222;
+}
+#tab4 .bar-sec .icon{
+    color: #fdfefe;
+}
+.order-list{
+    margin: 0;
+}
+.order-list>li{
+    background-color: #1975c8
+}
+.icon-form-checkbox{
+    background-color: #fdfefe !important;
+    border-radius: 0 !important;
+    width: 0.9rem !important;
+    height: 0.9rem !important
+}
+html:not(.watch-active-state) label.label-checkbox:active, label.label-checkbox.active-state{
+    background-color: #176ab3;
+}
+label.label-checkbox input[type=checkbox]:checked+.item-media i.icon-form-checkbox:after, label.label-checkbox input[type=radio]:checked+.item-media i.icon-form-checkbox:after{
+    position: absolute;
+    top: .2rem;
+    left: .3rem;
+    width: 100%;
+    height: 100%;
+    box-shadow:0px 0px 4px 2px rgba(255, 255, 255, 0.3);
+    background-color: #1975c8
+}
+.order-list img{
+    width: 6rem;
+    margin-left: .75rem
+}
+.order-list .item-inner{
+    color: #222
+}
+.order-list .item-inner .pull-right{
+    line-height: 2.1rem
+}
+.order-list .item-inner span{
+    color: #fdfefe;
+    margin:  0 .3rem
+}
+.order-list .item-text{
+    line-height: 2.1rem;
+    color: #222
+}
+#buy-now{
+    width: 100%;
+    height: 2.5rem;
+    position: absolute;
+    bottom: 2.5rem;
+    left: 0;
+    line-height: 2.5rem
+}
+#buy-now .list-block{
+    margin: 0;
+    width: 70%;
+    background-color: #1a7ace;
+    color: #222
+}
+#buy-now .list-block .item-inner:after{
+    background-color: #1a7ace;
+}
+#buy-now .item-inner{
+    padding: 0 .6rem 0 0;
+    box-sizing: border-box;
+}
+#order{
+    background-color: #dfba76;
+    text-align: center
+}
 /*个人中心样式*/
 #tab5>.content{
     bottom:2.5rem;

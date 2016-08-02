@@ -1,20 +1,28 @@
 $.init();
 
-document.addEventListener('touchmove', function(e) {
+$(document).on('touchmove', 'body', function(e) {
     e.preventDefault();
-}, false);
+});
 
 $(document).on('click', '.tab-link', function() {
     $.refreshScroller();
 });
 
-$(document).on('click', '#dTab1 .check-taste', function() {
-    $('#dTab1 .check-taste').removeClass('active')
-    $(this).addClass('active')
+var id = 0;
+$(document).on('click', 'a[data-id]', function() {
+    id = $(this).data('id');
 });
-$(document).on('click', '#dTab2 .check-taste', function() {
-    $('#dTab2 .check-taste').removeClass('active')
-    $(this).addClass('active')
+
+$(document).on('click', '#buy-now', function() {
+    if ($("#check-all").attr("checked")) {
+        $(".order-list label.label-checkbox input[type=checkbox]").each(function() {
+            $(this).attr("checked", false);
+        });
+    } else {
+        $(".order-list label.label-checkbox input[type=checkbox]").each(function() {
+            $(this).attr("checked", true);
+        });
+    }
 });
 
 // var city = "";
@@ -33,68 +41,29 @@ $(document).on('click', '#dTab2 .check-taste', function() {
 //     });
 // });
 
-var vmCakeF = new Vue({
-    el: '#cake-f-list',
+var vmWare = new Vue({
+    el: '#tab2',
     data: {
-        cakes: []
+        wares: {}
     }
 })
-
-var vmCakeY = new Vue({
-    el: '#cake-y-list',
+var vmShopcar = new Vue({
+    el: '#tab4',
     data: {
-        cakes: []
+        orders: []
     }
 })
-
-var vmMousse = new Vue({
-    el: '#mousse-list',
+var vmUser = new Vue({
+    el: '#tab5',
     data: {
-        "mousses": []
-    }
-})
-
-
-var vmFlower = new Vue({
-    el: '#flower-list',
-    data: {
-        flowers: []
-    }
-})
-
-
-var vmCakeDetail = new Vue({
-    el: '#cake-detail',
-    data: {
-        cake: {
-            nameEn: 'Bailey&apos;s Love',
-            name: '百利甜情人',
-            raw: '/爱尔兰百利甜酒/新西兰奶油/云南玫瑰甘露/',
-            characterization: 'Just Bailey&apos;s, light cream and you. The flavours may be velvetty subtle, but the chemistry is as electric as a first kiss.',
-            update: '*重油坯升级为戚风坯，口感更轻盈、细腻。<br/>*单层水果夹心升级为双层水果夹心，分量加倍。<br/>*本款产品为时令鲜果蛋糕，当季水果夹心为芒果。',
-            price: ''
-        }
+        user: ""
     }
 })
 
 $.ajax({
     type: 'get',
-    url: '/ware/cake',
+    url: '/ware',
     success: function(data) {
-        vmCakeF.cakes = data;
-    }
-})
-$.ajax({
-    type: 'get',
-    url: '/ware/mousse',
-    success: function(data) {
-        vmMousse.mousses = data;
-    }
-})
-$.ajax({
-    type: 'get',
-    url: '/ware/flower',
-    success: function(data) {
-        vmFlower.flowers = data;
+        vmWare.wares = data;
     }
 })

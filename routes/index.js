@@ -1,31 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var Index = require('../controllers/index');
+var Filter = require('../controllers/filter');
 
-router.get('/', function(req, res, next) {
-    res.render('index');
-});
+//页面
+router.get('/', Index.index);
+router.get('/customTailor', Filter.turnBack,Index.customTailor);
+router.get('/aboutUs', Filter.turnBack,Index.aboutUs);
+router.get('/userAgreement', Filter.turnBack,Index.userAgreement);
 
-router.get('/customTailor', function(req, res, next) {
-    if (req.xhr) {
-        res.render('customTailor');
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.get('/aboutUs', function(req, res, next) {
-    if (req.xhr) {
-        res.render('aboutUs');
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.get('/userAgreement', function(req, res, next) {
-    if (req.xhr) {
-        res.render('userAgreement');
-    } else {
-        res.redirect('/');
-    }
-});
 module.exports = router;

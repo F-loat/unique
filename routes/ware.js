@@ -1,15 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var fs = require('fs');
+var Ware = require('../controllers/ware');
+var Filter = require('../controllers/filter');
 
-router.get('/cake', function(req, res, next) {
-    res.send(JSON.parse(fs.readFileSync('./tmp/cake.json')));
-});
-router.get('/mousse', function(req, res, next) {
-    res.send(JSON.parse(fs.readFileSync('./tmp/mousse.json')));
-});
-router.get('/flower', function(req, res, next) {
-    res.send(JSON.parse(fs.readFileSync('./tmp/flower.json')));
-});
+//数据
+router.get('/',Ware.wares);
+
+//页面
+router.get('/orderDetail', Filter.turnBack,Ware.orderDetail);
+router.get('/confirmOrder', Filter.turnBack,Ware.confirmOrder);
 
 module.exports = router;
