@@ -146,11 +146,11 @@
                                     <h1 class="title">购物车</h1>
                                 </header>
                                 <div class="content">
-                                    <div id="no-ware">
+                                    <div id="no-ware" v-if="!orders">
                                         <span class="icon icon-cart"></span>
                                         <h4>购物车空空如也</h4>
                                     </div>
-                                    <!-- <header class="bar bar-nav bar-sec row">
+                                    <header class="bar bar-nav bar-sec row" v-if="orders">
                                         <span class="col-50">
                                             <span class="icon icon-app"></span> 方形蜡烛
                                         <span class="icon icon-check"></span>
@@ -160,7 +160,7 @@
                                         <span class="icon icon-check"></span>
                                         </span>
                                     </header>
-                                    <div class="content">
+                                    <div class="content"  v-if="orders">
                                         <ul class="order-list list-block media-list">
                                             <li>
                                                 <label class="label-checkbox item-content">
@@ -180,10 +180,10 @@
                                                 </label>
                                             </li>
                                         </ul>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
-                            <!-- <div id="buy-now">
+                            <div id="buy-now" v-if="orders">
                                 <div class="list-block media-list pull-left">
                                     <label class="label-checkbox item-content">
                                         <input id="check-all" type="checkbox" name="checkbox">
@@ -195,17 +195,18 @@
                                     </label>
                                 </div>
                                 <div id="order">下单</div>
-                            </div> -->
+                            </div>
                         </div>
                         <div id="tab5" class="tab">
                             <header class="bar bar-nav">
                                 <img src="/img/cake1.jpg">
-                                <div class="webFont" v-if="!user">
-                                    <a href="/user/loginPage" data-no-cache="true">登录</a>
-                                    <span>|</span>
-                                    <a href="/user/registPage" data-no-cache="true">注册</a>
+                                <div class="webFont" v-if="!nickname">
+                                    <a href="/user/fastLoginPage" data-no-cache="true">登录/注册</a>
                                 </div>
-                                <div v-else>{{user}}</div>
+                                <div v-else>
+                                    {{nickname}}
+                                    <span id="logout">[注销]</span>
+                                </div>
                             </header>
                             <div class="content" data-type="js">
                                 <div class="list-block">
@@ -306,6 +307,19 @@
                     <span class="tab-label">我</span>
                 </a>
             </nav>
+            <script type="text/javascript">
+            window.onload = function() {
+                $.ajax({
+                    type: 'get',
+                    url: '/user',
+                    success: function(data) {
+                        if(data.state===1){
+                            vmUser.nickname = data.nickname;
+                        }
+                    }
+                })
+            }
+            </script>
         </div>
     </div>
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?ak=NEE6hnZ2l6jOuRVteUzGM3ZM&amp;v=2.0&amp;services=false"></script> -->

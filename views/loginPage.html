@@ -13,16 +13,16 @@
                 background-color: #fdfefe;
             }
             
-            .address {
-                margin: .4rem 2rem;
+            #login .address {
+                margin: .4rem 1.4rem;
                 height: 2.4rem;
             }
             
             #login .address .label {
-                width: 26% !important
+                width: 28% !important
             }
             
-            .input {
+            #login .input {
                 font-size: .8rem !important;
                 line-height: 2.15rem !importane
             }
@@ -42,10 +42,10 @@
             }
             
             @media screen and (min-width: 614px) {
-                #signIn {
+                #login {
                     box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
                 }
-                #signIn {
+                #login {
                     width: 24rem;
                     margin: 0 auto
                 }
@@ -98,8 +98,7 @@
                             if (data.state === 1) {
                                 $.toast('登录成功，正在为您跳转')
                                 setTimeout(function() {
-                                    vmUser.user = data.user;
-                                    $.router.load("/",true);
+                                    window.location.href = "/";
                                 }, 1000)
                             } else {
                                 $.toast(data.err)
