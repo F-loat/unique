@@ -154,7 +154,7 @@
             </header>
             <div class="content" data-type="js">
                 <div class="detail-img">
-                    {{{detail.img}}}
+                    <img v-bind:src="detail.img">
                     <h5>{{detail.name}}</h5>
                     <h6 class="webFont">{{detail.nameEn}}</h6>
                     <p class="bewrite">/独一无二的蛋糕/</p>
@@ -163,18 +163,18 @@
                 <div class="detail-dishes" v-if="detail.type===9">
                     <h6>请选择口味</h6>
                     <div>
-                        <div class="dishTab active">奶油</div>
-                        <div class="dishTab">抹茶</div>
-                        <div class="dishTab">巧克力</div>
+                        <div v-on:click="dishChange" class="dishTab active">奶油</div>
+                        <div v-on:click="dishChange" class="dishTab">抹茶</div>
+                        <div v-on:click="dishChange" class="dishTab">巧克力</div>
                     </div>
                 </div>
                 <div class="detail-weight">
                     <h6>请选择重量</h6>
                     <div>
-                        <div class="weightTab active">1.0磅</div>
-                        <div class="weightTab">1.5磅</div>
-                        <div class="weightTab">2.0磅</div>
-                        <div class="weightTab">2.5磅</div>
+                        <div v-on:click="weightChange" class="weightTab active">1.0磅</div>
+                        <div v-on:click="weightChange" class="weightTab">1.5磅</div>
+                        <div v-on:click="weightChange" class="weightTab">2.0磅</div>
+                        <div v-on:click="weightChange" class="weightTab">2.5磅</div>
                     </div>
                 </div>
                 <div class="detail-detail">
@@ -200,24 +200,25 @@
                 <div id="detail-buy"><a href="/ware/confirmOrder" data-no-cache="true">立即购买</a></div>
             </div>
             <script type="text/javascript">
-            $(document).on('click', '.dishTab', function() {
-                $('.dishTab').removeClass('active');
-                $(this).addClass('active')
-            });
-
-            $(document).on('click', '.weightTab', function() {
-                $('.weightTab').removeClass('active');
-                $(this).addClass('active')
-            });
-
             var vmOrderDetail = new Vue({
                 el: '#orderDetail',
                 data: {
                     detail: []
+                },
+                methods: {
+                    dishChange: function(event) {
+                        $('.dishTab').removeClass('active');
+                        $(event).addClass('active')
+                    },
+                    weightChange: function(event) {
+                        $('.weightTab').removeClass('active');
+                        $(event).addClass('active')
+                    }
                 }
             })
+
             vmOrderDetail.detail = vmWare.wares[id];
-            </script>
+            </script> 
         </div>
     </div>
 </body>

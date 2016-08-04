@@ -4,6 +4,13 @@ var mongoose = require('mongoose');
 var User = require('../modules/user');
 
 //数据
+exports.info = function(req, res) {
+    if (req.session.nickname) {
+        res.json({ "state": 1, "nickname": req.session.nickname })
+    } else {
+        res.json({ "state": 0 })
+    }
+}
 exports.identify = function(req, res) {
     var phone = req.body.phone;
     var time = new Date();
@@ -29,7 +36,7 @@ exports.identify = function(req, res) {
                 if (body.respCode === "00000") {
                     User.findOne({ phone: phone }, function(err, user) {
                         if (user) {
-                            User.update({ phone: phone }, { $set: { identify: code } }, function(err) {
+                            User.update({ phone: phone }, { $set: { identify: code, identifyDate: Date.now() } }, function(err) {
                                 if (err) {
                                     return res.json({ "state": 0, "err": err })
                                 }
@@ -67,12 +74,13 @@ exports.regist = function(req, res) {
                 res.json({ "state": 0, "err": "验证码超时,请重新获取" });
             } else {
                 if (identify == user.identify) {
-                    User.update({ phone: phone }, { $set: { nickname: phone, password: password, regDate: Date.now() } }, function(err) {
+                    User.update({ phone: phone }, { $set: { nickname: phone, password: password, userType: 1, regDate: Date.now() } }, function(err) {
                         if (err) {
                             return res.json({ "state": 0, "err": err })
                         }
                         req.session.phone = user.phone;
-                        res.json({ "state": 1, "user": user.nickname})
+                        req.session.nickname = user.phone;
+                        res.json({ "state": 1 })
                     })
                 } else {
                     res.json({ "state": 0, "err": "验证码输入错误" })
@@ -91,7 +99,8 @@ exports.login = function(req, res) {
         if (user) {
             if (password == user.password) {
                 req.session.phone = user.phone;
-                res.json({ "state": 1, "user": user.nickname })
+                req.session.nickname = user.nickname;
+                res.json({ "state": 1 })
             } else {
                 res.json({ "state": 0, "err": "密码输入错误" })
             }
@@ -100,6 +109,31 @@ exports.login = function(req, res) {
         }
     })
 }
+exports.fastLogin = function(req, res) {
+    var phone = req.body.phone,
+        identify = req.body.identify;
+    User.findOne({ phone: phone }, function(err, user) {
+        if (user) {
+            if ((Date.now() - user.identifyDate) > 30 * 60 * 1000) {
+                res.json({ "state": 0, "err": "验证码超时,请重新获取" });
+            } else {
+                if (identify == user.identify) {
+                    req.session.phone = user.phone;
+                    req.session.nickname = user.phone;
+                    res.json({ "state": 1 })
+                } else {
+                    res.json({ "state": 0, "err": "验证码输入错误" })
+                }
+            }
+        } else {
+            res.json({ "state": 0, "err": "请先获取验证码" })
+        }
+    })
+}
+exports.logout = function(req, res) {
+    req.session.destroy();
+    res.json({ "state": 1 })
+}
 
 //页面
 exports.registPage = function(req, res) {
@@ -107,6 +141,9 @@ exports.registPage = function(req, res) {
 }
 exports.loginPage = function(req, res) {
     res.render('loginPage');
+}
+exports.fastLoginPage = function(req, res) {
+    res.render('fastLoginPage');
 }
 exports.myOrders = function(req, res) {
     res.render('myOrders');

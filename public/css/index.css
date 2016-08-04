@@ -45,7 +45,8 @@ header.bar a,header.bar .title{
     src: url('/fonts/webFont.eot?#iefix') format('embedded-opentype'),
             url('/fonts/webFont.woff') format('woff'),
             url('/fonts/webFont.ttf') format('truetype'), 
-            url('/fonts/webFont.svg') format('svg');
+            url('/fonts/webFont.svg') format('svg'),
+            url('/fonts/webFont.otf') format('otf');
     font-weight: normal;
     font-style: normal;
 }

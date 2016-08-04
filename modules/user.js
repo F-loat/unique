@@ -15,6 +15,10 @@ var userSchema = new mongoose.Schema({
     identifyDate: {
         type: Date,
         default: Date.now()
+    },
+    userType: {
+        type: Number,
+        default: 0
     }
 })
 

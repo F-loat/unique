@@ -13,31 +13,28 @@
                 background-color: #fdfefe;
             }
             
-            .content-block {
+            #myAddress .content-block {
                 margin: 0;
                 padding: 0;
             }
             
-            #myAddress .address {
-                margin: .4rem 2rem;
+            #myAddress .ready-address {
+                margin: .6rem 1.2rem;
                 height: 2.4rem;
             }
             
-            .address h4,
-            .address p {
-                margin: 0
+            #myAddress .ready-address h4,
+            #myAddress .ready-address p {
+                margin: 0;
+                font-weight: normal
             }
             
-            .address p {
-                font-size: .7rem
+            #myAddress .ready-address p {
+                font-size: .65rem
             }
             
-            .phoneNumber {
-                line-height: 2.4rem
-            }
-            
-            .add,
-            .add:active {
+            #myAddress .add,
+            #myAddress .add:active {
                 display: block;
                 width: 100%;
                 height: 2.2rem;
@@ -48,13 +45,25 @@
                 font-size: .8rem
             }
             
-            .address .label {
+            #myAddress .ready-address .label {
                 width: 20% !important
             }
             
-            .input {
+            #myAddress .input {
                 font-size: .8rem !important;
                 line-height: 2.15rem !importane
+            }
+            
+            #myAddress .ready-address .icon {
+                font-size: .7rem
+            }
+            
+            .address-detail {
+                width: 64%
+            }
+            
+            #myAddress .badge {
+                margin: .2rem
             }
             
             @media screen and (min-width: 614px) {
@@ -74,25 +83,62 @@
             </header>
             <div class="content">
                 <ul>
-                    <li class="clearfix address">
-                        <span class="pull-left">
-                            <h4>我</h4>
-                            <p>红桥区三楼209</p>
+                    <li class="clearfix ready-address" v-for="address in addresses" data-address-id="{{$index}}">
+                        <span class="pull-left address-detail">
+                            <h4>{{address.phone}}（{{address.receiver}}）</h4>
+                            <p>{{address.site}}</p>
                         </span>
-                        <span class="pull-right phoneNumber">14516261526</span>
-                    </li>
-                    <li class="clearfix address">
-                        <span class="pull-left">
-                            <h4>我</h4>
-                            <p>红桥区三楼209</p>
-                        </span>
-                        <span class="pull-right phoneNumber">14516261526</span>
+                        <div class="pull-right address-operation">
+                            <span class="address-edit icon icon-edit">编辑</span>
+                            <span class="address-delete icon icon-remove">删除</span>
+                        </div>
+                        <span class="badge pull-right" v-if="address.state==1">默认</span>
                     </li>
                 </ul>
                 <a class="add" href="newAddress">新增</a>
-                
             </div>
+            <script type="text/javascript">
+            var vmAddress = new Vue({
+                el: '#myAddress',
+                data: {
+                    addresses: [{
+                        receiver: "柴茂源",
+                        phone: 14516261526,
+                        site: "红桥区三楼209",
+                        state: 0
+                    }, {
+                        receiver: "柴茂源",
+                        phone: 14516261526,
+                        site: "红桥区三楼209",
+                        state: 1
+                    }]
+                }
+            })
+            $(document).on('click', '.ready-address', function(e) {
+                if (e.target.tagName != "SPAN") {
+                    var addressId = $(this).data('addressId');
+                    for (var i = vmAddress.addresses.length - 1; i >= 0; i--) {
+                        vmAddress.addresses[i].state = 0
+                    }
+                    vmAddress.addresses[addressId].state = 1
+                }
+            });
+            $(document).on('click', '.address-edit', function() {
+
+            });
+            $('.address-delete').unbind('click').bind('click', function() {
+                var addressId = $(this).parent().parent().data('addressId');
+                if (vmAddress.addresses[addressId].state == 1) {
+                    $.toast('当前地址为默认地址，不可删除')
+                } else {
+                    $.confirm('确认删除？', function() {
+                        vmAddress.addresses.splice(addressId, 1)
+                    })
+                }
+            });
+            </script>
         </div>
+    </div>
 </body>
 
 </html>

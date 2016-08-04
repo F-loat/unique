@@ -25,45 +25,61 @@ $(document).on('click', '#buy-now', function() {
     }
 });
 
-// var city = "";
-// var district = "";
-// var lat = "";
-// var lon = "";
-// navigator.geolocation.getCurrentPosition(function(position) {
-//     lat = position.coords.latitude;
-//     lon = position.coords.longitude;
-//     var point = new BMap.Point(lon, lat); // 创建坐标点
-//     // 根据坐标得到地址描述
-//     var myGeo = new BMap.Geocoder();
-//     myGeo.getLocation(point, function(result) {
-//         city = result.addressComponents.city;
-//         district = result.addressComponents.district;
-//     });
-// });
-
 var vmWare = new Vue({
     el: '#tab2',
     data: {
         wares: {}
-    }
-})
-var vmShopcar = new Vue({
-    el: '#tab4',
-    data: {
-        orders: []
-    }
-})
-var vmUser = new Vue({
-    el: '#tab5',
-    data: {
-        user: ""
+    },
+    methods: {
+        getInfo: function() {
+            $.ajax({
+                type: 'get',
+                url: '/ware',
+                success: function(data) {
+                    vmWare.wares = data;
+                }
+            })
+        }
     }
 })
 
-$.ajax({
-    type: 'get',
-    url: '/ware',
-    success: function(data) {
-        vmWare.wares = data;
+var vmShopcar = new Vue({
+    el: '#tab4',
+    data: {
+        orders: null
+    }
+})
+
+var vmUser = new Vue({
+    el: '#tab5',
+    data: {
+        nickname: ""
+    },
+    methods: {
+        getInfo: function() {
+            $.ajax({
+                type: 'get',
+                url: '/user',
+                success: function(data) {
+                    if (data.state === 1) {
+                        vmUser.nickname = data.nickname;
+                    }
+                }
+            })
+        },
+        logout: function() {
+            $.ajax({
+                type: 'get',
+                url: '/user/logout',
+                success: function(data) {
+                    if (data.state === 1) {
+                        $.toast('注销成功，正在为您跳转')
+                        setTimeout(function() {
+                            window.location.href = "/";
+                        }, 1000)
+                    }
+                }
+            })
+        }
     }
 })

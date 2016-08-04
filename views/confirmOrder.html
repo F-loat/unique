@@ -17,14 +17,14 @@
                 color: #222;
             }
             
-            .picker-modal .bar .button-link{
+            .picker-modal .bar .button-link {
                 color: #fff
             }
-
-            .picker-modal .bar .title{
+            
+            .picker-modal .bar .title {
                 color: #222 !important
             }
-
+            
             #confirmOrder .address {
                 text-align: center;
                 line-height: 2.2rem;
@@ -116,7 +116,7 @@
                     <ul class="order-list list-block media-list">
                         <li>
                             <label class="label-checkbox item-content">
-                                <div class="item-media">{{{detail.img}}}</div>
+                                <div class="item-media"><img v-bind:src="detail.img"></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{detail.nameEn}}</div>
                                     <div class="item-subtitle">{{detail.name}}</div>
@@ -197,20 +197,20 @@
                     $(document).on("pageInit", "#confirmOrder", function() {
                         var date = new Date();
                         $("#datetime-picker").datetimePicker({
-                            value: [date.getFullYear(), date.getMonth()+1, date.getDate(), '12', '30']
+                            value: [date.getFullYear(), (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0" + (date.getMonth() + 1), date.getDate() > 9 ? date.getDate() : "0" + date.getDate(), '12', '30']
                         });
                     });
-                     $(document).on('click','#order-message', function () {
-                      $.prompt('您有什么要求呢？',
-                        function (value) {
-                          $('#order-message').text(value);
-                        },
-                        function (value) {
-                          $.toast('您没有保存要求');
-                        }
-                      );
-                      $(".modal-text-input").val($('#order-message').text())
-                  });
+                    $(document).on('click', '#order-message', function() {
+                        $.prompt('您有什么要求呢？',
+                            function(value) {
+                                $('#order-message').text(value);
+                            },
+                            function(value) {
+                                $.toast('您没有保存要求');
+                            }
+                        );
+                        $(".modal-text-input").val($('#order-message').text())
+                    });
                     </script>
                 </div>
             </div>
