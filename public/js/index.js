@@ -1,4 +1,9 @@
 $.init();
+$(function() {
+    $(".content").scroller({
+        type: 'js'
+    });
+});
 
 $(document).on('touchmove', 'body', function(e) {
     e.preventDefault();
