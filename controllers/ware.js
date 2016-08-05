@@ -7,12 +7,3 @@ exports.wares = function(req, res) {
         return res.send(wares)
     })
 }
-
-//页面
-exports.orderDetail = function(req, res) {
-    res.render('orderDetail');
-}
-exports.confirmOrder = function(req, res) {
-    res.render('confirmOrder');
-}
-

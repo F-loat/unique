@@ -5,7 +5,5 @@ var Filter = require('../controllers/filter');
 
 //页面
 router.get('/', Index.index);
-router.get('/aboutUs', Filter.turnBack,Index.aboutUs);
-router.get('/userAgreement', Filter.turnBack,Index.userAgreement);
 
 module.exports = router;

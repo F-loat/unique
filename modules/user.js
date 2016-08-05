@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
     },
     email: String,
     dateOfBirth: Date,
+    addresses: String,
     regDate: Date,
     identify: Number,
     identifyDate: {

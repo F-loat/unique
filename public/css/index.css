@@ -55,7 +55,7 @@ header.bar a,header.bar .title{
     font-family: 'webFont'
 }
 /*主体背景色*/
-#main>.content {
+#index>.content {
     background-color: #fdfefe
 }
 

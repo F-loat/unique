@@ -5,8 +5,10 @@ var User = require('../modules/user');
 
 //数据
 exports.info = function(req, res) {
-    if (req.session.nickname) {
-        res.json({ "state": 1, "nickname": req.session.nickname })
+    if (req.session.phone) {
+        User.findOne({ phone: req.session.phone }, function(err, user) {
+            res.json({ "state": 1,"nickname": user.nickname,"addresses":user.addresses})
+        })
     } else {
         res.json({ "state": 0 })
     }
@@ -79,7 +81,6 @@ exports.regist = function(req, res) {
                             return res.json({ "state": 0, "err": err })
                         }
                         req.session.phone = user.phone;
-                        req.session.nickname = user.phone;
                         res.json({ "state": 1 })
                     })
                 } else {
@@ -99,7 +100,6 @@ exports.login = function(req, res) {
         if (user) {
             if (password == user.password) {
                 req.session.phone = user.phone;
-                req.session.nickname = user.nickname;
                 res.json({ "state": 1 })
             } else {
                 res.json({ "state": 0, "err": "密码输入错误" })
@@ -119,7 +119,6 @@ exports.fastLogin = function(req, res) {
             } else {
                 if (identify == user.identify) {
                     req.session.phone = user.phone;
-                    req.session.nickname = user.phone;
                     res.json({ "state": 1 })
                 } else {
                     res.json({ "state": 0, "err": "验证码输入错误" })
@@ -133,30 +132,4 @@ exports.fastLogin = function(req, res) {
 exports.logout = function(req, res) {
     req.session.destroy();
     res.json({ "state": 1 })
-}
-
-//页面
-exports.registPage = function(req, res) {
-    res.render('registPage');
-}
-exports.loginPage = function(req, res) {
-    res.render('loginPage');
-}
-exports.fastLoginPage = function(req, res) {
-    res.render('fastLoginPage');
-}
-exports.myOrders = function(req, res) {
-    res.render('myOrders');
-}
-exports.myAddress = function(req, res) {
-    res.render('myAddress');
-}
-exports.newAddress = function(req, res) {
-    res.render('newAddress');
-}
-exports.myCoupons = function(req, res) {
-    res.render('myCoupons');
-}
-exports.fedBack = function(req, res) {
-    res.render('fedBack');
 }

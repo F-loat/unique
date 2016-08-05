@@ -6,8 +6,4 @@ var Filter = require('../controllers/filter');
 //数据
 router.get('/',Ware.wares);
 
-//页面
-router.get('/orderDetail', Filter.turnBack,Ware.orderDetail);
-router.get('/confirmOrder', Filter.turnBack,Ware.confirmOrder);
-
 module.exports = router;
