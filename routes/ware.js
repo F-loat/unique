@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var Ware = require('../controllers/ware');
 var Filter = require('../controllers/filter');
+var Ware = require('../controllers/ware');
 
-//数据
-router.get('/',Ware.wares);
+router.get('/', Ware.wares);
+router.post('/shopcar/add', Filter.login, Ware.addToShopcar);
+router.post('/shopcar/sum', Filter.login, Ware.shopcarSumChange);
+router.post('/pay', Filter.login, Ware.pay);
 
 module.exports = router;

@@ -10,14 +10,25 @@ var userSchema = new mongoose.Schema({
     },
     email: String,
     dateOfBirth: Date,
-    addresses: String,
+    shopcar: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shopcar'
+    }],
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order'
+    }],
+    addresses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
+    }],
     regDate: Date,
     identify: Number,
     identifyDate: {
         type: Date,
         default: Date.now()
     },
-    userType: {
+    type: {
         type: Number,
         default: 0
     }

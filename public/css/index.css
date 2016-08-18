@@ -1,10 +1,10 @@
 /*大尺寸屏幕界面优化*/
 @media screen and (min-width: 614px) {
-    .content {
+    .content ,header{
         width: 24rem;
         margin: 0 auto
     }
-    .page>.content {
+    .page>.content,.page>header {
         box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
     }
     .ware-wrap {
@@ -12,7 +12,10 @@
         margin: 3% 0 3% 5% !important;
     }
     #Tel{
-        width: 24rem !important
+        width: 24rem !important;
+    }
+    .row{
+        margin-left: 0 !important
     }
 }
 
@@ -33,20 +36,20 @@ li {
 header.bar{
     background-color: #1a7ace;
 }
-header.bar a,header.bar .title{
-    color: #fdfefe
+header.bar .title,header .icon{
+    color: #fdfefe !important
 }
 .dark-blue,.modal-button{
     color: #1975c8 !important;
 }
 @font-face {
     font-family: 'webFont';
-    src: url('/fonts/webFont.eot');
-    src: url('/fonts/webFont.eot?#iefix') format('embedded-opentype'),
-            url('/fonts/webFont.woff') format('woff'),
-            url('/fonts/webFont.ttf') format('truetype'), 
-            url('/fonts/webFont.svg') format('svg'),
-            url('/fonts/webFont.otf') format('otf');
+    src: url('../fonts/webFont.eot');
+    src: url('../fonts/webFont.eot?#iefix') format('embedded-opentype'),
+            url('../fonts/webFont.woff') format('woff'),
+            url('../fonts/webFont.ttf') format('truetype'), 
+            url('../fonts/webFont.svg') format('svg'),
+            url('../fonts/webFont.otf') format('otf');
     font-weight: normal;
     font-style: normal;
 }
@@ -76,7 +79,7 @@ nav.bar {
 
 /*主页面*/
 #tab1>.content{
-    background: url("/img/hBg.jpg") no-repeat top center;
+    background: url("../img/hBg.jpg") no-repeat top center;
     background-size: contain;
     bottom: 2.5rem
 }
@@ -196,31 +199,6 @@ nav.bar {
     background-color: #fbfafa;
     bottom: 2.5rem
 }
-#no-picture {
-    text-align: center;
-    margin-top: 8rem;
-}
-#upload input~span {
-    z-index: 1
-}
-#upload input {
-    position: absolute;
-    width: 100%;
-    height: 2.5rem;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    z-index: 9
-}
-#canvasWrap {
-    bottom: 2.5rem;
-    font-size: 0;
-}
-#canvasWrap>div {
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-}
 /*购物车界面样式*/
 #tab4>.content{
     bottom: 5rem
@@ -241,6 +219,8 @@ nav.bar {
     text-align: center;
     line-height: 2.2rem;
     color: #222;
+    float: left;
+    width: 50%
 }
 #tab4 .bar-sec .icon{
     color: #fdfefe;
@@ -267,7 +247,22 @@ label.label-checkbox input[type=checkbox]:checked+.item-media i.icon-form-checkb
     width: 100%;
     height: 100%;
     box-shadow:0px 0px 4px 2px rgba(255, 255, 255, 0.3);
-    background-color: #1975c8
+    background-color: #1975c8;
+}
+.button-checked{
+    border: none !important;
+    background-color: #1975c8 !important;
+}
+.button-checked:after{
+    position: absolute !important;
+    top: .2rem !important;
+    left: .3rem !important;
+    width: 100% !important;
+    height: 100% !important;
+    box-shadow:0px 0px 4px 2px rgba(255, 255, 255, 0.3) !important;
+    background: no-repeat center !important;
+    background-size: .6rem .45rem !important;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20x%3D'0px'%20y%3D'0px'%20viewBox%3D'0%200%2012%209'%20xml%3Aspace%3D'preserve'%3E%3Cpolygon%20fill%3D'%23ffffff'%20points%3D'12%2C0.7%2011.3%2C0%203.9%2C7.4%200.7%2C4.2%200%2C4.9%203.9%2C8.8%203.9%2C8.8%203.9%2C8.8%20'%2F%3E%3C%2Fsvg%3E") !important
 }
 .order-list img{
     width: 6rem;
@@ -308,9 +303,11 @@ label.label-checkbox input[type=checkbox]:checked+.item-media i.icon-form-checkb
     padding: 0 .6rem 0 0;
     box-sizing: border-box;
 }
-#order{
+.order{
     background-color: #dfba76;
-    text-align: center
+    text-align: center;
+    width:30%;
+    float:left;
 }
 /*个人中心样式*/
 #tab5>.content{
