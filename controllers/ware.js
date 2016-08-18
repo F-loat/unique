@@ -116,8 +116,8 @@ exports.pay = function(req, res) {
             subject: "优力克蛋糕",
             body: "蛋糕",
             extra: {
-                success_url: "http://" + host + "/#myOrders",
-                cancel_url: "http://" + host + "/#confirmOrder"
+                success_url: "http://" + host,
+                cancel_url: "http://" + host
             }
         }, function(err, charge) {
             if (err) {
@@ -158,8 +158,8 @@ exports.payAgain = function(req, res){
             subject: "优力克蛋糕",
             body: "蛋糕",
             extra: {
-                success_url: "http://" + host + "/#myOrders",
-                cancel_url: "http://" + host + "/#myOrders"
+                success_url: "http://" + host,
+                cancel_url: "http://" + host
             }
         }, function(err, charge) {
             if (err) {
@@ -177,9 +177,9 @@ exports.paySucceeded = function(req, res){
             if (err) {
                 return console.log(err)
             }
-            res.send(200)
+            res.sendStatus(200)
         })
     } else {
-        res.send(200)
+        res.sendStatus(200)
     }
 }

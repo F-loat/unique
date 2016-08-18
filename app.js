@@ -13,6 +13,7 @@ mongoose.connect('mongodb://'+admin.name+':'+admin.pwd+'@localhost/unique');
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
     secret: 'unique',
