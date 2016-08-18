@@ -6,9 +6,10 @@ var bodyParser  =  require('body-parser'); 
 var session =  require('express-session');  
 var mongoose = require('mongoose');
 var mongoStore = require('connect-mongo')(session);
+var admin = require('./controllers/key/mongodb.json');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/unique');
+mongoose.connect('mongodb://'+admin.name+':'+admin.pwd+'@localhost/unique');
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,7 +21,7 @@ app.use(session({
     name: 'unique',
     cookie: { maxAge: 14 * 24 * 60 * 60 * 1000 },
     store: new mongoStore({
-        url: 'mongodb://localhost/unique',
+        url: 'mongodb://'+admin.name+':'+admin.pwd+'@localhost/unique',
         collection: 'sessions'
     })
 }))

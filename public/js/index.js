@@ -140,19 +140,19 @@ var vmUnique = new Vue({
             this.user.shopcar[shopcarId].state = this.user.shopcar[shopcarId].state== 1 ? 0 : 1;
         },
         checkAll: function(e) {
-            if ($($(e)[0].target).hasClass('button-checked')) {
-                $($(e)[0].target).removeClass('button-checked')
+            if ($(e.target).hasClass('button-checked')) {
+                $(e.target).removeClass('button-checked')
                 for (var i = this.user.shopcar.length - 1; i >= 0; i--) {
                     this.user.shopcar[i].state = 0
                 }
             } else {
-                $($(e)[0].target).addClass('button-checked')
+                $(e.target).addClass('button-checked')
                 for (var i = this.user.shopcar.length - 1; i >= 0; i--) {
                     this.user.shopcar[i].state = 1
                 }
             }
         },
-        shopcarBuy: function(e){
+        shopcarBuy: function(){
             $.router.load('#confirmOrder')
             this.orderDetail.wares = [];
             for (var i = this.user.shopcar.length - 1; i >= 0; i--) {
@@ -213,6 +213,27 @@ var vmUnique = new Vue({
             } else {
                 $.toast('请先登录')
             }
+        },
+        payAgain: function(e){
+            var orderId = $(e.target).data('orderId');
+            $.ajax({
+                type: 'post',
+                url: 'http://' + HOST + '/ware/pay/again',
+                data: {
+                    orderId: orderId
+                },
+                success: function(data) {
+                    pingpp.createPayment(data, function(result, err) {
+                        if (result == "success") {
+                            // 只有微信公众账号 wx_pub 支付成功的结果会在这里返回，其他的支付结果都会跳转到 extra 中对应的 URL。
+                        } else if (result == "fail") {
+                            // charge 不正确或者微信公众账号支付失败时会在此处返回
+                        } else if (result == "cancel") {
+                            // 微信公众账号支付取消支付
+                        }
+                    })
+                }
+            })
         },
         fastGetIdentify: function() {
             if ($('#fastGet-identify').val() == "获取验证码") {

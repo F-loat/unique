@@ -583,16 +583,16 @@
         </div>
         <div id="myOrders" class="page">
             <header class="bar bar-nav">
-                <a class="icon icon-left pull-left back"></a>
+                <a class="icon icon-left pull-left" href="#index"></a>
                 <a class="icon icon-refresh pull-right"></a>
                 <h1 class="title">我的订单</h1>
             </header>
             <div class="content">
                 <div class="content-inner">
                     <div class="buttons-tab">
-                        <a href="#oTab1" class="tab-link active button">全部</a>
-                        <a href="#oTab2" class="tab-link button">待付款</a>
-                        <a href="#oTab3" class="tab-link button">待发货</a>
+                        <a href="#oTab1" class="tab-link active button">待付款</a>
+                        <a href="#oTab2" class="tab-link button">待收货</a>
+                        <a href="#oTab3" class="tab-link button">已完成</a>
                     </div>
                     <div class="content-block">
                         <div class="tabs">
@@ -607,11 +607,11 @@
                                             <li class="o-order" v-for="order in user.orders" v-if="order.state==0">
                                                 <div class="o-wait">等待支付</div>
                                                 <div>
-                                                    <img src="img/cake1.jpg">
+                                                    <img v-bind:src="order.wares[0].info.img">
                                                     <div class="o-order-info">
                                                         <p>下单时间：{{order.orderDate.replace('T',' ').slice(0,19)}}</p>
                                                         <p>总价：￥{{order.fee}}</p>
-                                                        <div class="button button-warning">去支付</div>
+                                                        <div class="button button-warning" v-on:click="payAgain" data-order-id="{{order._id}}">去支付</div>
                                                     </div>
                                                 </div>
                                             </li>

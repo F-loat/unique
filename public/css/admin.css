@@ -44,6 +44,9 @@ header.bar .title,header .icon{
 }
 
 /*管理页面样式*/
+.my-panel-list {
+    background-color: #222426 !important
+}
 .my-panel-list a{
     display: block;
     width: 100%;

@@ -116,7 +116,7 @@ exports.pay = function(req, res) {
             subject: "优力克蛋糕",
             body: "蛋糕",
             extra: {
-                success_url: "http://" + host + "/#wareDetail",
+                success_url: "http://" + host + "/#myOrders",
                 cancel_url: "http://" + host + "/#confirmOrder"
             }
         }, function(err, charge) {
@@ -143,5 +143,43 @@ exports.pay = function(req, res) {
                 })
             })
     }
-
+}
+exports.payAgain = function(req, res){
+    var host = req.hostname;
+    var orderId = req.body.orderId;
+    Order.findOne({_id: orderId},function(err,order){
+        pingpp.charges.create({
+            order_no: orderId,
+            app: { id: "app_8uP0qDHKm1C4P0Ki" },
+            channel: order.payway == 1 ? 'alipay_wap' : 'wx_pub',
+            client_ip: "123.206.9.219",
+            amount: order.fee*100,
+            currency: "cny",
+            subject: "优力克蛋糕",
+            body: "蛋糕",
+            extra: {
+                success_url: "http://" + host + "/#myOrders",
+                cancel_url: "http://" + host + "/#myOrders"
+            }
+        }, function(err, charge) {
+            if (err) {
+                return console.log(err)
+            }
+            res.send(charge)
+        });
+    })
+}
+exports.paySucceeded = function(req, res){
+    var app = req.body.data.object.app;
+    var order_no = req.body.data.object.order_no;
+    if (app == "app_8uP0qDHKm1C4P0Ki") {
+        Order.update({order_no: order_no},{$set:{state: 1}},function(err,order){
+            if (err) {
+                return console.log(err)
+            }
+            res.send(200)
+        })
+    } else {
+        res.send(200)
+    }
 }

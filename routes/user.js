@@ -10,7 +10,6 @@ router.post('/login', User.login);
 router.post('/fastLogin/identify', User.identify);
 router.post('/fastLogin', User.fastLogin);
 router.get('/logout', User.logout);
-router.post('/order', User.order);
 router.post('/address/new', Filter.login, User.newAddress);
 router.post('/address/default', Filter.login, User.defaultAddress);
 router.post('/address/edit', Filter.login, User.editAddress);

@@ -163,7 +163,6 @@ exports.logout = function(req, res) {
     req.session.destroy();
     res.json({ "state": 1 })
 }
-exports.order = function(req, res) {}
 exports.newAddress = function(req, res) {
     var addressInfo = JSON.parse(req.body.addressInfo);
     Address.create({
