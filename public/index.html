@@ -142,6 +142,18 @@
                                 <h1 class="title">照片蛋糕</h1>
                             </header>
                             <div class="content">
+                                <div id="canvasWrap">
+                                    <canvas id="canvas">您的设备不支持canvas元素</canvas>
+                                </div>
+                                <div class="row">
+                                    <div class="col-50">
+                                        <input type="file" accept="image/*" v-on:change="drawImage">
+                                        <a href="#" id="photo-upload" class="button button-big button-warning">上传照片</a>
+                                    </div>
+                                    <div class="col-50">
+                                        <a href="#" id="photo-next" class="button button-big disabled">确定</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="tab4" class="tab">
@@ -317,6 +329,7 @@
                 <a class="tab-item tab-link" href="#tab4">
                     <span class="icon icon-cart"></span>
                     <span class="tab-label">购物车</span>
+                    <span class="badge" v-show="user.shopcar.length" v-text="user.shopcar.length"></span>
                 </a>
                 <a class="tab-item tab-link" href="#tab5">
                     <span class="icon icon-me"></span>
@@ -446,12 +459,12 @@
                         <p class="bewrite">/独一无二的蛋糕/</p>
                         <p class="bewrite">/献给独一无二 的你/</p>
                     </div>
-                    <div class="detail-dishes" v-if="wareDetail.type===9">
+                    <div class="detail-dishes" v-if="wareDetail.info.type==9">
                         <h6>请选择口味</h6>
                         <div>
-                            <div v-on:click="dishChange" class="dishTab active">奶油</div>
-                            <div v-on:click="dishChange" class="dishTab">抹茶</div>
-                            <div v-on:click="dishChange" class="dishTab">巧克力</div>
+                            <div v-on:click="dishChange" class="dishTab" v-bind:class="{'active': wareDetail.dish==='奶油'}">奶油</div>
+                            <div v-on:click="dishChange" class="dishTab" v-bind:class="{'active': wareDetail.dish==='抹茶'}">抹茶</div>
+                            <div v-on:click="dishChange" class="dishTab" v-bind:class="{'active': wareDetail.dish==='巧克力'}">巧克力</div>
                         </div>
                     </div>
                     <div class="detail-weight">
@@ -634,7 +647,7 @@
                                                     <div class="o-order-info">
                                                         <p>下单时间：{{order.orderDate.replace('T',' ').slice(0,19)}}</p>
                                                         <p>总价：￥{{order.fee}}</p>
-                                                        <div class="button button-dark">去看看</div>
+                                                        <div class="button button-dark">查看详情</div>
                                                     </div>
                                                 </div>
                                             </li>
@@ -696,7 +709,7 @@
         </div>
         <div id="newAddress" class="page">
             <header class="bar bar-nav">
-                <a class="icon icon-left pull-left" href="#myAddresses"> </a>
+                <a class="icon icon-left pull-left back"> </a>
                 <h1 class="title"> 添加地址 </h1>
             </header>
             <div class="content">

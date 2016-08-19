@@ -19,7 +19,7 @@ exports.info = function(req, res) {
         })
         .populate({
             path: 'shopcar',
-            select: 'info sum weight state',
+            select: 'info sum weight state dish img',
             populate: { path: 'info' }
         })
         .exec(function(err, user) {

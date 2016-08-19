@@ -56,6 +56,25 @@ var vmUnique = new Vue({
                         vmUnique.user.orders = data.orders ? data.orders : [];
                         vmUnique.user.shopcar = data.shopcar ? data.shopcar : [];
                         vmUnique.user.addresses = data.addresses ? data.addresses : [];
+                        for (var i = vmUnique.user.orders.length - 1; i >= 0; i--) {
+                            for (var j = vmUnique.user.orders[i].wares.length - 1; j >= 0; j--) {
+                                 if (vmUnique.user.orders[i].wares[j].dish) {
+                                    vmUnique.user.orders[i].wares[j].info = {};
+                                    vmUnique.user.orders[i].wares[j].info.img = vmUnique.user.orders[i].wares[j].img;
+                                    vmUnique.user.orders[i].wares[j].img = null;
+                                 }
+                             }
+                        }
+                        for (var i = vmUnique.user.shopcar.length - 1; i >= 0; i--) {
+                            if(vmUnique.user.shopcar[i].dish){
+                                vmUnique.user.shopcar[i].info = {};
+                                vmUnique.user.shopcar[i].info.img = vmUnique.user.shopcar[i].img;
+                                vmUnique.user.shopcar[i].info.name = "照片蛋糕";
+                                vmUnique.user.shopcar[i].info.nameEn = "picture cake";
+                                vmUnique.user.shopcar[i].info.price = "100";
+                                vmUnique.user.shopcar[i].img = null
+                            }
+                        }
                     }
                 }
             })
@@ -76,18 +95,36 @@ var vmUnique = new Vue({
         },
         addToShopcar: function() {
             if (this.user.nickname) {
-                if (this.wareDetail.info._id) {
+                if (this.wareDetail.info._id || this.wareDetail.dish) {
+                    var ware ={
+                            weight: this.wareDetail.weight
+                    }
+                    if (this.wareDetail.dish) {
+                        ware.img = this.wareDetail.info.img;
+                        ware.dish = this.wareDetail.dish;
+                    } else {
+                         ware.wareId = this.wareDetail.info._id
+                    }
                     $.ajax({
                         type: 'post',
                         url: 'http://' + HOST + '/ware/shopcar/add ',
                         dataType: 'json',
                         data: {
-                            wareId: vmUnique.wareDetail.info._id,
-                            weight: vmUnique.wareDetail.weight
+                            ware: JSON.stringify(ware)
                         },
                         success: function(data) {
                             if (data.state===1) {
-                                vmUnique.user.shopcar=data.shopcar
+                                vmUnique.user.shopcar=data.shopcar;
+                                for (var i = vmUnique.user.shopcar.length - 1; i >= 0; i--) {
+                                    if(vmUnique.user.shopcar[i].dish){
+                                        vmUnique.user.shopcar[i].info = {};
+                                        vmUnique.user.shopcar[i].info.img = vmUnique.user.shopcar[i].img;
+                                        vmUnique.user.shopcar[i].info.name = "照片蛋糕";
+                                        vmUnique.user.shopcar[i].info.nameEn = "picture cake";
+                                        vmUnique.user.shopcar[i].info.price = "100";
+                                        vmUnique.user.shopcar[i].img = null
+                                    }
+                                }
                                 $.toast('商品已添加至购物车');
                             } else {
                                 $.toast('数据同步出错');
@@ -107,7 +144,7 @@ var vmUnique = new Vue({
             if (this.user.shopcar[shopcarId].sum == 0) {
                 $.confirm("删除该订单？",
                     function() {
-                        vmUnique.syncShopcar(shopcarId);
+                        vmUnique.syncShopcarSum(shopcarId);
                         vmUnique.user.shopcar.splice(shopcarId, 1);
                         setTimeout(function() { $('#shopcar-list').scroller('refresh') }, 300);
                     },
@@ -116,10 +153,10 @@ var vmUnique = new Vue({
                     }
                 )
             } else {
-                vmUnique.syncShopcar(shopcarId);
+                vmUnique.syncShopcarSum(shopcarId);
             }
         },
-        syncShopcar: function (shopcarId) {
+        syncShopcarSum: function (shopcarId) {
             $.ajax({
                 type: 'post',
                 url: 'http://' + HOST + '/ware/shopcar/sum',
@@ -174,6 +211,58 @@ var vmUnique = new Vue({
             );
             $(".modal-text-input").val($('#order-message').text())
         },
+        drawImage: function(e){
+            var dpr = window.devicePixelRatio;
+            var canvas = document.getElementById("canvas");
+            var fullWidth = document.getElementById("canvasWrap").clientWidth * dpr;
+            var fullHeight = document.getElementById("canvasWrap").clientHeight * dpr;
+            canvas.style.width = fullWidth / dpr + "px";
+            canvas.style.height = fullHeight / dpr + "px";
+            canvas.width = fullWidth;
+            canvas.height = fullHeight;
+            context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            $('#photo-next').removeClass('disabled').addClass('button-success');
+            $('#photo-upload').addClass('disabled');
+            $('#photo-upload').text('换张照片');
+            var image = new Image();
+            var img = e.target.files['0'];
+            var reader = new FileReader();
+            reader.onload = function() {
+                var url = reader.result;
+                image.src = url;
+                canvas.height = image.height * fullWidth / image.width;
+                canvas.style.height = canvas.height / dpr + "px";
+                context.drawImage(image, 0, 0, fullWidth, canvas.height);
+                var cropper = new Cropper(document.getElementById('canvas'), {
+                    aspectRatio: 1 / 1,
+                    crop: function(e) {
+                        var x = e.detail.x / (fullWidth / image.width),
+                            y = e.detail.y / (fullWidth / image.width),
+                            width = e.detail.width / (fullWidth / image.width),
+                            height = e.detail.height / (fullWidth / image.width);
+                            canvas.height = fullWidth;
+                            canvas.style.height = fullWidth / dpr + "px";
+                            context.clearRect(0, 0, canvas.width, canvas.height);
+                            context.drawImage(image, x, y, width, height, 0, 0, fullWidth, fullWidth);
+                        $(document).one('click', '#photo-next', function() {
+                            cropper.destroy();
+                            $('#photo-upload').removeClass('disabled');
+                            $('#photo-next').text('下一步');
+                            $(document).one('click', '#photo-next', function() {
+                                $.router.load('#wareDetail');
+                                vmUnique.wareDetail.info.type = 9;
+                                vmUnique.wareDetail.info.img = canvas.toDataURL("image/jpeg",0.7);
+                                vmUnique.$set('wareDetail.dish', '奶油');
+                                window.localStorage.wareDetail = JSON.stringify(vmUnique.wareDetail).toString();
+                                window.localStorage.orderDetail = JSON.stringify([vmUnique.wareDetail]).toString();
+                            })
+                        });
+                    }
+                });
+            };
+            reader.readAsDataURL(img);
+        },
         pay: function() {
             if(this.user.nickname) {
                 if ($('#alipay').is(':checked')) {
@@ -181,18 +270,32 @@ var vmUnique = new Vue({
                 } else {
                     vmUnique.orderDetail.payway = 0
                 }
+                var addressId;
+                if ($('#address-id').length) {
+                    addressId = $('#address-id').data('addressId')
+                } else {
+                    return $.toast('请先添加地址');
+                }
                 var wares = [];
-                for (var i = 0; i < vmUnique.orderDetail.wares.length; i++) {
-                    wares.push({})
-                    wares[i].info = vmUnique.orderDetail.wares[i].info._id;
-                    wares[i].weight = vmUnique.orderDetail.wares[i].weight;
-                    wares[i].sum = vmUnique.orderDetail.wares[i].sum;
+                if (vmUnique.orderDetail.wares[0].info.img.slice(0,5) == "data:") {
+                        wares.push({})
+                        wares[0].weight = vmUnique.orderDetail.wares[0].weight;
+                        wares[0].dish = vmUnique.orderDetail.wares[0].dish;
+                        wares[0].img = vmUnique.orderDetail.wares[0].info.img;
+                        wares[0].sum = vmUnique.orderDetail.wares[0].sum;
+                } else {
+                    for (var i = 0; i < vmUnique.orderDetail.wares.length; i++) {
+                        wares.push({})
+                        wares[i].info = vmUnique.orderDetail.wares[i].info._id;
+                        wares[i].weight = vmUnique.orderDetail.wares[i].weight;
+                        wares[i].sum = vmUnique.orderDetail.wares[i].sum;
+                    }
                 }
                 $.ajax({
                     type: 'post',
                     url: 'http://' + HOST + '/ware/pay',
                     data: {
-                        addressId: $('#address-id').data('addressId'),
+                        addressId:  addressId,
                         msg: vmUnique.orderDetail.msg,
                         wares: JSON.stringify(wares),
                         sendTime: $('#datetime-picker').val(),
@@ -532,18 +635,23 @@ $(document).on("click", ".tab-link", function() {
 })
 
 $(function() {
+    //读取本地商品及订单详情
     if (!vmUnique.wareDetail.info) {
         vmUnique.wareDetail = window.localStorage.wareDetail?JSON.parse(window.localStorage.wareDetail):{};
     }
     vmUnique.orderDetail.wares = window.localStorage.orderDetail?JSON.parse(window.localStorage.orderDetail):[];
 
+     //下单界面时间选择器
     var date = new Date();
     $("#datetime-picker").datetimePicker({
         value: [date.getFullYear(), (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : "0" + (date.getMonth() + 1), date.getDate() > 9 ? date.getDate() : "0" + date.getDate(), '12', '30']
     });
+    //计算订单总价
     vmUnique.$set("orderDetail.price",0);
     for (var i = 0; i < vmUnique.orderDetail.wares.length; i++) {
         vmUnique.orderDetail.price += vmUnique.orderDetail.wares[i].sum*vmUnique.orderDetail.wares[i].weight*vmUnique.orderDetail.wares[i].info.price
     }
+    //刷新滚动条
     setTimeout(function() { $.refreshScroller()  }, 300);
+
 });

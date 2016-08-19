@@ -42,6 +42,9 @@ header.bar .title,header .icon{
 .dark-blue,.modal-button{
     color: #1975c8 !important;
 }
+.content{
+    background-color: #fff
+}
 
 /*管理页面样式*/
 .my-panel-list {

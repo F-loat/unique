@@ -16,6 +16,7 @@ var orderSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Ware'
         },
+        img: String,
         weight: Number,
         dish: String
     }],

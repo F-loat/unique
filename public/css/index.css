@@ -194,11 +194,31 @@ nav.bar {
     top: 10%;
 }
 
-/*照片定制界面样式*/
+/*照片蛋糕界面样式*/
 #tab3 .content{
     background-color: #fbfafa;
     bottom: 2.5rem
 }
+#canvasWrap{
+    margin-top: 16%
+}
+#tab3 .row{
+    position: absolute;
+    bottom: 3.2rem;
+    width: 92%;
+    margin-left: 2%
+}
+#tab3 .col-50{
+    position: relative;
+}
+#tab3 input{
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    z-index: 9
+}
+
 /*购物车界面样式*/
 #tab4>.content{
     bottom: 5rem

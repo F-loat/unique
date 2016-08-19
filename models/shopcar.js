@@ -12,6 +12,7 @@ var shopcarSchema = new mongoose.Schema({
     },
     weight: Number,
     dish: String,
+    img: String,
     state: {
         type: Number,
         default: 0
