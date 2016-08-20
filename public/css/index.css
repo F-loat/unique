@@ -17,6 +17,18 @@
     .row{
         margin-left: 0 !important
     }
+    #tab3 .row{
+        width: 98% !important
+    }
+}
+
+/*动画样式*/
+.fade-transition {
+    transition: all .5s ease;
+    opacity: 1;
+}
+.fade-enter, .fade-leave {
+    opacity: 0;
 }
 
 /*通用样式*/
@@ -53,10 +65,10 @@ header.bar .title,header .icon{
     font-weight: normal;
     font-style: normal;
 }
-
 .webFont{
     font-family: 'webFont'
 }
+
 /*主体背景色*/
 #index>.content {
     background-color: #fdfefe

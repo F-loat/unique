@@ -162,11 +162,11 @@
                                     <h1 class="title">购物车</h1>
                                 </header>
                                 <div class="content">
-                                    <div id="no-ware" v-if="!user.shopcar.length">
+                                    <div id="no-ware" v-if="!user.shopcar.length" transition="fade">
                                         <span class="icon icon-cart"></span>
                                         <h4>购物车空空如也</h4>
                                     </div>
-                                    <div v-else>
+                                    <div v-else transition="fade">
                                         <header class="bar bar-nav bar-sec">
                                             <span class="col-50">
                                                 <span class="icon icon-app"></span> 方形蜡烛
@@ -180,7 +180,7 @@
                                         <div id="shopcar-list" class="content" data-type="js">
                                             <div class="content-inner">
                                                 <ul class="order-list list-block media-list">
-                                                    <li v-for="ware in user.shopcar" data-shopcar-id="{{$index}}">
+                                                    <li v-for="ware in user.shopcar" data-shopcar-id="{{$index}}" transition="fade">
                                                         <label class="label-checkbox item-content">
                                                             <div class="item-media"><i class="icon icon-form-checkbox" v-bind:class="{'button-checked': ware.state}" v-on:click="check"></i></div>
                                                             <div class="item-media"><img v-bind:src="ware.info.img" /></div>
@@ -202,7 +202,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="buy-now" v-if="user.shopcar.length">
+                            <div id="buy-now" v-if="user.shopcar.length" transition="fade">
                                 <div class="list-block media-list pull-left">
                                     <label class="label-checkbox item-content">
                                         <div v-on:click="checkAll" class="item-media"><i class="icon icon-form-checkbox"></i></div>
@@ -622,7 +622,7 @@
                                                 <div>
                                                     <img v-bind:src="order.wares[0].info.img">
                                                     <div class="o-order-info">
-                                                        <p>下单时间：{{order.orderDate.replace('T',' ').slice(0,19)}}</p>
+                                                        <p>下单时间：{{order.orderDate}}</p>
                                                         <p>总价：￥{{order.fee}}</p>
                                                         <div class="button button-warning" v-on:click="payAgain" data-order-id="{{order._id}}">去支付</div>
                                                     </div>
@@ -645,7 +645,7 @@
                                                 <div>
                                                     <img src="img/cake1.jpg">
                                                     <div class="o-order-info">
-                                                        <p>下单时间：{{order.orderDate.replace('T',' ').slice(0,19)}}</p>
+                                                        <p>下单时间：{{order.orderDate}}</p>
                                                         <p>总价：￥{{order.fee}}</p>
                                                         <div class="button button-dark">查看详情</div>
                                                     </div>
@@ -668,7 +668,7 @@
                                                 <div>
                                                     <img src="img/cake1.jpg">
                                                     <div class="o-order-info">
-                                                        <p>下单时间：{{order.orderDate.replace('T',' ').slice(0,19)}}</p>
+                                                        <p>下单时间：{{order.orderDate}}</p>
                                                         <p>总价：￥{{order.fee}}</p>
                                                         <div class="button button-dark">去评价</div>
                                                     </div>
@@ -691,7 +691,7 @@
             <div class="content">
                 <div class="content-inner">
                     <ul>
-                        <li class="clearfix ready-address" v-on:click="defaultAddress" v-for="address in user.addresses" data-address-id="{{$index}}">
+                        <li class="clearfix ready-address" v-on:click="defaultAddress" v-for="address in user.addresses" data-address-id="{{$index}}" transition="fade">
                             <span class="pull-left address-detail">
                             <h4>{{address.phone}}（{{address.receiver}}）</h4>
                             <p>{{address.site}}</p>

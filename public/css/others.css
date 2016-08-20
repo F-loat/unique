@@ -317,7 +317,7 @@ html:not(.watch-active-state) .pay-way label.label-checkbox:active,
 }
 
 .o-order img{
-    width: 32%
+    width: 30%
 }
 
 .o-order .button{
@@ -326,9 +326,9 @@ html:not(.watch-active-state) .pay-way label.label-checkbox:active,
 }
 
 .o-order-info{
-    width: 68%;
+    width: 70%;
     float: right;
-    padding: 0 .6rem
+    padding-left: .6rem
 }
 
 .o-order-info p{

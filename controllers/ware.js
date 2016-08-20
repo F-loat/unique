@@ -181,6 +181,20 @@ exports.pay = function(req, res) {
                     }
                 })
             })
+        for (var i = wares.length - 1; i >= 0; i--) {
+            if(wares[i].shopcarId) {
+                Shopcar.remove({_id:wares[i].shopcarId},function(err){
+                    if (err) {
+                        return console.log(err)
+                    }
+                })
+                User.update({phone:req.session.phone},{ $pull: { shopcar: wares[i].shopcarId } },function(err) {
+                    if (err) {
+                        return console.log(err)
+                    }
+                })
+            }
+        }
     }
 }
 exports.payAgain = function(req, res) {

@@ -57,6 +57,12 @@ var vmUnique = new Vue({
                         vmUnique.user.shopcar = data.shopcar ? data.shopcar : [];
                         vmUnique.user.addresses = data.addresses ? data.addresses : [];
                         for (var i = vmUnique.user.orders.length - 1; i >= 0; i--) {
+                            var date1 = new Date(vmUnique.user.orders[i].orderDate);
+                            vmUnique.user.orders[i].orderDate = date1.toLocaleString();
+                            var date2 = new Date(vmUnique.user.orders[i].receive);
+                            vmUnique.user.orders[i].receive = date2.toLocaleString();
+                        }
+                        for (var i = vmUnique.user.orders.length - 1; i >= 0; i--) {
                             for (var j = vmUnique.user.orders[i].wares.length - 1; j >= 0; j--) {
                                  if (vmUnique.user.orders[i].wares[j].dish) {
                                     vmUnique.user.orders[i].wares[j].info = {};
@@ -99,7 +105,7 @@ var vmUnique = new Vue({
                     var ware ={
                             weight: this.wareDetail.weight
                     }
-                    if (this.wareDetail.dish) {
+                    if (this.wareDetail.info.type==9) {
                         ware.img = this.wareDetail.info.img;
                         ware.dish = this.wareDetail.dish;
                     } else {
@@ -190,12 +196,18 @@ var vmUnique = new Vue({
             }
         },
         shopcarBuy: function(){
-            $.router.load('#confirmOrder')
             this.orderDetail.wares = [];
             for (var i = this.user.shopcar.length - 1; i >= 0; i--) {
-                this.orderDetail.wares.push(this.user.shopcar[i])
+                if (this.user.shopcar[i].state==1) {
+                    this.orderDetail.wares.push(this.user.shopcar[i])
+                }
             }
-            window.localStorage.orderDetail = JSON.stringify(this.orderDetail.wares).toString();
+            if (this.orderDetail.wares.length) {
+                $.router.load('#confirmOrder');
+                window.localStorage.orderDetail = JSON.stringify(this.orderDetail.wares).toString();
+            } else {
+                return $.toast('请选择要购买的商品')
+            }
         },
         orderMessage: function() {
             $.prompt('您有什么要求呢？',
@@ -229,8 +241,7 @@ var vmUnique = new Vue({
             var img = e.target.files['0'];
             var reader = new FileReader();
             reader.onload = function() {
-                var url = reader.result;
-                image.src = url;
+                image.src = reader.result;
                 canvas.height = image.height * fullWidth / image.width;
                 canvas.style.height = canvas.height / dpr + "px";
                 context.drawImage(image, 0, 0, fullWidth, canvas.height);
@@ -252,6 +263,8 @@ var vmUnique = new Vue({
                             $(document).one('click', '#photo-next', function() {
                                 $.router.load('#wareDetail');
                                 vmUnique.wareDetail.info.type = 9;
+                                vmUnique.wareDetail.info.name = "照片蛋糕";
+                                vmUnique.wareDetail.info.nameEn = "picture cake";
                                 vmUnique.wareDetail.info.img = canvas.toDataURL("image/jpeg",0.7);
                                 vmUnique.$set('wareDetail.dish', '奶油');
                                 window.localStorage.wareDetail = JSON.stringify(vmUnique.wareDetail).toString();
@@ -283,12 +296,18 @@ var vmUnique = new Vue({
                         wares[0].dish = vmUnique.orderDetail.wares[0].dish;
                         wares[0].img = vmUnique.orderDetail.wares[0].info.img;
                         wares[0].sum = vmUnique.orderDetail.wares[0].sum;
+                        if (vmUnique.orderDetail.wares[i].state) {
+                            wares[i].shopcarId = vmUnique.orderDetail.wares[i]._id
+                        }
                 } else {
                     for (var i = 0; i < vmUnique.orderDetail.wares.length; i++) {
                         wares.push({})
                         wares[i].info = vmUnique.orderDetail.wares[i].info._id;
                         wares[i].weight = vmUnique.orderDetail.wares[i].weight;
                         wares[i].sum = vmUnique.orderDetail.wares[i].sum;
+                        if (vmUnique.orderDetail.wares[i].state) {
+                            wares[i].shopcarId = vmUnique.orderDetail.wares[i]._id
+                        }
                     }
                 }
                 $.ajax({
@@ -549,7 +568,6 @@ var vmUnique = new Vue({
                     site: $("#address-site").val(),
                     state: this.user.addresses.length === 0 ? 1 : 0
                 }
-                this.user.addresses.push(newAddress);
                 $.ajax({
                     type: 'post',
                     url: 'http://' + HOST + '/user/address/new',
@@ -560,11 +578,13 @@ var vmUnique = new Vue({
                     success: function(data) {
                         if (data.state == 0) {
                             $.toast('数据同步失败，请稍后再试');
+                        } else {
+                            vmUnique.user.addresses.push(data.address);
+                            $.toast('地址添加成功');
+                            $.router.back();
                         }
                     }
                 })
-                $.toast('地址添加成功');
-                $.router.load("#myAddresses");
             }
         },
         defaultAddress: function(e) {
@@ -621,7 +641,9 @@ var vmUnique = new Vue({
 $(document).on("pageAnimationStart", function(e, pageId) {
     setTimeout(function() { $.refreshScroller()  }, 300);
     if (pageId = "confirmOrder") {
-        vmUnique.orderDetail.wares = [vmUnique.wareDetail];
+        if (!vmUnique.orderDetail.wares[0].state) {
+            vmUnique.orderDetail.wares = [vmUnique.wareDetail];
+        }
         vmUnique.orderDetail.price = 0;
         for (var i = 0; i < vmUnique.orderDetail.wares.length; i++) {
             vmUnique.orderDetail.price += vmUnique.orderDetail.wares[i].sum*vmUnique.orderDetail.wares[i].weight*vmUnique.orderDetail.wares[i].info.price

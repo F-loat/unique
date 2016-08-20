@@ -45,6 +45,16 @@ header.bar .title,header .icon{
 .content{
     background-color: #fff
 }
+/*动画样式*/
+.add-transition {
+    transition: all .5s ease;
+    opacity: 1;
+    height: 2.15rem;
+}
+.add-enter, .add-leave {
+    opacity: 0;
+    height: 0;
+}
 
 /*管理页面样式*/
 .my-panel-list {
@@ -55,4 +65,12 @@ header.bar .title,header .icon{
     width: 100%;
     padding-right: 16%;
     text-align: center;
+}
+
+.description .item-input input{
+    width: 80%;
+    display: inline;
+}
+.description .item-input span{
+    font-size: 1.4rem
 }

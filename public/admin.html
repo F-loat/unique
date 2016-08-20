@@ -42,11 +42,11 @@
                                         <div class="item-inner">
                                             <div class="item-title label">类别：</div>
                                             <div class="item-input">
-                                                <select>
-                                                    <option>甜点</option>
-                                                    <option>方形蛋糕</option>
-                                                    <option>圆形蛋糕</option>
-                                                    <option>鲜花</option>
+                                                <select v-model="ware.type">
+                                                    <option value="2">甜点</option>
+                                                    <option value="0" selected>方形蛋糕</option>
+                                                    <option value="1">圆形蛋糕</option>
+                                                    <option value="3">鲜花</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -58,7 +58,7 @@
                                         <div class="item-inner">
                                             <div class="item-title label">品名：</div>
                                             <div class="item-input">
-                                                <input type="text" placeholder="商品名称">
+                                                <input type="text" placeholder="商品名称" v-model="ware.name">
                                             </div>
                                         </div>
                                     </div>
@@ -69,18 +69,20 @@
                                         <div class="item-inner">
                                             <div class="item-title label">英文名：</div>
                                             <div class="item-input">
-                                                <input type="text" placeholder="商品英文名称">
+                                                <input type="text" placeholder="商品英文名称" v-model="ware.nameEn">
                                             </div>
                                         </div>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="description" v-for="description in ware.descriptions" transition="add" stagger="100">
                                     <div class="item-content">
                                         <div class="item-media"><i class="icon icon-form-email"></i></div>
                                         <div class="item-inner">
                                             <div class="item-title label">商品描述：</div>
                                             <div class="item-input">
-                                                <input type="text" placeholder="商品信息介绍">
+                                                <input type="text" placeholder="商品信息介绍" v-model="description.text">
+                                                <span v-if="$index+1==ware.descriptions.length" class="icon" v-on:click="addWare()">+</span>
+                                                <span v-else class="icon" v-on:click="minusWare($index)">-</span>
                                             </div>
                                         </div>
                                     </div>
@@ -91,7 +93,7 @@
                                         <div class="item-inner">
                                             <div class="item-title label">单价：</div>
                                             <div class="item-input">
-                                                <input type="number" placeholder="单位商品价格" >
+                                                <input type="number" placeholder="单位商品价格" v-model="ware.price">
                                             </div>
                                         </div>
                                     </div>
@@ -102,7 +104,7 @@
                                         <div class="item-inner">
                                             <div class="item-title label">商品图：</div>
                                             <div class="item-input">
-                                                <input type="file" accept="image/*" >
+                                                <input type="file" accept="image/*" v-model="ware.img">
                                             </div>
                                         </div>
                                     </div>

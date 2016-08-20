@@ -176,7 +176,7 @@ exports.newAddress = function(req, res) {
             if (err) {
                 return res.json({ "state": 0, "err": err })
             }
-            res.json({ "state": 1 })
+            res.json({ "state": 1 ,"address": address})
         })
     })
 }
