@@ -1,0 +1,557 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no')
+    title 优力克
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black')
+    meta(name='format-detection', content='telephone=no')
+    link(rel='shortcut icon', type='image/x-icon', href='favicon.ico')
+    link(rel='bookmark', type='image/x-icon', href='favicon.ico')
+    link(rel='stylesheet', type='text/css', href='css/sm.min.css')
+    link(rel='stylesheet', type='text/css', href='css/cropper.min.css')
+    link(rel='stylesheet', type='text/css', href='css/index.css')
+    link(rel='stylesheet', type='text/css', href='css/others.css')
+  body
+    #main.page-group
+      #index.page.page-current
+        .content
+          .content-block
+            #main-tabs.tabs
+              #tab1.tab.active
+                .content.webFont
+                  a#tab1-turn1.tab-link(href='#tab2')
+                    span 鲜花
+                  a#tab1-turn2.tab-link(href='#tab3')
+                    span 定制
+                  a#tab1-turn3.tab-link(href='#tab2')
+                    span 甜点
+                  a#tab1-turn4.tab-link(href='#tab2')
+                    span 蛋糕
+              #tab2.tab
+                .content
+                  header.buttons-tab
+                    a.tab-link.button(href='#mTab1') 甜点
+                    a.tab-link.button.active(href='#mTab2') 方形蛋糕
+                    a.tab-link.button(href='#mTab3') 圆形蛋糕
+                    a.tab-link.button(href='#mTab4') 鲜花
+                  .content
+                    .tabs
+                      #mTab1.tab
+                        #mousse-list.content
+                          .content-inner
+                            ul.clearfix
+                              li.ware-wrap(v-for='ware in wares', v-if='ware.type===2')
+                                a(href='#wareDetail', data-id='{{$index}}', v-on:click='getWareId')
+                                  img(v-bind:src='ware.img')
+                                .ware-detail
+                                  div
+                                    h5 {{ware.name}}
+                                    p.webFont {{ware.nameEn}}
+                                  .ware-buy
+                                    span.icon.icon-cart.pull-right
+                                    p ￥{{ware.price}}/磅
+                      #mTab2.tab.active
+                        #cake-f-list.content(data-type='js')
+                          .content-inner
+                            ul.clearfix
+                              li.ware-wrap(v-for='ware in wares', v-if='ware.type===0')
+                                a(href='#wareDetail', data-id='{{$index}}', v-on:click='getWareId')
+                                  img(v-bind:src='ware.img')
+                                .ware-detail
+                                  div
+                                    h5 {{ware.name}}
+                                    p.webFont {{ware.nameEn}}
+                                  .ware-buy
+                                    span.icon.icon-cart.pull-right
+                                    p ￥{{ware.price}}/磅
+                      #mTab3.tab
+                        #cake-y-list.content
+                          .content-inner
+                            ul.clearfix
+                              li.ware-wrap(v-for='ware in wares', v-if='ware.type===1')
+                                a(href='#wareDetail', data-id='{{$index}}', v-on:click='getWareId')
+                                  img(v-bind:src='ware.img')
+                                .ware-detail
+                                  div
+                                    h5 {{ware.name}}
+                                    p.webFont {{ware.nameEn}}
+                                  .ware-buy
+                                    span.icon.icon-cart.pull-right
+                                    p ￥{{ware.price}}/磅
+                      #mTab4.tab
+                        #flower-list.content
+                          .content-inner
+                            ul.clearfix
+                              li.ware-wrap(v-for='ware in wares', v-if='ware.type===3')
+                                a(href='#wareDetail', data-id='{{$index}}', v-on:click='getWareId')
+                                  img(v-bind:src='ware.img')
+                                .ware-detail
+                                  div
+                                    h5 {{ware.name}}
+                                    p.webFont {{ware.nameEn}}
+                                  .ware-buy
+                                    span.icon.icon-cart.pull-right
+                                    p ￥{{ware.price}}/磅
+              #tab3.tab
+                header.bar.bar-nav
+                  h1.title 照片蛋糕
+                .content
+                  #canvasWrap
+                    canvas#canvas 您的设备不支持canvas元素
+                  .row
+                    .col-50
+                      input(type='file', accept='image/*', v-on:change='drawImage')
+                      a#photo-upload.button.button-big.button-warning(href='#') 上传照片
+                    .col-50
+                      a#photo-next.button.button-big.disabled(href='#') 确定
+              #tab4.tab
+                .content
+                  header.bar.bar-nav
+                    h1.title 购物车
+                  .content
+                    #no-ware(v-if='!user.shopcar.length', transition='fade')
+                      span.icon.icon-cart
+                      h4 购物车空空如也
+                    div(v-else='', transition='fade')
+                      header.bar.bar-nav.bar-sec
+                        span.col-50
+                          span.icon.icon-app
+                          |  方形蜡烛
+                          span.icon.icon-check
+                        span.col-50
+                          span.icon.icon-computer
+                          |  餐具套餐
+                          span.icon.icon-check
+                      #shopcar-list.content(data-type='js')
+                        .content-inner
+                          ul.order-list.list-block.media-list
+                            li(v-for='ware in user.shopcar', data-shopcar-id='{{$index}}', transition='fade')
+                              label.label-checkbox.item-content
+                                .item-media
+                                  i.icon.icon-form-checkbox(v-bind:class="{'button-checked': ware.state}", v-on:click='check')
+                                .item-media
+                                  img(v-bind:src='ware.info.img')
+                                .item-inner
+                                  .item-title {{ware.info.nameEn}}
+                                  .item-subtitle {{ware.info.name}}
+                                  .item-subtitle 重量：{{ware.weight}}磅
+                                  .item-text.pull-left ￥{{ware.info.price*ware.sum*ware.weight}}
+                                  .pull-right(data-shopcar-id='{{$index}}')
+                                    span.icon.icon-down(v-on:click='sumChange(+1,$event)')
+                                    |  {{ware.sum}}
+                                    span.icon.icon-up(v-on:click='sumChange(-1,$event)')
+                #buy-now(v-if='user.shopcar.length', transition='fade')
+                  .list-block.media-list.pull-left
+                    label.label-checkbox.item-content
+                      .item-media(v-on:click='checkAll')
+                        i.icon.icon-form-checkbox
+                      .item-inner
+                        .item-title.pull-left 全选
+                        .pull-right ￥198
+                  .order(v-on:click='shopcarBuy') 购买
+              #tab5.tab
+                header.bar.bar-nav
+                  img(src='img/cake1.jpg')
+                  .webFont(v-if='!user.nickname')
+                    a(href='#fastLoginPage') 登录/注册
+                  div(v-else='')
+                    | {{user.nickname}}
+                    span#logout(v-on:click='logout') [注销]
+                .content
+                  .list-block
+                    ul
+                      li.item-content.item-link
+                        a(href='#myOrders')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-edit
+                              i 我的订单
+                      li.item-content.item-link
+                        a(href='#myAddresses')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-card
+                              i 收货地址
+                      li.item-content.item-link
+                        a(href='#myCoupons')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-code
+                              i 我的优惠券
+                      li.item-content.item-link
+                        a(href='#fedBack')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-emoji
+                              i 意见反馈
+                      li.item-content.item-link
+                        a(href='#aboutUs')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-friends
+                              i 关于我们
+                      li.item-content.item-link
+                        a(href='#userAgreement')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-app
+                              i 用户使用协议
+                      li.item-content.item-link(v-if='user.type===9')
+                        a.external(href='admin.html')
+                          .item-inner
+                            .item-title
+                              i.icon.icon-settings
+                              i 后台管理
+                    #Tel
+                      a.call(href='tel:15822922123')
+                        span.icon.icon-phone
+                        span 客服电话
+                        span 15822922123
+        nav.bar.bar-tab
+          a.tab-item.tab-link.active(href='#tab1')
+            span.icon.icon-home
+            span.tab-label 首页
+          a.tab-item.tab-link(href='#tab2')
+            span.icon.icon-gift
+            span.tab-label 分类列表
+          a.tab-item.tab-link(href='#tab3')
+            span.icon.icon-picture
+            span.tab-label 照片蛋糕
+          a.tab-item.tab-link(href='#tab4')
+            span.icon.icon-cart
+            span.tab-label 购物车
+            span.badge(v-show='user.shopcar.length', v-text='user.shopcar.length')
+          a.tab-item.tab-link(href='#tab5')
+            span.icon.icon-me
+            span.tab-label 我
+      #fastLoginPage.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 快速登录
+        .content
+          .content-inner
+            ul
+              li.address.list-block
+                .item-inner
+                  .item-title.label 手机号：
+                  .item-input
+                    input#fastLog-phone.input(type='number', placeholder='输入您的手机号')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 验证码：
+                  .item-input
+                    input#fastLog-identify.input.pull-left(type='number', placeholder='请输入验证码')
+                    input#fastGet-identify.pull-right(v-on:click='fastGetIdentify', type='button', value='获取验证码')
+            #fastLogin-now(v-on:click='fastLogin') 快速登录
+            a.signin-turn.pull-right(href='#loginPage') 账号密码登录
+      #registPage.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 注册
+        .content
+          .content-inner
+            ul
+              li.address.list-block
+                .item-inner
+                  .item-title.label 手机号：
+                  .item-input
+                    input#reg-phone.input(type='number', placeholder='请输入您的手机号')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 密码：
+                  .item-input
+                    input#reg-password.input(type='password', placeholder='请输入密码')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 确认密码：
+                  .item-input
+                    input#reg-pswagain.input(type='password', placeholder='请再次输入密码')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 验证码：
+                  .item-input
+                    input#reg-identify.input.pull-left(type='number', placeholder='请输入验证码')
+                    input#get-identify.pull-right(v-on:click='getIdentify', type='button', value='获取验证码')
+            #regist-now(v-on:click='regist') 注册 
+            a.signin-turn.pull-right(href='#loginPage') 已有账号？去登陆~
+      #loginPage.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 登录
+        .content
+          .content-inner
+            ul
+              li.address.list-block
+                .item-inner
+                  .item-title.label 手机号：
+                  .item-input
+                    input#log-phone.input(type='number', placeholder='输入您的手机号')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 密码：
+                  .item-input
+                    input#log-password.input(type='password', placeholder='输入登录密码')
+            #login-now(v-on:click='login') 登录
+            a.signin-turn.pull-right(href='#registPage') 还没有账号？去注册~
+      #wareDetail.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left(href='#index')
+          h1.title {{wareDetail.info.name}}
+        .content
+          .content-inner
+            .detail-img
+              img(v-bind:src='wareDetail.info.img')
+              h5 {{wareDetail.info.name}}
+              h6.webFont {{wareDetail.info.nameEn}}
+              p.bewrite /独一无二的蛋糕/
+              p.bewrite /献给独一无二 的你/
+            .detail-dishes(v-if='wareDetail.info.type==9')
+              h6 请选择口味
+              div
+                .dishTab(v-on:click='dishChange', v-bind:class="{'active': wareDetail.dish==='奶油'}") 奶油
+                .dishTab(v-on:click='dishChange', v-bind:class="{'active': wareDetail.dish==='抹茶'}") 抹茶
+                .dishTab(v-on:click='dishChange', v-bind:class="{'active': wareDetail.dish==='巧克力'}") 巧克力
+            .detail-weight
+              h6 请选择重量
+              div
+                .weightTab(v-on:click='weightChange', v-bind:class="{'active': wareDetail.weight===1}") 1.0磅
+                .weightTab(v-on:click='weightChange', v-bind:class="{'active': wareDetail.weight===1.5}") 1.5磅
+                .weightTab(v-on:click='weightChange', v-bind:class="{'active': wareDetail.weight===2}") 2.0磅
+                .weightTab(v-on:click='weightChange', v-bind:class="{'active': wareDetail.weight===2.5}") 2.5磅
+            .detail-detail
+              div
+                span.icon.icon-friends
+                | 14*14cm
+              div
+                span.icon.icon-friends
+                | 适合7~8人分享
+              div
+                span.icon.icon-friends
+                | 含10套餐具
+              div
+                span.icon.icon-friends
+                | 需提前8小时预定
+            .detail-notice
+              h5 保鲜条件
+              p 0-4℃保藏12小时，5℃时使用最佳。
+              p 蛋糕在收到后2-3小时内食用最佳。
+              h5 配送说明
+              p 暂且只限天津地区配送服务
+            .detail-phone
+              | 客服电话 15822922123
+        #detail-handle
+          #detail-price ￥{{wareDetail.info.price}}/磅
+          #detail-shopcar(v-on:click='addToShopcar') 加入购物车
+          #detail-buy
+            a(href='#confirmOrder') 立即购买
+      #confirmOrder.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          a.icon.icon-home.pull-right(href='#index')
+          h1.title 订单确认
+        .content
+          .content-inner
+            header.address.bar.bar-nav.bar-sec.row
+              div
+                a(href='#myAddresses', v-if='user.addresses.length==0') 选择收货地址
+                a#address-id(href='#myAddresses', v-else='', v-for='address in user.addresses', data-address-id='{{address._id}}', v-if='address.state==1') {{address.site}}
+            .order-list-wrap
+              .content-inner
+                ul.order-list.list-block.media-list
+                  li(v-for='ware in orderDetail.wares')
+                    label.label-checkbox.item-content
+                      .item-media
+                        img(v-bind:src='ware.info.img')
+                      .item-inner
+                        .item-title {{ware.info.nameEn}}
+                        .item-subtitle {{ware.info.name}}
+                        .item-subtitle 规格：{{ware.weight}}
+                        .item-text.pull-left ￥{{ware.info.price}}/磅
+                .order-about.list-block
+                  ul
+                    li.item-content.item-link
+                      .item-inner
+                        i 送货时间
+                        span
+                          input#datetime-picker(type='text')
+                    li.item-content.item-link
+                      .item-inner
+                        i 优惠券
+                        span 0张可用
+                    li.item-content.item-link
+                      .item-inner
+                        i 订单留言
+                        span#order-message(v-on:click='orderMessage') 请填写您对商品的特殊要求
+                  .distributionFee 配送费￥10.00
+                  div
+                    .pay-way-title 支付方式
+                    ul.pay-way
+                      li
+                        label.label-checkbox.item-content
+                          input#alipay(type='radio', name='my-radio', checked='checked')
+                          .item-media
+                            i.icon.icon-form-checkbox
+                          .item-inner
+                            .item-title-row
+                              .item-title 支付宝
+                      li
+                        label.label-checkbox.item-content
+                          input(type='radio', name='my-radio')
+                          .item-media
+                            i.icon.icon-form-checkbox
+                          .item-inner
+                            .item-title-row
+                              .item-title 微信支付
+          #order-now
+            .list-block.media-list.pull-left
+              label.label-checkbox.item-content
+                .item-inner
+                  .pull-right 共￥{{orderDetail.price}}
+            #pay.order(v-on:click='pay') 下单
+      #myOrders.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left(href='#index')
+          a.icon.icon-refresh.pull-right
+          h1.title 我的订单
+        .content
+          .content-inner
+            .buttons-tab
+              a.tab-link.active.button(href='#oTab1') 待付款
+              a.tab-link.button(href='#oTab2') 待收货
+              a.tab-link.button(href='#oTab3') 已完成
+            .content-block
+              .tabs
+                #oTab1.tab.active
+                  .content-block
+                    .no-order(v-if='!user.orders.length')
+                      p 暂无相关订单
+                      p
+                        a(v-on:click='goShopping') 去逛逛~
+                    div(v-else='')
+                      ul
+                        li.o-order(v-for='order in user.orders', v-if='order.state==0')
+                          .o-wait 等待支付
+                          div
+                            img(v-bind:src='order.wares[0].info.img')
+                            .o-order-info
+                              p 下单时间：{{order.orderDate}}
+                              p 总价：￥{{order.fee}}
+                              .button.button-warning(v-on:click='payAgain', data-order-id='{{order._id}}') 去支付
+                #oTab2.tab
+                  .content-block
+                    .no-order(v-if='!user.orders.length')
+                      p 暂无相关订单
+                      p
+                        a(v-on:click='goShopping') 去逛逛~
+                    div(v-else='')
+                      ul
+                        li.o-order(v-for='order in user.orders', v-if='order.state==1')
+                          .o-wait 等待配送
+                          div
+                            img(src='img/cake1.jpg')
+                            .o-order-info
+                              p 下单时间：{{order.orderDate}}
+                              p 总价：￥{{order.fee}}
+                              .button.button-dark 查看详情
+                #oTab3.tab
+                  .content-block
+                    .no-order(v-if='!user.orders.length')
+                      p 暂无相关订单
+                      p
+                        a(v-on:click='goShopping') 去逛逛~
+                    div(v-else='')
+                      ul
+                        li.o-order(v-for='order in user.orders', v-if='order.state==2')
+                          div 订单已完成
+                          div
+                            img(src='img/cake1.jpg')
+                            .o-order-info
+                              p 下单时间：{{order.orderDate}}
+                              p 总价：￥{{order.fee}}
+                              .button.button-dark 去评价
+      #myAddresses.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 收货地址
+        .content
+          .content-inner
+            ul
+              li.clearfix.ready-address(v-on:click='defaultAddress', v-for='address in user.addresses', data-address-id='{{$index}}', transition='fade')
+                span.pull-left.address-detail
+                  h4 {{address.phone}}（{{address.receiver}}）
+                  p {{address.site}}
+                .pull-right.address-operation
+                  span.address-edit.icon.icon-edit(v-on:click='editAddress') 编辑
+                  span.address-delete.icon.icon-remove(v-on:click='deleteAddress') 删除
+                span.badge.pull-right(v-if='address.state==1') 默认
+            a.add(href='#newAddress') 新增
+      #newAddress.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back  
+          h1.title  添加地址 
+        .content
+          .content-inner
+            ul
+              li.address.list-block
+                .item-inner
+                  .item-title.label 姓名：
+                  .item-input
+                    input#address-receiver.input(type='text', placeholder='收货人姓名')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 手机：
+                  .item-input
+                    input#address-phone.input(type='number', placeholder='收货人手机号')
+              li.address.list-block
+                .item-inner
+                  .item-title.label 地址：
+                  .item-input
+                    input#address-site.input(type='text', placeholder='路名/小区/楼号/门牌号')
+            a.add(v-on:click='newAddress') 新增
+      #myCoupons.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          a.icon.icon-refresh.pull-right
+          h1.title 我的优惠券
+        .content
+          #no-coupon
+            p 暂无可用优惠券
+            p
+              a 查看过期优惠券
+      #fedBack.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 用户反馈
+        .content
+          .item-content
+            .item-inner
+              .item-input
+                textarea(placeholder='请留下您对商品货品或平台的建议或意见，我们会努力改进')
+          #fed-submit
+            p
+              a 提交
+      #aboutUs.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 关于我们
+        .content
+          p
+            | 我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们我们
+      #userAgreement.page
+        header.bar.bar-nav
+          a.icon.icon-left.pull-left.back
+          h1.title 用户使用协议
+        .content
+          p
+            | 协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议协议
+    script(type='text/javascript', src='js/zepto.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/sm.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/sm-city-picker.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/vue.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/md5.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/pingpp.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/cropper.min.js', charset='utf-8')
+    script(type='text/javascript', src='js/index.js', charset='utf-8')
