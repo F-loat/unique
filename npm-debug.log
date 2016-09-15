@@ -18,8 +18,8 @@
 9 verbose stack     at maybeClose (internal/child_process.js:827:16)
 9 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
 10 verbose pkgid unique@0.5.0
-11 verbose cwd /mnt/c/Users/F-loat/Desktop/unique-server
-12 error Linux 3.4.0+
+11 verbose cwd /media/f-loat/Windows/Users/F-loat/Desktop/unique-server
+12 error Linux 4.4.0-36-generic
 13 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
 14 error node v4.4.7
 15 error npm  v2.15.8
