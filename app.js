@@ -35,7 +35,7 @@ app.all('*', function(req, res, next) {
     next();  
 });  
 
-app.use('/user', require('./routes/user'));
-app.use('/ware', require('./routes/ware'));
+app.use('request/user', require('./routes/user'));
+app.use('request/ware', require('./routes/ware'));
 
 module.exports = app;
