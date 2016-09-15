@@ -22,5 +22,9 @@
     "mongoose": "^4.5.4",
     "pingpp": "^2.0.8",
     "request": "^2.74.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/F-loat/unique.git"
   }
 }

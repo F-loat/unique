@@ -9,9 +9,17 @@ var Order = require('../models/order');
 var User = require('../models/user');
 var Shopcar = require('../models/shopcar');
 
-//数据
-exports.wares = function(req, res) {
+exports.wareInfo = function(req, res) {
+    Ware.findOne({ _id: req.params.wareId },function(err, ware) {
+        ware.img = 'http://cakeees.top/' + ware.img
+        return res.send(ware)
+    })
+}
+exports.waresInfo = function(req, res) {
     Ware.find(function(err, wares) {
+        wares.map((ware) => {
+            return ware.img = 'http://cakeees.top/' + ware.img
+        })
         return res.send(wares)
     })
 }

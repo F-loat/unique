@@ -3,7 +3,8 @@ var router = express.Router();
 var Filter = require('../controllers/filter');
 var Ware = require('../controllers/ware');
 
-router.get('/', Ware.wares);
+router.get('/:wareId', Ware.wareInfo);
+router.get('/', Ware.waresInfo);
 router.post('/shopcar/add', Filter.login, Ware.addToShopcar);
 router.post('/shopcar/sum', Filter.login, Ware.shopcarSumChange);
 router.post('/pay', Filter.login, Ware.pay);
