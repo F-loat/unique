@@ -8,7 +8,7 @@ var Address = require('../models/address');
 //数据
 exports.info = function(req, res) {
     User
-        .findOne({ phone: req.session.phone })
+        .findOne({ phone: req.session.phone }, '-_id nickname addresses orders shopcar type')
         .populate({
             path: 'addresses'
         })
@@ -24,16 +24,9 @@ exports.info = function(req, res) {
         })
         .exec(function(err, user) {
             if (user) {
-                res.json({
-                    "state": 1,
-                    "nickname": user.nickname,
-                    "shopcar": user.shopcar,
-                    "addresses": user.addresses,
-                    "orders": user.orders,
-                    "type": user.type
-                })
+                res.send(user)
             } else {
-                res.json({ "state": 0 });
+                res.status(404)
             }
         })
 }
@@ -86,6 +79,27 @@ exports.identify = function(req, res) {
         }
     );
 }
+exports.fastLogin = function(req, res) {
+    var phone = req.body.phone,
+        identify = req.body.identify;
+    User.findOne({ phone: phone }, function(err, user) {
+        if (user) {
+            if ((Date.now() - user.identifyDate) > 30 * 60 * 1000) {
+                res.json({ "state": 0, "err": "验证码超时,请重新获取" });
+            } else {
+                if (identify == user.identify) {
+                    req.session.phone = user.phone;
+                    req.session.type = user.type;
+                    res.json({ "state": 1 })
+                } else {
+                    res.json({ "state": 0, "err": "验证码输入错误" })
+                }
+            }
+        } else {
+            res.json({ "state": 0, "err": "请先获取验证码" })
+        }
+    })
+}
 exports.regist = function(req, res) {
     var phone = req.body.phone,
         password = req.body.password,
@@ -135,27 +149,6 @@ exports.login = function(req, res) {
             }
         } else {
             res.json({ "state": 0, "err": "该手机号尚未注册，请注册后登录" })
-        }
-    })
-}
-exports.fastLogin = function(req, res) {
-    var phone = req.body.phone,
-        identify = req.body.identify;
-    User.findOne({ phone: phone }, function(err, user) {
-        if (user) {
-            if ((Date.now() - user.identifyDate) > 30 * 60 * 1000) {
-                res.json({ "state": 0, "err": "验证码超时,请重新获取" });
-            } else {
-                if (identify == user.identify) {
-                    req.session.phone = user.phone;
-                    req.session.type = user.type;
-                    res.json({ "state": 1 })
-                } else {
-                    res.json({ "state": 0, "err": "验证码输入错误" })
-                }
-            }
-        } else {
-            res.json({ "state": 0, "err": "请先获取验证码" })
         }
     })
 }

@@ -3,7 +3,7 @@ var router = express.Router();
 var Filter = require('../controllers/filter');
 var User = require('../controllers/user');
 
-router.get('/', Filter.login,  User.info);
+router.get('/', Filter.login, User.info);
 router.post('/regist', User.regist);
 router.post('/regist/identify', User.identify);
 router.post('/login', User.login);

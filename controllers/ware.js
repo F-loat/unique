@@ -164,7 +164,7 @@ exports.pay = function(req, res) {
             body: "蛋糕",
             extra: {
                 success_url: "http://" + host,
-                cancel_url: "http://" + host + '/#myOrders'
+                app_pay: true
             }
         }, function(err, charge) {
             if (err) {
