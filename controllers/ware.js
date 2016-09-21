@@ -156,7 +156,7 @@ exports.pay = function(req, res) {
       subject: "优力克蛋糕",
       body: "蛋糕",
       extra: {
-        success_url: 'http://127.0.0.1/person/orders',
+        success_url: 'http://cakeees.top/person/orders',
         app_pay: true
       }
     }, function(err, charge) {
@@ -211,7 +211,7 @@ exports.payAgain = function(req, res) {
       subject: "优力克蛋糕",
       body: "蛋糕",
       extra: {
-        success_url: 'http://127.0.0.1/person/orders',
+        success_url: 'http://cakeees.top/person/orders',
         app_pay: true
       }
     }, function(err, charge) {
