@@ -157,7 +157,7 @@ exports.pay = function(req, res) {
       body: "蛋糕",
       extra: {
         success_url: 'http://cakeees.top/person/orders',
-        cancel: 'http://cakeees.top/person/orders'
+        cancel_url: 'http://cakeees.top/person/orders'
       }
     }, function(err, charge) {
       if (err) {
@@ -212,7 +212,7 @@ exports.payAgain = function(req, res) {
       body: "蛋糕",
       extra: {
         success_url: 'http://cakeees.top/person/orders',
-        cancel: 'http://cakeees.top/person/orders'
+        cancel_url: 'http://cakeees.top/person/orders'
       }
     }, function(err, charge) {
       if (err) {
