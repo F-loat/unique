@@ -1,14 +1,14 @@
 <template lang="pug">
 #wareOrder.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/ware/' + this.$route.params.wareId }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/ware/' + this.$route.params.wareId }")
     h1.title 订单确认
   .content
     .content-inner
       header.address.bar.bar-nav.bar-sec.row
         div
-          a(v-link="{ path: '/person/addresses' }", v-if='user.addresses.length===0') 选择收货地址
-          a#address-id(v-link="{ path: '/person/addresses' }", v-else, v-for='address in user.addresses', data-address-id='{{address._id}}', v-if='address.state===1') {{address.site}}
+          router-link(:to="{ path: '/person/addresses', query: { backurl: '/order/' + this.$route.params.wareId }}", v-if='!this.address') 添加收货地址
+          router-link#address-id(:to="{ path: '/person/addresses?backurl=/order/' + this.$route.params.wareId }", v-else, :data-address-id='address._id') {{address.site}}
       .order-list-wrap
         .content-inner
           ul.order-list.list-block.media-list
@@ -40,22 +40,22 @@
             div
               .pay-way-title 支付方式
               ul.pay-way
-                li
+                li(v-if="wx")
                   label.label-checkbox.item-content
-                    input#alipay(type='radio', name='my-radio', checked='checked')
-                    .item-media
-                      i.icon.icon-form-checkbox
-                    .item-inner
-                      .item-title-row
-                        .item-title 支付宝
-                li
-                  label.label-checkbox.item-content
-                    input(type='radio', name='my-radio')
+                    input#wxpay(type='radio', name='my-radio', :checked='wx ? true : false')
                     .item-media
                       i.icon.icon-form-checkbox
                     .item-inner
                       .item-title-row
                         .item-title 微信支付
+                li
+                  label.label-checkbox.item-content
+                    input#alipay(type='radio', name='my-radio', :checked='wx ? false : true')
+                    .item-media
+                      i.icon.icon-form-checkbox
+                    .item-inner
+                      .item-title-row
+                        .item-title 支付宝
     #order-now
       .list-block.media-list.pull-left
         label.label-checkbox.item-content
@@ -67,33 +67,46 @@
 <script>
 import $ from 'zepto'
 import pingpp from 'pingpp'
-import { wareInfo, orderWares, orderInit } from '../vuex/actions'
-import { getUserInfo, getWareInfo, getOrderInfo } from '../vuex/getters'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  attached () {
+  activated () {
     this.wareInfo(this.$route.params.wareId)
     this.orderInit()
     this.orderWares(this.ware)
     this.order.price = 5
+    this.getAddress()
     var date = new Date()
     $('#datetime-picker').datetimePicker({
       value: [date.getFullYear(), (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1), date.getDate() > 9 ? date.getDate() : '0' + date.getDate(), '11', '30']
     })
   },
-  vuex: {
-    actions: {
-      wareInfo,
-      orderInit,
-      orderWares
-    },
-    getters: {
-      user: getUserInfo,
-      ware: getWareInfo,
-      order: getOrderInfo
+  data () {
+    return {
+      address: '',
+      wx: navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1
     }
   },
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo',
+      ware: 'getWareInfo',
+      order: 'getOrderInfo'
+    })
+  },
   methods: {
+    ...mapActions([
+      'wareInfo',
+      'orderInit',
+      'orderWares'
+    ]),
+    getAddress () {
+      for (let address of this.user.addresses) {
+        if (address.state === 1) {
+          this.address = address
+        }
+      }
+    },
     orderMessage () {
       $.prompt('您有什么要求呢？',
         (value) => {
@@ -127,11 +140,11 @@ export default {
           success: (data) => {
             pingpp.createPayment(data, (result, err) => {
               if (result === 'success') {
-                // 只有微信公众账号 wx_pub 支付成功的结果会在这里返回，其他的支付结果都会跳转到 extra 中对应的 URL。
+                console.log('success')
               } else if (result === 'fail') {
-                // charge 不正确或者微信公众账号支付失败时会在此处返回
+                console.log('fail')
               } else if (result === 'cancel') {
-                // 微信公众账号支付取消支付
+                console.log('cancel')
               }
             })
           }
@@ -180,10 +193,10 @@ export default {
 #order-now
   width 100%
   height 2.5rem
-  position absolute
+  position fixed
   bottom 0rem
-  left 0
   line-height 2.5rem
+  z-index 99
   .list-block
     margin 0
     width 70%
@@ -195,6 +208,11 @@ export default {
   .item-inner
     padding 0 .6rem 0 0
     box-sizing border-box
+
+@media screen and (min-width: 614px)
+  #order-now
+    width 24rem
+    margin 0 auto
 
 .distributionFee
   text-align right

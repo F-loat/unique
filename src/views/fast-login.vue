@@ -1,7 +1,7 @@
 <template lang="pug">
 #fastLoginPage.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
     h1.title 快速登录
   .content
     .content-inner
@@ -18,20 +18,19 @@
               input#fastLog-identify.input.pull-left(type='number', placeholder='请输入验证码')
               input#fastGet-identify.pull-right(v-on:click='fastGetIdentify', type='button', value='获取验证码')
       #fastLogin-now(v-on:click='fastLogin') 快速登录
-      a.signin-turn.pull-right(v-link="{ path: '/person/login' }") 账号密码登录
+      router-link.signin-turn.pull-right(:to="{ path: '/person/login' }") 账号密码登录
+      a.signin-turn.pull-right(href=" https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=http%3A%2F%2Fcakeees.top&response_type=code&scope=snsapi_userinfo&state=wxoauth#wechat_redirect") 微信登录
 </template>
 
 <script>
 import $ from 'zepto'
-import { userInfo } from '../vuex/actions'
+import { mapActions } from 'vuex'
 
 export default {
-  vuex: {
-    actions: {
-      userInfo
-    }
-  },
   methods: {
+    ...mapActions([
+      'userInfo'
+    ]),
     fastGetIdentify () {
       if ($('#fastGet-identify').val() === '获取验证码') {
         var phone = $('#fastLog-phone').val()

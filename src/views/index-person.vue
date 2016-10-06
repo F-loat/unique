@@ -1,9 +1,9 @@
 <template lang="pug">
 #tab5.tab.view
   header.bar.bar-nav
-    img(src='../assets/img/cake1.jpg')
+    img(:src='user.headimgurl')
     .webFont(v-if='!user.nickname')
-      a(v-link="{ path: '/person/fastLogin' }") 登录/注册
+      router-link(:to="{ path: '/person/fastLogin' }") 登录/注册
     div(v-else)
       | {{user.nickname}}
       span#logout(v-on:click='logout') [注销]
@@ -11,37 +11,37 @@
     .list-block
       ul
         li.item-content.item-link
-          a(v-link="{ path: '/person/orders' }")
+          router-link(:to="{ path: '/person/orders' }")
             .item-inner
               .item-title
                 i.icon.icon-edit
                 i 我的订单
         li.item-content.item-link
-          a(v-link="{ path: '/person/addresses' }")
+          router-link(:to="{ path: '/person/addresses?backurl=/person' }")
             .item-inner
               .item-title
                 i.icon.icon-card
                 i 收货地址
         li.item-content.item-link
-          a(v-link="{ path: '/person/coupons' }")
+          router-link(:to="{ path: '/person/coupons' }")
             .item-inner
               .item-title
                 i.icon.icon-code
                 i 我的优惠券
         li.item-content.item-link
-          a(v-link="{ path: '/fedBack' }")
+          router-link(:to="{ path: '/fedBack' }")
             .item-inner
               .item-title
                 i.icon.icon-emoji
                 i 意见反馈
         li.item-content.item-link
-          a(v-link="{ path: '/aboutUs' }")
+          router-link(:to="{ path: '/aboutUs' }")
             .item-inner
               .item-title
                 i.icon.icon-friends
                 i 关于我们
         li.item-content.item-link
-          a(v-link="{ path: '/userAgreement' }")
+          router-link(:to="{ path: '/userAgreement' }")
             .item-inner
               .item-title
                 i.icon.icon-app
@@ -61,19 +61,18 @@
 
 <script>
 import $ from 'zepto'
-import { userInit } from '../vuex/actions'
-import { getUserInfo } from '../vuex/getters'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  vuex: {
-    actions: {
-      userInit
-    },
-    getters: {
-      user: getUserInfo
-    }
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
   },
   methods: {
+    ...mapActions([
+      'userInit'
+    ]),
     logout () {
       $.confirm('确认注销？', () => {
         $.ajax({

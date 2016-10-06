@@ -1,7 +1,7 @@
 <template lang="pug">
 #myCoupons.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
     a.icon.icon-refresh.pull-right
     h1.title 我的优惠券
   .content

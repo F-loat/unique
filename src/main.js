@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import store from './vuex/store'
+import store from './vuex/'
 import router from './router/'
 import uniqueCake from './unique-cake'
 
-const unique = Vue.extend({
+new Vue({
   components: { uniqueCake },
-  store
-})
-
-router.start(unique, '#unique')
+  store,
+  router
+}).$mount('#unique')

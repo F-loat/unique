@@ -17,12 +17,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/request': {
+      'http://cakeees.top/request': {
         target: 'http://127.0.0.1/request',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/request': ''
-        }
+        changeOrigin: true
       },
       '/upload': {
         target: 'http://127.0.0.1/upload',
@@ -32,6 +29,6 @@ module.exports = {
         }
       }
     },
-    cssSourceMap: false
+    cssSourceMap: true
   }
 }

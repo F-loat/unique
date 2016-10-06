@@ -1,7 +1,7 @@
 <template lang="pug">
 #wareDetail.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/ware' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/ware' }")
     h1.title {{ware.info.name}}
   .content
     .content-inner
@@ -14,16 +14,16 @@
       .detail-dishes(v-if='ware.info.type==9')
         h6 请选择口味
         div
-          .dishTab(v-on:click='dishChange', v-bind:class="{'active': ware.dish==='奶油'}") 奶油
-          .dishTab(v-on:click='dishChange', v-bind:class="{'active': ware.dish==='抹茶'}") 抹茶
-          .dishTab(v-on:click='dishChange', v-bind:class="{'active': ware.dish==='巧克力'}") 巧克力
+          .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='奶油'}") 奶油
+          .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='抹茶'}") 抹茶
+          .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='巧克力'}") 巧克力
       .detail-weight
         h6 请选择重量
         div
-          .weightTab(v-on:click='weightChange', v-bind:class="{'active': ware.weight===1}") 1.0磅
-          .weightTab(v-on:click='weightChange', v-bind:class="{'active': ware.weight===1.5}") 1.5磅
-          .weightTab(v-on:click='weightChange', v-bind:class="{'active': ware.weight===2}") 2.0磅
-          .weightTab(v-on:click='weightChange', v-bind:class="{'active': ware.weight===2.5}") 2.5磅
+          .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===1}") 1.0磅
+          .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===1.5}") 1.5磅
+          .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===2}") 2.0磅
+          .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===2.5}") 2.5磅
       .detail-detail
         div
           span.icon.icon-friends
@@ -45,33 +45,32 @@
         p 暂且只限天津地区配送服务
       .detail-phone
         | 客服电话 15822922123
-  #detail-handle
-    #detail-price ￥{{ware.info.price}}/磅
-    #detail-shopcar(v-on:click='addToShopcar') 加入购物车
-    #detail-buy
-      a(v-on:click='promptBuy') 立即购买
+    #detail-handle
+      #detail-price ￥{{ware.info.price}}/磅
+      #detail-shopcar(v-on:click='addToShopcar') 加入购物车
+      #detail-buy
+        a(v-on:click='promptBuy') 立即购买
 </template>
 
 <script>
 import $ from 'zepto'
-import { wareInfo, wareInit } from '../vuex/actions'
-import { getWareInfo } from '../vuex/getters'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  attached () {
+  activated () {
     this.wareInit()
     this.wareInfo(this.$route.params.wareId)
   },
-  vuex: {
-    actions: {
-      wareInfo,
-      wareInit
-    },
-    getters: {
-      ware: getWareInfo
-    }
+  computed: {
+    ...mapGetters({
+      ware: 'getWareInfo'
+    })
   },
   methods: {
+    ...mapActions([
+      'wareInfo',
+      'wareInit'
+    ]),
     dishChange (e) {
       this.ware.dish = $(e.target).text()
     },
@@ -82,7 +81,7 @@ export default {
       console.log('shopcar')
     },
     promptBuy () {
-      this.$route.router.go('/order/' + this.$route.params.wareId)
+      this.$router.push('/order/' + this.$route.params.wareId)
     }
   }
 }
@@ -92,7 +91,7 @@ export default {
 #wareDetail
   & > .content
     background-color #dbe0e4
-    bottom 2.5rem
+    padding-bottom 2.5rem
   .active
     background-color #1676ca
 
@@ -166,15 +165,19 @@ export default {
 #detail-handle
   width 100%
   height 2.5rem
-  position absolute
+  position fixed
   bottom 0rem
-  left 0
   line-height 2.5rem
   text-align center
   font-size 0
   & > div
     display inline-block
     font-size .85rem
+
+@media screen and (min-width: 614px)
+  #detail-handle
+    width 24rem
+    margin 0 auto
 
 #detail-price
   width 40%

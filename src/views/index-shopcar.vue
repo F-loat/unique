@@ -20,7 +20,7 @@
         #shopcar-list.content(data-type='js')
           .content-inner
             ul.order-list.list-block.media-list
-              li(v-for='ware in user.shopcar', data-shopcar-id='{{$index}}', transition='fade')
+              li(v-for='(ware, index) in user.shopcar', :data-shopcar-id='index', transition='fade')
                 label.label-checkbox.item-content
                   .item-media
                     i.icon.icon-form-checkbox(v-bind:class="{'button-checked': ware.state}", v-on:click='check')
@@ -31,7 +31,7 @@
                     .item-subtitle {{ware.info.name}}
                     .item-subtitle 重量：{{ware.weight}}磅
                     .item-text.pull-left ￥{{ware.info.price*ware.sum*ware.weight}}
-                    .pull-right(data-shopcar-id='{{$index}}')
+                    .pull-right(:data-shopcar-id='index')
                       span.icon.icon-down(v-on:click='sumChange(+1,$event)')
                       |  {{ware.sum}}
                       span.icon.icon-up(v-on:click='sumChange(-1,$event)')
@@ -47,6 +47,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
+  }
+}
 </script>
 
 <style lang="stylus">

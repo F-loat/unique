@@ -1,12 +1,12 @@
 <template lang="pug">
 #myAddresses.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person' }")
+    a.icon.icon-left.pull-left(:href="backurl")
     h1.title 收货地址
   .content
     .content-inner
       ul
-        li.clearfix.ready-address(v-on:click='defaultAddress', v-for='address in user.addresses', data-address-id='{{$index}}', transition='fade')
+        li.clearfix.ready-address(v-on:click='defaultAddress', v-for='(address, index) in user.addresses', :data-address-id='index', transition='fade')
           span.pull-left.address-detail
             h4 {{address.phone}}（{{address.receiver}}）
             p {{address.site}}
@@ -14,18 +14,30 @@
             span.address-edit.icon.icon-edit(v-on:click='editAddress') 编辑
             span.address-delete.icon.icon-remove(v-on:click='deleteAddress') 删除
           span.badge.pull-right(v-if='address.state==1') 默认
-      a.add(v-link="{ path: '/person/addresses/new' }") 新增
+      router-link.add(:to="{ path: '/person/addresses/new' }") 新增
 </template>
 
 <script>
 import $ from 'zepto'
-import { getUserInfo } from '../vuex/getters'
+import { mapGetters } from 'vuex'
 
 export default {
-  vuex: {
-    getters: {
-      user: getUserInfo
+  mounted () {
+    this.$nextTick(function () {
+      this.backurl = this.$route.query.backurl || this.backurl
+    })
+  },
+  data () {
+    return {
+      backurl: {
+        path: ''
+      }
     }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
   },
   methods: {
     defaultAddress (e) {
@@ -74,7 +86,7 @@ export default {
       }
     },
     editAddress () {
-
+      console.log('lalala')
     }
   }
 }

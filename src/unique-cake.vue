@@ -1,19 +1,46 @@
 <template lang="pug">
-router-view(keep-alive transition="fade")
+transition(name="fade")
+  keep-alive
+    router-view
 </template>
 
 <script>
-import { userInfo, waresInfo } from './vuex/actions'
+import $ from 'zepto'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  ready () {
-    this.userInfo()
-    this.waresInfo()
+  mounted () {
+    this.$nextTick(function () {
+      this.waresInfo()
+      var ua = navigator.userAgent.toLowerCase()
+      var isWeixin = ua.indexOf('micromessenger') !== -1
+      if (isWeixin && this.$route.query.state === 'wxoauth') {
+        this.wxoauth(this.$route.query.code)
+      } else {
+        this.userInfo()
+      }
+    })
   },
-  vuex: {
-    actions: {
-      userInfo,
-      waresInfo
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
+  },
+  methods: {
+    ...mapActions([
+      'userInfo',
+      'waresInfo'
+    ]),
+    wxoauth (code) {
+      $.ajax({
+        type: 'get',
+        url: '/request/user/wxoauth?code=' + code,
+        success: (data) => {
+          if (data.state === 1) {
+            this.userInfo()
+          }
+        }
+      })
     }
   }
 }
@@ -47,11 +74,11 @@ main-color = red
       width 98% !important
 
 /*动画样式*/
-.fade-transition
-  transition all .2s linear
+.fade-enter-active, .fade-leave-active
+  transition opacity .2s linear
   opacity 1
 
-.fade-enter, .fade-leave
+.fade-enter, .fade-leave-active
   opacity 0
   
 /*通用样式*/

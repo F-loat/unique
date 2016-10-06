@@ -1,13 +1,13 @@
 <template lang="pug">
 #tab1.tab.view
   .content.webFont
-    p#tab1-turn1.tab-link(v-link="{ path: '/ware' }")
+    router-link#tab1-turn1(:to="{ path: '/ware' }")
       span 鲜花
-    p#tab1-turn2.tab-link(v-link="{ path: '/ware' }")
+    router-link#tab1-turn2(:to="{ path: '/ware' }")
       span 定制
-    p#tab1-turn3.tab-link(v-link="{ path: '/ware' }")
+    router-link#tab1-turn3(:to="{ path: '/ware' }")
       span 甜点
-    p#tab1-turn4.tab-link(v-link="{ path: '/ware' }")
+    router-link#tab1-turn4(:to="{ path: '/ware' }")
       span 蛋糕
 </template>
 
@@ -18,7 +18,7 @@
     background url("../assets/img/hBg.jpg") no-repeat top center
     background-size contain
     bottom 2.5rem
-  p
+  a
     color #2d2d2d
     display block
     width 3.4rem

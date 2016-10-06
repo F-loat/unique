@@ -1,7 +1,7 @@
 <template lang="pug">
 #fedBack.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
     h1.title 用户反馈
   .content
     .item-content

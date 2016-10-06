@@ -1,7 +1,7 @@
 <template lang="pug">
 #registPage.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person/login' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person/login' }")
     h1.title 注册
   .content
     .content-inner
@@ -28,21 +28,19 @@
               input#reg-identify.input.pull-left(type='number', placeholder='请输入验证码')
               input#get-identify.pull-right(v-on:click='getIdentify', type='button', value='获取验证码')
       #regist-now(v-on:click='regist') 注册 
-      a.signin-turn.pull-right(v-link="{ path: '/person/login' }") 已有账号？去登陆~
+      router-link.signin-turn.pull-right(:to="{ path: '/person/login' }") 已有账号？去登陆~
 </template>
 
 <script>
 import $ from 'zepto'
 import md5 from 'md5'
-import { userInfo } from '../vuex/actions'
+import { mapActions } from 'vuex'
 
 export default {
-  vuex: {
-    actions: {
-      userInfo
-    }
-  },
   methods: {
+    ...mapActions([
+      'userInfo'
+    ]),
     regist () {
       var phone = $('#reg-phone').val()
       var password = $('#reg-password').val()

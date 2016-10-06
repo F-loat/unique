@@ -3,111 +3,127 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const router = new VueRouter({
-  history: true
-})
-
-router.map({
-  '/': {
+const routes = [
+  {
+    path: '/',
     component (resolve) {
       require(['../components/nav-bottom'], resolve)
     },
-    subRoutes: {
-      '/index': {
+    redirect: '/index',
+    children: [
+      {
+        path: 'index',
         component (resolve) {
           require(['../views/index-main'], resolve)
         }
       },
-      '/ware': {
+      {
+        path: 'ware',
         component (resolve) {
           require(['../views/index-list'], resolve)
         }
       },
-      // '/picture': {
-      //   component (resolve) {
-      //     require(['../views/index-picture'], resolve)
-      //   }
+      // {
+      //   path: 'picture',
+      //     component (resolve) {
+      //       require(['../views/index-picture'], resolve)
+      //     }
       // },
-      '/shopcar': {
+      {
+        path: 'shopcar',
         component (resolve) {
           require(['../views/index-shopcar'], resolve)
         }
       },
-      '/person': {
+      {
+        path: 'person',
         component (resolve) {
           require(['../views/index-person'], resolve)
         }
       }
-    }
+    ]
   },
-  '/ware/:wareId': {
+  {
+    path: '/ware/:wareId',
     component (resolve) {
       require(['../views/ware-detail'], resolve)
     }
   },
-  '/order/:wareId': {
+  {
+    path: '/order/:wareId',
     component (resolve) {
       require(['../views/ware-order'], resolve)
     }
   },
-  '/person/fastLogin': {
+  {
+    path: '/person/fastLogin',
     component (resolve) {
       require(['../views/fast-login'], resolve)
     }
   },
-  '/person/regist': {
+  {
+    path: '/person/regist',
     component (resolve) {
       require(['../views/person-regist'], resolve)
     }
   },
-  '/person/login': {
+  {
+    path: '/person/login',
     component (resolve) {
       require(['../views/person-login'], resolve)
     }
   },
-  '/person/orders': {
+  {
+    path: '/person/orders',
     component (resolve) {
       require(['../views/person-orders'], resolve)
     }
   },
-  '/person/addresses': {
+  {
+    path: '/person/addresses',
     component (resolve) {
       require(['../views/person-addresses'], resolve)
     }
   },
-  '/person/addresses/new': {
+  {
+    path: '/person/addresses/new',
     component (resolve) {
       require(['../views/new-address'], resolve)
     }
   },
-  '/person/coupons': {
+  {
+    path: '/person/coupons',
     component (resolve) {
       require(['../views/person-coupons'], resolve)
     }
   },
-  '/fedBack': {
+  {
+    path: '/fedBack',
     component (resolve) {
       require(['../views/fed-back'], resolve)
     }
   },
-  '/aboutUs': {
+  {
+    path: '/aboutUs',
     component (resolve) {
       require(['../views/about-us'], resolve)
     }
   },
-  '/userAgreement': {
+  {
+    path: '/userAgreement',
     component (resolve) {
       require(['../views/user-agreement'], resolve)
     }
+  },
+  {
+    path: '*',
+    redirect: '/index'
   }
-})
+]
 
-router.redirect({
-  '*': '/index'
-})
-
-router.alias({
-  '/': '/index'
+const router = new VueRouter({
+  mode: 'history',
+  routes
 })
 
 export default router

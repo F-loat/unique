@@ -2,18 +2,18 @@
 #tab2.tab.view
   .content
     header.buttons-tab
-      a.tab-link.button(href='#mTab1') 甜点
-      a.tab-link.button.active(href='#mTab2') 方形蛋糕
-      a.tab-link.button(href='#mTab3') 圆形蛋糕
-      a.tab-link.button(href='#mTab4') 鲜花
+      a.button.tab-link(href='#mTab1') 甜点
+      a.button.tab-link.active(href='#mTab2') 方形蛋糕
+      a.button.tab-link(href='#mTab3') 圆形蛋糕
+      a.button.tab-link(href='#mTab4') 鲜花
     .content
       .tabs
         #mTab1.tab
           #mousse-list.content
             .content-inner
               ul.clearfix
-                li.ware-wrap(v-for='ware in wares.a')
-                  a(v-link="{ path: '/ware/' + ware._id }", data-id='{{$index}}')
+                li.ware-wrap(v-for='(ware, index) in wares.a')
+                  router-link(:to="{ path: '/ware/' + ware._id }", :data-id='index')
                     img(v-bind:src='ware.img')
                   .ware-detail
                     div
@@ -26,8 +26,8 @@
           #cake-f-list.content(data-type='js')
             .content-inner
               ul.clearfix
-                li.ware-wrap(v-for='ware in wares.b')
-                  a(v-link="{ path: '/ware/' + ware._id }", data-id='{{$index}}')
+                li.ware-wrap(v-for='(ware, index) in wares.b')
+                  router-link(:to="{ path: '/ware/' + ware._id }", :data-id='index')
                     img(v-bind:src='ware.img')
                   .ware-detail
                     div
@@ -40,8 +40,8 @@
           #cake-y-list.content
             .content-inner
               ul.clearfix
-                li.ware-wrap(v-for='ware in wares.c')
-                  a(v-link="{ path: '/ware/' + ware._id }", data-id='{{$index}}')
+                li.ware-wrap(v-for='(ware, index) in wares.c')
+                  router-link(:to="{ path: '/ware/' + ware._id }", :data-id='index')
                     img(v-bind:src='ware.img')
                   .ware-detail
                     div
@@ -54,8 +54,8 @@
           #flower-list.content
             .content-inner
               ul.clearfix
-                li.ware-wrap(v-for='ware in wares.d')
-                  a(v-link="{ path: '/ware/' + ware._id }", data-id='{{$index}}')
+                li.ware-wrap(v-for='(ware, index) in wares.d')
+                  router-link(:to="{ path: '/ware/' + ware._id }", :data-id='index')
                     img(v-bind:src='ware.img')
                   .ware-detail
                     div
@@ -67,13 +67,13 @@
 </template>
 
 <script>
-import { getWaresInfo } from '../vuex/getters'
+import { mapGetters } from 'vuex'
 
 export default {
-  vuex: {
-    getters: {
-      wares: getWaresInfo
-    }
+  computed: {
+    ...mapGetters({
+      wares: 'getWaresInfo'
+    })
   }
 }
 </script>

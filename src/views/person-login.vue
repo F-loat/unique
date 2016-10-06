@@ -1,7 +1,7 @@
 <template lang="pug">
 #loginPage.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
     h1.title 登录
   .content
     .content-inner
@@ -17,21 +17,19 @@
             .item-input
               input#log-password.input(type='password', placeholder='输入登录密码')
       #login-now(v-on:click='login') 登录
-      a.signin-turn.pull-right(v-link="{ path: '/person/regist' }") 还没有账号？去注册~
+      router-link.signin-turn.pull-right(:to="{ path: '/person/regist' }") 还没有账号？去注册~
 </template>
 
 <script>
 import $ from 'zepto'
 import md5 from 'md5'
-import { userInfo } from '../vuex/actions'
+import { mapActions } from 'vuex'
 
 export default {
-  vuex: {
-    actions: {
-      userInfo
-    }
-  },
   methods: {
+    ...mapActions([
+      'userInfo'
+    ]),
     login () {
       var phone = $('#log-phone').val()
       var password = $('#log-password').val()

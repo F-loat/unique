@@ -1,7 +1,7 @@
 <template lang="pug">
 #newAddress.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(v-link="{ path: '/person/addresses' }")
+    router-link.icon.icon-left.pull-left(:to="{ path: '/person/addresses' }")
     h1.title  添加地址 
   .content
     .content-inner
@@ -26,13 +26,13 @@
 
 <script>
 import $ from 'zepto'
-import { getUserInfo } from '../vuex/getters'
+import { mapGetters } from 'vuex'
 
 export default {
-  vuex: {
-    getters: {
-      user: getUserInfo
-    }
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
   },
   methods: {
     newAddress () {

@@ -16,11 +16,13 @@ class Ware {
 class User {
   constructor () {
     this.nickname = ''
+    this.headimgurl = ''
     this.type = 1
     this.orders = []
     this.shopcar = []
     this.addresses = []
     this.coupons = []
+    this.openid = ''
   }
 }
 
@@ -57,7 +59,12 @@ const mutations = {
       type: 'get',
       url: '/request/user',
       dataType: 'json',
-      success: data => { state.user = data },
+      success: data => {
+        if (data.state !== 0) {
+          state.user = data
+          state.user.headimgurl = state.user.headimgurl || 'http://cakeees.top/upload/img/head.jpg'
+        }
+      },
       error: () => $.toast('用户信息获取失败')
     })
   },
@@ -100,9 +107,50 @@ const mutations = {
   }
 }
 
+const actions = {
+  userInit ({ commit }) {
+    commit('USERINIT')
+  },
+  userInfo ({ commit }) {
+    commit('USERINFO')
+  },
+  waresInfo ({ commit }) {
+    commit('WARESINFO')
+  },
+  wareInit ({ commit }) {
+    commit('WAREINIT')
+  },
+  wareInfo ({ commit }, wareId) {
+    commit('WAREINFO', wareId)
+  },
+  orderInit ({ commit }) {
+    commit('ORDERINIT')
+  },
+  orderWares ({ commit }, ware) {
+    commit('ORDERWARES', ware)
+  }
+}
+
+const getters = {
+  getUserInfo: state => {
+    return state.user
+  },
+  getWaresInfo: state => {
+    return state.wares
+  },
+  getWareInfo: state => {
+    return state.ware
+  },
+  getOrderInfo: state => {
+    return state.order
+  }
+}
+
 const store = new Vuex.Store({
   state,
-  mutations
+  mutations,
+  actions,
+  getters
 })
 
 export default store
