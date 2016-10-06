@@ -21,7 +21,8 @@
     "express-session": "^1.14.0",
     "mongoose": "^4.5.4",
     "pingpp": "^2.0.8",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "wechat-oauth": "^1.1.1"
   },
   "repository": {
     "type": "git",

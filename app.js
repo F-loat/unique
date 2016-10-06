@@ -16,15 +16,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
-    secret: 'unique',
-    resave:  false,
-    saveUninitialized: true,
-    name: 'unique',
-    cookie: { maxAge: 14 * 24 * 60 * 60 * 1000 },
-    store: new mongoStore({
-        url: 'mongodb://'+admin.name+':'+admin.pwd+'@localhost/unique',
-        collection: 'sessions'
-    })
+  secret: 'unique',
+  resave:  false,
+  saveUninitialized: true,
+  name: 'unique',
+  cookie: { maxAge: 14 * 24 * 60 * 60 * 1000 },
+  store: new mongoStore({
+    url: 'mongodb://'+admin.name+':'+admin.pwd+'@localhost/unique',
+    collection: 'sessions'
+  })
 }))
 
 // app.all('*', function(req, res, next) {  

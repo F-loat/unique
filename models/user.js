@@ -2,10 +2,14 @@ var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
     nickname: String,
+    headimgurl: String,
     password: String,
     phone: {
         type: String,
-        index: true,
+        unique: true
+    },
+    openid: {
+        type: String,
         unique: true
     },
     email: String,

@@ -1,6 +1,6 @@
 var User = require('../models/user');
 exports.login = function(req, res, next) {
-    if (req.session.phone) {
+    if (req.session.userId) {
         next();
     } else {
         res.json({ "state": 0 });

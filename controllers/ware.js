@@ -1,5 +1,5 @@
 var request = require('request')
-var  crypto  =  require('crypto')
+var crypto  =  require('crypto')
 var fs = require('fs') 
 var pingpp = require('pingpp')('sk_live_HWDOGC8GKWL0X1mTe9SCaDmL')
 pingpp.setPrivateKeyPath("./controllers/key/rsa.pem")
@@ -11,16 +11,12 @@ var Shopcar = require('../models/shopcar')
 
 exports.wareInfo = function(req, res) {
   Ware.findOne({ _id: req.params.wareId },function(err, ware) {
-    ware.img = 'http://cakeees.top/' + ware.img
-    return res.send(ware)
+    res.send(ware)
   })
 }
 exports.waresInfo = function(req, res) {
   Ware.find(function(err, wares) {
-    wares.map((ware) => {
-      return ware.img = 'http://cakeees.top/' + ware.img
-    })
-    return res.send(wares)
+    res.send(wares)
   })
 }
 exports.addToShopcar = function(req, res) {
@@ -30,24 +26,24 @@ exports.addToShopcar = function(req, res) {
     var dish = ware.dish
     var img = ware.img
     Shopcar
-      .findOne({ onwer: req.session.phone, dish: dish, weight: weight, img: img}, function(err, order) {
+      .findOne({ onwer: req.session.userId, dish: dish, weight: weight, img: img}, function(err, order) {
         if (order) {
           order.sum++
           order
             .save()
             .then(function() {
               Shopcar
-                .find({ onwer: req.session.phone })
+                .find({ onwer: req.session.userId })
                 .populate({ path: 'info' })
                 .exec(function(err, orders) {
                     res.json({ "state": 1, "shopcar": orders })
                 })
             })
         } else {
-          Shopcar.create({ onwer: req.session.phone, dish: dish, weight: weight, img: img }, function(err, ware) {
-            User.update({ phone: req.session.phone }, { $addToSet: { shopcar: ware._id } }, function(err) {
+          Shopcar.create({ onwer: req.session.userId, dish: dish, weight: weight, img: img }, function(err, ware) {
+            User.update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } }, function(err) {
               Shopcar
-                .find({ onwer: req.session.phone })
+                .find({ onwer: req.session.userId })
                 .populate({ path: 'info' })
                 .exec(function(err, orders) {
                     res.json({ "state": 1, "shopcar": orders })
@@ -59,24 +55,24 @@ exports.addToShopcar = function(req, res) {
   } else {
     var wareId = ware.wareId
     Shopcar
-      .findOne({ onwer: req.session.phone, info: wareId, weight: weight }, function(err, order) {
+      .findOne({ onwer: req.session.userId, info: wareId, weight: weight }, function(err, order) {
         if (order) {
           order.sum++
           order
             .save()
             .then(function() {
               Shopcar
-                .find({ onwer: req.session.phone })
+                .find({ onwer: req.session.userId })
                 .populate({ path: 'info' })
                 .exec(function(err, orders) {
                     res.json({ "state": 1, "shopcar": orders })
                 })
             })
         } else {
-          Shopcar.create({ onwer: req.session.phone, info: wareId, weight: weight }, function(err, ware) {
-            User.update({ phone: req.session.phone }, { $addToSet: { shopcar: ware._id } }, function(err) {
+          Shopcar.create({ onwer: req.session.userId, info: wareId, weight: weight }, function(err, ware) {
+            User.update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } }, function(err) {
               Shopcar
-                .find({ onwer: req.session.phone })
+                .find({ onwer: req.session.userId })
                 .populate({ path: 'info' })
                 .exec(function(err, orders) {
                   res.json({ "state": 1, "shopcar": orders })
@@ -97,12 +93,12 @@ exports.shopcarSumChange = function(req, res) {
       }
       res.json({ "state": 1 })
     })
-    User.update({ phone: req.session.phone }, { $pull: { shopcar: _id } }, function(err) {
+    User.update({ _id: req.session.userId }, { $pull: { shopcar: _id } }, function(err) {
       if (err) {
         console.log(err)
       }
     })
-} else {
+  } else {
     Shopcar.update({ _id: _id }, { sum: sum }, function(err) {
       if (err) {
          res.json({ "state": 0, "err": err })
@@ -121,7 +117,7 @@ exports.pay = function(req, res) {
   var payway = order.payway
   var time = new Date()
   time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString() + time.getMilliseconds().toString()
-  var order_no = time + req.session.phone.slice(9, 11)
+  var order_no = time + req.session.userId.slice(9, 11)
   var price = 0
 
   function getPrice(i) {
@@ -146,29 +142,51 @@ exports.pay = function(req, res) {
   }
 
   function creat() {
-    pingpp.charges.create({
-      order_no: order_no,
-      app: { id: "app_8uP0qDHKm1C4P0Ki" },
-      channel: payway == 1 ? 'alipay_wap' : 'wx_pub',
-      amount: (price + 0) * 100,
-      client_ip: "123.206.9.219",
-      currency: "cny",
-      subject: "优力克蛋糕",
-      body: "蛋糕",
-      extra: {
-        success_url: 'http://cakeees.top/person/orders',
-        cancel_url: 'http://cakeees.top/person/orders'
-      }
-    }, function(err, charge) {
-      if (err) {
-        return console.log(err)
-      }
-      res.send(charge)
-    })
+    if (payway === 1) {
+      pingpp.charges.create({
+        order_no: order_no,
+        app: { id: "app_8uP0qDHKm1C4P0Ki" },
+        channel: 'alipay_wap',
+        amount: (price + 0) * 100,
+        client_ip: "123.206.9.219",
+        currency: "cny",
+        subject: "优力克蛋糕",
+        body: "蛋糕",
+        extra: {
+          success_url: 'http://cakeees.top/person/orders',
+          app_pay: true
+        }
+      }, function(err, charge) {
+        if (err) {
+          return console.log(err)
+        }
+        res.send(charge)
+      })
+    } else {
+      pingpp.charges.create({
+        order_no: order_no,
+        app: { id: "app_8uP0qDHKm1C4P0Ki" },
+        channel: 'wx_pub',
+        amount: (price + 0) * 100,
+        client_ip: "123.206.9.219",
+        currency: "cny",
+        subject: "优力克蛋糕",
+        body: "蛋糕",
+        extra: {
+          open_id: req.session.openid
+        }
+      }, function(err, charge) {
+        if (err) {
+          return console.log(err)
+        }
+        res.send(charge)
+      })
+    }
+
     Order
       .create({
         order_no: order_no,
-        onwer: req.session.phone,
+        onwer: req.session.userId,
         wares: wares,
         receive: receivingTime,
         address: addressId,
@@ -176,7 +194,7 @@ exports.pay = function(req, res) {
         fee: price,
         payway: payway
       }, function(err, order) {
-        User.update({ phone: req.session.phone }, { $addToSet: { orders: order._id } }, function(err) {
+        User.update({ _id: req.session.userId }, { $addToSet: { orders: order._id } }, function(err) {
           if (err) {
             console.log(err)
           }
@@ -189,7 +207,7 @@ exports.pay = function(req, res) {
             return console.log(err)
           }
         })
-        User.update({phone:req.session.phone},{ $pull: { shopcar: wares[i].shopcarId } },function(err) {
+        User.update({_id:req.session.userId},{ $pull: { shopcar: wares[i].shopcarId } },function(err) {
           if (err) {
             return console.log(err)
           }
@@ -212,7 +230,7 @@ exports.payAgain = function(req, res) {
       body: "蛋糕",
       extra: {
         success_url: 'http://cakeees.top/person/orders',
-        cancel_url: 'http://cakeees.top/person/orders'
+        app_pay: true
       }
     }, function(err, charge) {
       if (err) {
