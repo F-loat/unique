@@ -1,8 +1,11 @@
 import Vue from 'vue'
+import store from './vuex/store'
+import router from './router/'
 import uniqueCake from './unique-cake'
 
-/* eslint-disable no-new */
-new Vue({
-  el: 'body',
-  components: { uniqueCake }
+const unique = Vue.extend({
+  components: { uniqueCake },
+  store
 })
+
+router.start(unique, '#unique')

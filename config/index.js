@@ -7,7 +7,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    productionSourceMap: true,
+    productionSourceMap: false,
     productionGzip: false,
     productionGzipExtensions: ['js', 'css']
   },
@@ -16,7 +16,22 @@ module.exports = {
     port: 8080,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/request': {
+        target: 'http://127.0.0.1/request',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/request': ''
+        }
+      },
+      '/upload': {
+        target: 'http://127.0.0.1/upload',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/upload': ''
+        }
+      }
+    },
     cssSourceMap: false
   }
 }
