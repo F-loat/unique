@@ -9,106 +9,85 @@ var Order = require('../models/order')
 var User = require('../models/user')
 var Shopcar = require('../models/shopcar')
 
-exports.wareInfo = function(req, res) {
-  Ware.findOne({ _id: req.params.wareId },function(err, ware) {
-    res.send(ware)
-  })
+exports.wareInfo = function (req, res) {
+  Ware
+    .findById(req.params.wareId)
+    .exec((err, ware) => {
+      res.send(ware)
+    })
 }
-exports.waresInfo = function(req, res) {
-  Ware.find(function(err, wares) {
-    res.send(wares)
-  })
+exports.waresInfo = function (req, res) {
+  Ware
+    .find()
+    .exec((err, wares) => {
+      res.send(wares)
+    })
 }
-exports.addToShopcar = function(req, res) {
+exports.addToShopcar = function (req, res) {
   var ware = JSON.parse(req.body.ware)
   var weight = ware.weight
-  if (ware.dish) {
-    var dish = ware.dish
-    var img = ware.img
-    Shopcar
-      .findOne({ onwer: req.session.userId, dish: dish, weight: weight, img: img}, function(err, order) {
-        if (order) {
-          order.sum++
-          order
-            .save()
-            .then(function() {
-              Shopcar
-                .find({ onwer: req.session.userId })
-                .populate({ path: 'info' })
-                .exec(function(err, orders) {
-                    res.json({ "state": 1, "shopcar": orders })
-                })
-            })
-        } else {
-          Shopcar.create({ onwer: req.session.userId, dish: dish, weight: weight, img: img }, function(err, ware) {
-            User.update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } }, function(err) {
-              Shopcar
-                .find({ onwer: req.session.userId })
-                .populate({ path: 'info' })
-                .exec(function(err, orders) {
-                    res.json({ "state": 1, "shopcar": orders })
-                })
-            })
+  var wareId = ware.wareId
+  Shopcar
+    .findOne({ onwer: req.session.userId, info: wareId, weight: weight })
+    .exec((err, order) => {
+      if (order) {
+        order.sum++
+        order.save()
+        Shopcar
+          .find({ onwer: req.session.userId })
+          .populate({ path: 'info' })
+          .exec((err, orders) => {
+            res.json({ "state": 1, "shopcar": orders })
           })
-        }
-      })
-  } else {
-    var wareId = ware.wareId
-    Shopcar
-      .findOne({ onwer: req.session.userId, info: wareId, weight: weight }, function(err, order) {
-        if (order) {
-          order.sum++
-          order
-            .save()
-            .then(function() {
-              Shopcar
-                .find({ onwer: req.session.userId })
-                .populate({ path: 'info' })
-                .exec(function(err, orders) {
-                    res.json({ "state": 1, "shopcar": orders })
-                })
-            })
-        } else {
-          Shopcar.create({ onwer: req.session.userId, info: wareId, weight: weight }, function(err, ware) {
-            User.update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } }, function(err) {
-              Shopcar
-                .find({ onwer: req.session.userId })
-                .populate({ path: 'info' })
-                .exec(function(err, orders) {
-                  res.json({ "state": 1, "shopcar": orders })
-                })
-            })
+      } else {
+        Shopcar
+          .create({ onwer: req.session.userId, info: wareId, weight: weight })
+          .then(ware => {
+            User
+              .update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } })
+              .exec()
+            Shopcar
+              .find({ onwer: req.session.userId })
+              .populate({ path: 'info' })
+              .exec((err, orders) => {
+                res.json({ "state": 1, "shopcar": orders })
+              })
           })
-        }
-      })
-  }
+          .catch(err => {
+            console.log(err)
+          })
+      }
+    })
 }
-exports.shopcarSumChange = function(req, res) {
+exports.shopcarSumChange = function (req, res) {
   var _id = req.body.wareId
   var sum = req.body.sum
   if (sum == 0) {
-    Shopcar.remove({ _id: _id }, function(err) {
-      if (err) {
-        res.json({ "state": 0, "err": err })
-      }
-      res.json({ "state": 1 })
-    })
-    User.update({ _id: req.session.userId }, { $pull: { shopcar: _id } }, function(err) {
-      if (err) {
-        console.log(err)
-      }
-    })
+    Shopcar
+      .remove({ _id: _id })
+      .exec((err) => {
+        if (err) {
+          res.json({ "state": 0, "err": err })
+        } else {
+          res.json({ "state": 1 })
+        }
+      })
+    User
+      .update({ _id: req.session.userId }, { $pull: { shopcar: _id } })
+      .exec()
   } else {
-    Shopcar.update({ _id: _id }, { sum: sum }, function(err) {
-      if (err) {
-         res.json({ "state": 0, "err": err })
-      } else {
-         res.json({ "state": 1 })
-      }
-    })
+    Shopcar
+      .update({ _id: _id }, { sum: sum })
+      .exec((err) => {
+        if (err) {
+           res.json({ "state": 0, "err": err })
+        } else {
+           res.json({ "state": 1 })
+        }
+      })
   }
 }
-exports.pay = function(req, res) {
+exports.pay = function (req, res) {
   var order = JSON.parse(req.body.order)
   var wares = order.wares
   var msg = order.msg
@@ -120,28 +99,26 @@ exports.pay = function(req, res) {
   var order_no = time + req.session.userId.slice(9, 11)
   var price = 0
 
-  function getPrice(i) {
-    return new Promise(function(resolve, reject) {
+  function getPrice (i) {
+    return new Promise((resolve, reject) => {
       var weight = wares[i].weight
       var sum = wares[i].sum
       Ware
-        .findOne({ _id: wares[i].info._id })
-        .exec(function(err, ware) {
-            price += ware.price * weight * sum
-            resolve(i)
+        .findById(wares[i].info._id)
+        .exec((err, ware) => {
+          price += ware.price * weight * sum
+          resolve(i)
         })
     })
   }
   for (var i = 0; i < wares.length; i++) {
     getPrice(i)
-      .then(function(i) {
-        if (i == wares.length - 1) {
-          creat()
-      }
+      .then((i) => {
+        if (i == wares.length - 1) { creat() }
     })
   }
 
-  function creat() {
+  function creat () {
     if (payway === 1) {
       pingpp.charges.create({
         order_no: order_no,
@@ -156,7 +133,7 @@ exports.pay = function(req, res) {
           success_url: 'http://cakeees.top/person/orders',
           app_pay: true
         }
-      }, function(err, charge) {
+      }, (err, charge) => {
         if (err) {
           return console.log(err)
         }
@@ -175,7 +152,7 @@ exports.pay = function(req, res) {
         extra: {
           open_id: req.session.openid
         }
-      }, function(err, charge) {
+      }, (err, charge) => {
         if (err) {
           return console.log(err)
         }
@@ -193,63 +170,95 @@ exports.pay = function(req, res) {
         msg: msg,
         fee: price,
         payway: payway
-      }, function(err, order) {
-        User.update({ _id: req.session.userId }, { $addToSet: { orders: order._id } }, function(err) {
-          if (err) {
-            console.log(err)
-          }
-        })
       })
-    for (var i = wares.length - 1; i >= 0; i--) {
-      if(wares[i].shopcarId) {
-        Shopcar.remove({_id:wares[i].shopcarId},function(err){
-          if (err) {
-            return console.log(err)
-          }
-        })
-        User.update({_id:req.session.userId},{ $pull: { shopcar: wares[i].shopcarId } },function(err) {
-          if (err) {
-            return console.log(err)
-          }
-        })
+      .then((order) => {
+        User
+          .update({ _id: req.session.userId }, { $addToSet: { orders: order._id } })
+          .exec((err) => {
+            if (err) { console.log(err) }
+          })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    //删除购物车及用户信息中的相关订单
+    for (let ware of wares) {
+      if(ware._id) {
+        Shopcar
+          .remove({_id:ware._id})
+          .exec((err) => {
+            if (err) { console.log(err) }
+          })
+        User
+          .update({_id:req.session.userId},{ $pull: { shopcar: ware._id } })
+          .exec((err) => {
+            if (err) { console.log(err) }
+          })
       }
     }
   }
 }
-exports.payAgain = function(req, res) {
+exports.payAgain = function (req, res) {
   var orderId = req.body.orderId
-  Order.findOne({ _id: orderId }, function(err, order) {
-    pingpp.charges.create({
-      order_no: orderId,
-      app: { id: "app_8uP0qDHKm1C4P0Ki" },
-      channel: order.payway == 1 ? 'alipay_wap' : 'wx_pub',
-      client_ip: "123.206.9.219",
-      amount: order.fee * 100,
-      currency: "cny",
-      subject: "优力克蛋糕",
-      body: "蛋糕",
-      extra: {
-        success_url: 'http://cakeees.top/person/orders',
-        app_pay: true
-      }
-    }, function(err, charge) {
+  Order
+    .findById(orderId)
+    .exec((err, order) => {
       if (err) {
         return console.log(err)
       }
-      res.send(charge)
+      if (req.body.payway === '1') {
+        pingpp.charges.create({
+          order_no: orderId,
+          app: { id: "app_8uP0qDHKm1C4P0Ki" },
+          channel: 'alipay_wap',
+          amount: order.fee * 100,
+          client_ip: "123.206.9.219",
+          currency: "cny",
+          subject: "优力克蛋糕",
+          body: "蛋糕",
+          extra: {
+            success_url: 'http://cakeees.top/person/orders',
+            app_pay: true
+          }
+        }, (err, charge) => {
+          if (err) {
+            return console.log(err)
+          }
+          res.send(charge)
+        })
+      } else {
+        pingpp.charges.create({
+          order_no: orderId,
+          app: { id: "app_8uP0qDHKm1C4P0Ki" },
+          channel: 'wx_pub',
+          amount: order.fee * 100,
+          client_ip: "123.206.9.219",
+          currency: "cny",
+          subject: "优力克蛋糕",
+          body: "蛋糕",
+          extra: {
+            open_id: req.session.openid
+          }
+        }, (err, charge) => {
+          if (err) {
+            return console.log(err)
+          }
+          res.send(charge)
+        })
+      }
     })
-  })
 }
-exports.paySucceeded = function(req, res) {
+exports.paySucceeded = function (req, res) {
   var app = req.body.data.object.app
   var order_no = req.body.data.object.order_no
   if (app == "app_8uP0qDHKm1C4P0Ki") {
-    Order.update({ order_no: order_no }, { $set: { state: 1 } }, function(err, order) {
-        if (err) {
-          return console.log(err)
-        }
+    Order
+      .update({ order_no: order_no }, { $set: { state: 1 } })
+      .exec((err) => {
+        if (err) { return console.log(err) }
         res.sendStatus(200)
-    })
+      })
   } else {
     res.sendStatus(200)
   }

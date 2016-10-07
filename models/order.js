@@ -28,7 +28,11 @@ var orderSchema = new mongoose.Schema({
     coupon: String,
     msg: String,
     fee: Number,
-    payway: Number
+    payway: Number,
+    shopcar: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shopcar'
+    }]
 })
 
 var Order = mongoose.model('Order', orderSchema);
