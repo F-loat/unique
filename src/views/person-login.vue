@@ -1,7 +1,7 @@
 <template lang="pug">
 #loginPage.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(to="/person")
     h1.title 登录
   .content
     .content-inner
@@ -17,7 +17,7 @@
             .item-input
               input#log-password.input(type='password', placeholder='输入登录密码')
       #login-now(v-on:click='login') 登录
-      router-link.signin-turn.pull-right(:to="{ path: '/person/regist' }") 还没有账号？去注册~
+      router-link.signin-turn.pull-right(to="/person/regist") 还没有账号？去注册~
 </template>
 
 <script>
@@ -26,6 +26,7 @@ import md5 from 'md5'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'person-login',
   methods: {
     ...mapActions([
       'userInfo'
@@ -51,7 +52,7 @@ export default {
               $.toast('登录成功，正在为您跳转')
               this.userInfo()
               setTimeout(() => {
-                this.$router.go('/person')
+                this.$router.push('/person')
               }, 1000)
             } else {
               $.toast(data.err)
@@ -65,9 +66,11 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #loginPage
   .content
-    background-color #fdfefe
+    background-color bc_light
   .address
     margin .4rem 1.4rem
     height 2.4rem
@@ -75,7 +78,7 @@ export default {
       width 28% !important
   .input
     font-size .8rem !important
-    line-height 2.15rem !importane
+    line-height 2.15rem !important
   .signin-turn
     font-size .75rem
     color #ccc
@@ -83,7 +86,7 @@ export default {
 
 #login-now
   text-align center
-  background-color #1a7ace
+  background-color fc_light
   margin 1.2rem auto 0
   height 1.8rem
   line-height 1.8rem

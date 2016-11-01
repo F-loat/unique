@@ -1,17 +1,25 @@
 <template lang="pug">
-#tab1.tab.view
+#tab1.tab
   .content.webFont
-    router-link#tab1-turn1(:to="{ path: '/ware' }")
+    router-link#tab1-turn1(to="/ware")
       span 鲜花
-    router-link#tab1-turn2(:to="{ path: '/ware' }")
+    router-link#tab1-turn2(to="/ware")
       span 定制
-    router-link#tab1-turn3(:to="{ path: '/ware' }")
+    router-link#tab1-turn3(to="/ware")
       span 甜点
-    router-link#tab1-turn4(:to="{ path: '/ware' }")
+    router-link#tab1-turn4(to="/ware")
       span 蛋糕
 </template>
 
+<script>
+export default {
+  name: 'index-main'
+}
+</script>
+
 <style lang="stylus">
+@import '../themes/'
+
 /*主页面*/
 #tab1
   & > .content
@@ -19,7 +27,7 @@
     background-size contain
     bottom 2.5rem
   a
-    color #2d2d2d
+    color fc_dark
     display block
     width 3.4rem
     height 5rem

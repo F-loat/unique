@@ -11,11 +11,15 @@ html
     link(rel='shortcut icon', type='image/x-icon', href='/static/favicon.ico')
     link(rel='bookmark', type='image/x-icon', href='/static/favicon.ico')
     link(rel='stylesheet', type='text/css', href='/static/css/sm.min.css')
+    link(rel='stylesheet', type='text/css', href='/static/css/sm-extend.min.css')
   body
-    #unique
-      unique-cake
+    .page-group
+      .page.page-current
+        #unique
+          unique-cake
     script(type='text/javascript', src='/static/js/zepto.min.js', charset='utf-8')
     script(type='text/javascript') $.config = { router: false }
     script(type='text/javascript', src='/static/js/sm.min.js', charset='utf-8')
+    script(type='text/javascript', src='/static/js/sm-extend.min.js', charset='utf-8')
     script(type='text/javascript', src='/static/js/md5.min.js', charset='utf-8')
     script(type='text/javascript', src='/static/js/pingpp.min.js', charset='utf-8')

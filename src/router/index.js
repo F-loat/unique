@@ -20,7 +20,7 @@ const routes = [
       {
         path: 'ware',
         component (resolve) {
-          require(['../views/index-list'], resolve)
+          require(['../views/index-ware'], resolve)
         }
       },
       // {
@@ -47,6 +47,12 @@ const routes = [
     path: '/ware/:wareId',
     component (resolve) {
       require(['../views/ware-detail'], resolve)
+    }
+  },
+  {
+    path: '/order',
+    component (resolve) {
+      require(['../views/ware-order'], resolve)
     }
   },
   {

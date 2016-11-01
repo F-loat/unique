@@ -1,9 +1,9 @@
 <template lang="pug">
-#tab5.tab.view
+#tab5.tab
   header.bar.bar-nav
-    img(:src='user.headimgurl')
+    img(:src='headimgurl')
     .webFont(v-if='!user.nickname')
-      router-link(:to="{ path: '/person/fastLogin' }") 登录/注册
+      router-link(to="/person/fastLogin") 登录/注册
     div(v-else)
       | {{user.nickname}}
       span#logout(v-on:click='logout') [注销]
@@ -11,37 +11,37 @@
     .list-block
       ul
         li.item-content.item-link
-          router-link(:to="{ path: '/person/orders' }")
+          router-link(to="/person/orders")
             .item-inner
               .item-title
                 i.icon.icon-edit
                 i 我的订单
         li.item-content.item-link
-          router-link(:to="{ path: '/person/addresses?backurl=/person' }")
+          router-link(to="/person/addresses")
             .item-inner
               .item-title
                 i.icon.icon-card
                 i 收货地址
         li.item-content.item-link
-          router-link(:to="{ path: '/person/coupons' }")
+          router-link(to="/person/coupons")
             .item-inner
               .item-title
                 i.icon.icon-code
                 i 我的优惠券
         li.item-content.item-link
-          router-link(:to="{ path: '/fedBack' }")
+          router-link(to="/fedBack")
             .item-inner
               .item-title
                 i.icon.icon-emoji
                 i 意见反馈
         li.item-content.item-link
-          router-link(:to="{ path: '/aboutUs' }")
+          router-link(to="/aboutUs")
             .item-inner
               .item-title
                 i.icon.icon-friends
                 i 关于我们
         li.item-content.item-link
-          router-link(:to="{ path: '/userAgreement' }")
+          router-link(to="/userAgreement")
             .item-inner
               .item-title
                 i.icon.icon-app
@@ -64,10 +64,14 @@ import $ from 'zepto'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  name: 'index-person',
   computed: {
     ...mapGetters({
       user: 'getUserInfo'
-    })
+    }),
+    headimgurl () {
+      return this.user.headimgurl || 'http://cakeees.top/upload/img/head.jpg'
+    }
   },
   methods: {
     ...mapActions([
@@ -92,6 +96,8 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 /*个人中心样式*/
 #tab5
   & > .content
@@ -102,7 +108,7 @@ export default {
       padding 0 0.75rem
   .bar
     height 7rem
-    color #fdfefe
+    color bc_light
     text-align center
     padding-top .85rem
     img
@@ -110,7 +116,7 @@ export default {
       height 4rem
       border-radius 2rem
     a
-      color #fdfefe
+      color bc_light
   .bar-nav
     & ~ .content
       top 7rem
@@ -122,18 +128,18 @@ export default {
     a
       display block
       width 100%
-      color #6d6d72
+      color fc_gray
 
 #Tel
   width 100%
   height 2.2rem
   text-align center
-  background-color #fff
+  background-color bc_light
   margin-top 1rem
   border 1px solid #f7f7f7
   span
     font-size .85rem
     line-height 2.2rem
     margin 0 0.3rem
-    color #222
+    color fc_dark
 </style>

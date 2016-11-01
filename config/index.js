@@ -17,12 +17,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      'http://cakeees.top/request': {
-        target: 'http://127.0.0.1/request',
-        changeOrigin: true
+      '/request': {
+        target: 'http://127.0.0.1:8888/request',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/request': ''
+        }
       },
       '/upload': {
-        target: 'http://127.0.0.1/upload',
+        target: 'http://127.0.0.1:8888/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/upload': ''

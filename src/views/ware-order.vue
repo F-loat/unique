@@ -1,14 +1,14 @@
 <template lang="pug">
 #wareOrder.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/ware/' + this.$route.params.wareId }")
+    a.icon.icon-left.pull-left(@click="$router.back()")
     h1.title 订单确认
   .content
     .content-inner
       header.address.bar.bar-nav.bar-sec.row
         div
-          router-link(:to="{ path: '/person/addresses', query: { backurl: '/order/' + this.$route.params.wareId }}", v-if='!this.address') 添加收货地址
-          router-link#address-id(:to="{ path: '/person/addresses?backurl=/order/' + this.$route.params.wareId }", v-else, :data-address-id='address._id') {{address.site}}
+          router-link(to="/person/addresses", v-if='!this.address') 添加收货地址
+          router-link#address-id(to="/person/addresses", v-else, :data-address-id='address._id') {{address.site}}
       .order-list-wrap
         .content-inner
           ul.order-list.list-block.media-list
@@ -19,7 +19,8 @@
                 .item-inner
                   .item-title {{ware.info.nameEn}}
                   .item-subtitle {{ware.info.name}}
-                  .item-subtitle 规格：{{ware.weight}}
+                  .item-subtitle 规格：{{ware.weight}} 磅
+                  .item-subtitle 数量：{{ware.sum}}
                   .item-text.pull-left ￥{{ware.info.price}}/磅
           .order-about.list-block
             ul
@@ -60,7 +61,7 @@
       .list-block.media-list.pull-left
         label.label-checkbox.item-content
           .item-inner
-            .pull-right 共￥{{order.price}}
+            .pull-right 共￥{{order.price.toFixed(2)}}
       #pay.order(v-on:click='pay') 下单
 </template>
 
@@ -70,12 +71,18 @@ import pingpp from 'pingpp'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  name: 'ware-detail',
   activated () {
-    this.wareInfo(this.$route.params.wareId)
-    this.orderInit()
-    this.orderWares(this.ware)
-    this.order.price = 5
-    this.getAddress()
+    if (this.$route.params.wareId) {
+      this.wareInfo(this.$route.params.wareId)
+      this.orderInit()
+      this.orderWares(this.ware)
+    } else if (!this.order.wares.length) {
+      this.$router.push('/shopcar')
+    }
+    for (let ware of this.order.wares) {
+      this.order.price += ware.info.price * ware.sum * ware.weight
+    }
     var date = new Date()
     $('#datetime-picker').datetimePicker({
       value: [date.getFullYear(), (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1), date.getDate() > 9 ? date.getDate() : '0' + date.getDate(), '11', '30']
@@ -83,7 +90,6 @@ export default {
   },
   data () {
     return {
-      address: '',
       wx: navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1
     }
   },
@@ -92,21 +98,22 @@ export default {
       user: 'getUserInfo',
       ware: 'getWareInfo',
       order: 'getOrderInfo'
-    })
+    }),
+    address () {
+      for (let address of this.user.addresses) {
+        if (address.state === 1) {
+          return address
+        }
+      }
+    }
   },
   methods: {
     ...mapActions([
+      'userInfo',
       'wareInfo',
       'orderInit',
       'orderWares'
     ]),
-    getAddress () {
-      for (let address of this.user.addresses) {
-        if (address.state === 1) {
-          this.address = address
-        }
-      }
-    },
     orderMessage () {
       $.prompt('您有什么要求呢？',
         (value) => {
@@ -131,6 +138,7 @@ export default {
         } else {
           return $.toast('请先添加地址')
         }
+        this.order.receivingTime = $('#datetime-picker').val()
         $.ajax({
           type: 'post',
           url: '/request/ware/pay',
@@ -140,11 +148,11 @@ export default {
           success: (data) => {
             pingpp.createPayment(data, (result, err) => {
               if (result === 'success') {
-                console.log('success')
+                this.$router.push('/person/orders')
               } else if (result === 'fail') {
-                console.log('fail')
+                $.toast('付款失败，请稍后再试')
               } else if (result === 'cancel') {
-                console.log('cancel')
+                $.toast('已取消支付')
               }
             })
           }
@@ -158,12 +166,14 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #wareOrder
   .content
-    background-color #fdfefe
+    background-color bc_light
   header
     a
-      color #222
+      color fc_dark
   .address
     text-align center
     line-height 2.2rem
@@ -171,14 +181,14 @@ export default {
     .list-block
       .item-link
         &:active
-          background-color #fcfcfc
+          background-color bc_light
 
 .picker-modal
   .bar
     .button-link
-      color #fff
+      color bc_light
     .title
-      color #222 !important
+      color fc_dark !important
 
 .order-about
   margin 0
@@ -200,11 +210,11 @@ export default {
   .list-block
     margin 0
     width 70%
-    background-color #1a7ace
-    color #222
+    background-color mc
+    color fc_dark
     .item-inner
       &:after
-        background-color #1a7ace
+        background-color fc_light
   .item-inner
     padding 0 .6rem 0 0
     box-sizing border-box
@@ -229,5 +239,5 @@ export default {
 
 html:not(.watch-active-state) .pay-way label.label-checkbox:active,
 .pay-way label.label-checkbox.active-state
-  background-color #fcfcfc
+  background-color bc_light
 </style>

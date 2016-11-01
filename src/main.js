@@ -4,7 +4,7 @@ import router from './router/'
 import uniqueCake from './unique-cake'
 
 new Vue({
-  components: { uniqueCake },
+  router,
   store,
-  router
+  ...uniqueCake
 }).$mount('#unique')

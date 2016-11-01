@@ -1,12 +1,13 @@
 <template lang="pug">
 #myAddresses.view
   header.bar.bar-nav
-    a.icon.icon-left.pull-left(:href="backurl")
+    a.icon.icon-left.pull-left(@click='$router.back()')
     h1.title 收货地址
   .content
     .content-inner
-      ul
-        li.clearfix.ready-address(v-on:click='defaultAddress', v-for='(address, index) in user.addresses', :data-address-id='index', transition='fade')
+      transition-group(name="fade", tag="ul")
+        li.clearfix.ready-address(v-on:click='defaultAddress', v-for='(address, index) in user.addresses', :data-address-id='index',
+         key='index')
           span.pull-left.address-detail
             h4 {{address.phone}}（{{address.receiver}}）
             p {{address.site}}
@@ -14,7 +15,7 @@
             span.address-edit.icon.icon-edit(v-on:click='editAddress') 编辑
             span.address-delete.icon.icon-remove(v-on:click='deleteAddress') 删除
           span.badge.pull-right(v-if='address.state==1') 默认
-      router-link.add(:to="{ path: '/person/addresses/new' }") 新增
+      router-link.add(to="/person/addresses/new") 新增
 </template>
 
 <script>
@@ -22,22 +23,14 @@ import $ from 'zepto'
 import { mapGetters } from 'vuex'
 
 export default {
-  mounted () {
-    this.$nextTick(function () {
-      this.backurl = this.$route.query.backurl || this.backurl
-    })
-  },
-  data () {
-    return {
-      backurl: {
-        path: ''
-      }
-    }
-  },
+  name: 'person-addresses',
   computed: {
     ...mapGetters({
       user: 'getUserInfo'
     })
+  },
+  activated () {
+    if (!this.user.addresses.length) this.$router.replace('/person/addresses/new')
   },
   methods: {
     defaultAddress (e) {
@@ -56,7 +49,7 @@ export default {
           },
           success: (data) => {
             if (data.state === 0) {
-              $.toast('数据同步失败，请稍后再试')
+              $.toast('数据同步失败，请重新登录尝试')
             }
           }
         })
@@ -77,7 +70,7 @@ export default {
             },
             success: (data) => {
               if (data.state === 0) {
-                return $.toast('数据同步失败，请稍后再试')
+                return $.toast('数据同步失败，请重新登录尝试')
               }
               this.user.addresses.splice(addressId, 1)
             }
@@ -86,16 +79,18 @@ export default {
       }
     },
     editAddress () {
-      console.log('lalala')
+      $.toast('暂未开放')
     }
   }
 }
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #myAddresses
   .content
-    background-color #fdfefe
+    background-color bc_light
   .content-block
     margin 0
     padding 0
@@ -126,8 +121,8 @@ export default {
   height 2.2rem
   line-height 2.2rem
   text-align center
-  background-color #1975c8
-  color #000
+  background-color mc
+  color fc_dark
   font-size .8rem
   margin-top .4rem
 

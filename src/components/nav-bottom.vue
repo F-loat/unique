@@ -1,36 +1,52 @@
 <template lang="pug">
-div
-  transition(name="fade")
-    keep-alive
-      router-view
+div.view
+  keep-alive
+    router-view
   nav.bar.bar-tab
-    router-link.tab-item(:to="{ path: '/index' }")
+    router-link.tab-item(to="/index")
       span.icon.icon-home
       span.tab-label 首页
-    router-link.tab-item(:to="{ path: '/ware' }")
+    router-link.tab-item(to="/ware")
       span.icon.icon-gift
       span.tab-label 分类列表
     //- router-link.tab-item.tab-link(:to="{ path: '/picture' }")
     //-   span.icon.icon-picture
     //-   span.tab-label 照片蛋糕
-    router-link.tab-item(:to="{ path: '/shopcar' }")
+    router-link.tab-item(to="/shopcar")
       span.icon.icon-cart
       span.tab-label 购物车
-    router-link.tab-item(:to="{ path: '/person' }")
+      transition(name="fade")
+        span.badge(v-if="user.shopcar.length") {{user.shopcar.length}}
+    router-link.tab-item(to="/person")
       span.icon.icon-me
       span.tab-label 我
 </template>
 
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'nav-bottom',
+  computed: {
+    ...mapGetters({
+      user: 'getUserInfo'
+    })
+  }
+}
+</script>
+
 <style lang="stylus">
+@import '../themes/'
+
 /*底部导航颜色*/
 nav.bar 
-  background-color: #444a5a
+  background-color: bc_dark
 
 .bar-tab .tab-item.router-link-active
-  color: #1777cb
+  color: mc
 
 .bar-tab .tab-item 
-  color: #fdfefe
+  color: bc_light
 
 .bar-tab:before
   background-color: #444a5a

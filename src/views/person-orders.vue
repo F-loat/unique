@@ -1,8 +1,8 @@
 <template lang="pug">
 #myOrders.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
-    a.icon.icon-refresh.pull-right
+    router-link.icon.icon-left.pull-left(to="/person")
+    a.icon.icon-refresh.pull-right(@click='userInfo()')
     h1.title 我的订单
   .content
     .content-inner
@@ -17,26 +17,28 @@
               .no-order(v-if='!user.orders.length')
                 p 暂无相关订单
                 p
-                  a(v-on:click='goShopping') 去逛逛~
-              div(v-else='')
+                  a(@click="$router.push('/ware')") 去逛逛~
+              div(v-else)
                 ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state==0')
+                  li.o-order(v-for='order in user.orders', v-if='order.state===0')
                     .o-wait 等待支付
                     div
                       img(:src='order.wares[0].info.img')
                       .o-order-info
                         p 下单时间：{{order.orderDate}}
                         p 总价：￥{{order.fee}}
-                        .button.button-warning(v-on:click='payAgain', :data-order-id='order._id') 去支付
+                        .buttons.clearfix(:data-order-id='order._id')
+                          .button.button-warning.pull-right(@click='payAgain') 去支付
+                          .button.button-light.icon.icon-remove.pull-right(@click='deleteOrder') 删除
           #oTab2.tab
             .content-block
               .no-order(v-if='!user.orders.length')
                 p 暂无相关订单
                 p
-                  a(v-on:click='goShopping') 去逛逛~
-              div(v-else='')
+                  a(@click="$router.push('/ware')") 去逛逛~
+              div(v-else)
                 ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state==1')
+                  li.o-order(v-for='order in user.orders', v-if='order.state===1')
                     .o-wait 等待配送
                     div
                       img(:src='order.wares[0].info.img')
@@ -49,10 +51,10 @@
               .no-order(v-if='!user.orders.length')
                 p 暂无相关订单
                 p
-                  a(v-on:click='goShopping') 去逛逛~
-              div
+                  a(@click="$router.push('/ware')") 去逛逛~
+              div(v-else)
                 ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state==2')
+                  li.o-order(v-for='order in user.orders', v-if='order.state===2')
                     div 订单已完成
                     div
                       img(:src='order.wares[0].info.img')
@@ -65,34 +67,83 @@
 <script>
 import $ from 'zepto'
 import pingpp from 'pingpp'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  name: 'person-orders',
   computed: {
     ...mapGetters({
       user: 'getUserInfo'
     })
   },
+  activated () {
+    this.userInfo()
+  },
   methods: {
-    payAgain: function (e) {
-      var orderId = $(e.target).data('orderId')
-      $.ajax({
-        type: 'post',
-        url: '/request/ware/pay/again',
-        data: {
-          orderId: orderId
-        },
-        success: function (data) {
-          pingpp.createPayment(data, function (result, err) {
-            if (result === 'success') {
-              // 只有微信公众账号 wx_pub 支付成功的结果会在这里返回，其他的支付结果都会跳转到 extra 中对应的 URL。
-            } else if (result === 'fail') {
-              // charge 不正确或者微信公众账号支付失败时会在此处返回
-            } else if (result === 'cancel') {
-              // 微信公众账号支付取消支付
+    ...mapActions([
+      'userInfo'
+    ]),
+    payAgain (e) {
+      function pay (way) {
+        var orderId = $(e.target).parent().data('orderId')
+        $.ajax({
+          type: 'post',
+          url: '/request/ware/pay/again',
+          data: {
+            payway: way,
+            orderId: orderId
+          },
+          success: (data) => {
+            pingpp.createPayment(data, function (result, err) {
+              if (result === 'success') {
+                this.userInfo()
+              } else if (result === 'fail') {
+                $.toast('付款失败，请稍后再试')
+              } else if (result === 'cancel') {
+                $.toast('已取消支付')
+              }
+            })
+          }
+        })
+      }
+      var ua = navigator.userAgent.toLowerCase()
+      var isWeixin = ua.indexOf('micromessenger') !== -1
+      if (isWeixin) {
+        $.modal({
+          title: '使用何种方式支付？',
+          buttons: [
+            {
+              text: '支付宝',
+              onClick: () => pay('1')
+            },
+            {
+              text: '微信支付',
+              onClick: () => pay('0')
+            },
+            {
+              text: '取消'
             }
-          })
-        }
+          ]
+        })
+      } else pay('1')
+    },
+    deleteOrder (e) {
+      var orderId = $(e.target).parent().data('orderId')
+      $.confirm('确认删除？', () => {
+        $.ajax({
+          type: 'post',
+          url: '/request/user/order/delete',
+          dataType: 'json',
+          data: {
+            orderId: orderId
+          },
+          success: (data) => {
+            if (data.state === 0) {
+              return $.toast('数据同步失败，请重新登录尝试')
+            }
+            this.userInfo()
+          }
+        })
       })
     }
   }
@@ -100,9 +151,11 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #myOrders
   .content
-    background-color #f8fafc
+    background-color bc_light
   .content-block
     margin 0
     padding 0
@@ -114,26 +167,28 @@ export default {
     display block
     width 4.8rem
     height 2.4rem
-    background-color #1975c8
-    color #000
+    background-color mc
+    color fc_dark
     line-height 2.4rem
     margin 0 auto
 
 .o-order
-  background-color #fff
+  background-color bc_light
   margin .6rem 0 0
   padding .4rem .6rem 0
   img
     width 30%
-  .button
+  .button-warning
     width 40%
-    margin-left 60%
+  .button-light
+    color #ccc
+    margin-right 12px
 
 .o-order-info
   width 70%
   float right
   padding-left .6rem
-  margin-top -1.4rem
+  margin-top -.4rem
   p
     margin .6rem 0
     font-size .7rem

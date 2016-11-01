@@ -1,7 +1,7 @@
 <template lang="pug">
 #userAgreement.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(to="/person")
     h1.title 用户使用协议
   .content
     p
@@ -9,11 +9,16 @@
 </template>
 
 <script>
+export default {
+  name: 'user-agreement'
+}
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #userAgreement
   .content
-    background-color #fdfefe
+    background-color bc_light
     text-indent 2em
 </style>

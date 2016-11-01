@@ -1,7 +1,7 @@
 <template lang="pug">
 #myCoupons.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(to="/person")
     a.icon.icon-refresh.pull-right
     h1.title 我的优惠券
   .content
@@ -12,6 +12,9 @@
 </template>
 
 <script>
+export default {
+  name: 'person-coupons'
+}
 </script>
 
 <style lang="stylus">

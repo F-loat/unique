@@ -1,81 +1,168 @@
 <template lang="pug">
-#tab4.tab.view
+#tab4.tab
   .content
     header.bar.bar-nav
       h1.title 购物车
     .content
-      #no-ware(v-if='!user.shopcar.length', transition='fade')
-        span.icon.icon-cart
-        h4 购物车空空如也
-      div(v-else='', transition='fade')
-        header.bar.bar-nav.bar-sec
-          span.col-50
-            span.icon.icon-app
-            |  方形蜡烛
-            span.icon.icon-check
-          span.col-50
-            span.icon.icon-computer
-            |  餐具套餐
-            span.icon.icon-check
-        #shopcar-list.content(data-type='js')
-          .content-inner
-            ul.order-list.list-block.media-list
-              li(v-for='(ware, index) in user.shopcar', :data-shopcar-id='index', transition='fade')
-                label.label-checkbox.item-content
-                  .item-media
-                    i.icon.icon-form-checkbox(v-bind:class="{'button-checked': ware.state}", v-on:click='check')
-                  .item-media
-                    img(v-bind:src='ware.info.img')
-                  .item-inner
-                    .item-title {{ware.info.nameEn}}
-                    .item-subtitle {{ware.info.name}}
-                    .item-subtitle 重量：{{ware.weight}}磅
-                    .item-text.pull-left ￥{{ware.info.price*ware.sum*ware.weight}}
-                    .pull-right(:data-shopcar-id='index')
-                      span.icon.icon-down(v-on:click='sumChange(+1,$event)')
-                      |  {{ware.sum}}
-                      span.icon.icon-up(v-on:click='sumChange(-1,$event)')
+      transition(name="fade")
+        #no-ware(v-if='!user.shopcar.length')
+          span.icon.icon-cart
+          h4 购物车空空如也
+      transition(name="fade")
+        div(v-if='user.shopcar.length')
+          header.bar.bar-nav.bar-sec
+            span.col-50
+              span.icon.icon-app
+              |  方形蜡烛
+              span.icon.icon-check
+            span.col-50
+              span.icon.icon-computer
+              |  餐具套餐
+              span.icon.icon-check
+          #shopcar-list.content(data-type='js')
+            .content-inner
+              transition-group(name="fade", tag="ul").order-list.list-block.media-list
+                li(v-for='(ware, index) in user.shopcar', :data-shopcar-id='index', :key='index')
+                  label.label-checkbox.item-content
+                    .item-media
+                      i.icon.icon-form-checkbox(:class="{'button-checked': ware.state}", @click='check')
+                    .item-media
+                      img(v-bind:src='ware.info.img')
+                    .item-inner
+                      .item-title {{ware.info.nameEn}}
+                      .item-subtitle {{ware.info.name}}
+                      .item-subtitle 重量：{{ware.weight}}磅
+                      .item-text.pull-left ￥{{ware.info.price*ware.sum*ware.weight}}
+                      .pull-right(:data-shopcar-id='index')
+                        span.icon.icon-down(@click='sumChange(+1,$event)')
+                        |  {{ware.sum}}
+                        span.icon.icon-up(@click='sumChange(-1,$event)')
   #buy-now(v-if='user.shopcar.length', transition='fade')
     .list-block.media-list.pull-left
       label.label-checkbox.item-content
-        .item-media(v-on:click='checkAll')
-          i.icon.icon-form-checkbox
+        .item-media
+          i.icon.icon-form-checkbox(:class="{'button-checked': isAll}", @click='checkAll')
         .item-inner
           .item-title.pull-left 全选
-          .pull-right ￥198
+          .pull-right ￥ {{price}}
     .order(v-on:click='shopcarBuy') 购买
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import $ from 'zepto'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  name: 'index-shopcar',
   computed: {
     ...mapGetters({
-      user: 'getUserInfo'
-    })
+      user: 'getUserInfo',
+      order: 'getOrderInfo'
+    }),
+    price () {
+      var price = 0
+      for (let ware of this.user.shopcar) {
+        if (ware.state === 1) {
+          price += ware.info.price * ware.sum * ware.weight
+        }
+      }
+      return price.toFixed(2)
+    },
+    isAll () {
+      for (let ware of this.user.shopcar) {
+        if (ware.state === 0) {
+          return false
+        }
+      }
+      return true
+    }
+  },
+  methods: {
+    ...mapActions([
+      'orderInit'
+    ]),
+    sumChange (amphoteric, e) {
+      var shopcarId = $(e.target).parent().data('shopcarId')
+      this.user.shopcar[shopcarId].sum -= amphoteric
+      if (this.user.shopcar[shopcarId].sum === 0) {
+        $.confirm('删除该订单？',
+          () => {
+            this.syncShopcarSum(shopcarId)
+            this.user.shopcar.splice(shopcarId, 1)
+            setTimeout(function () { $('#shopcar-list').scroller('refresh') }, 300)
+          },
+          () => {
+            this.user.shopcar[shopcarId].sum = 1
+          }
+        )
+      } else {
+        this.syncShopcarSum(shopcarId)
+      }
+    },
+    syncShopcarSum (shopcarId) {
+      $.ajax({
+        type: 'post',
+        url: '/request/ware/shopcar/sum',
+        dataType: 'json',
+        data: {
+          wareId: this.user.shopcar[shopcarId]._id,
+          sum: this.user.shopcar[shopcarId].sum
+        },
+        success: (data) => {
+          if (data.state === 0) {
+            $.toast('数据同步出错')
+          }
+        }
+      })
+    },
+    check (e) {
+      var shopcarId = $(e.target).parent().parent().parent().data('shopcarId')
+      this.user.shopcar[shopcarId].state = this.user.shopcar[shopcarId].state === 1 ? 0 : 1
+    },
+    checkAll () {
+      for (let ware of this.user.shopcar) {
+        ware.state = ware.state === 1 ? 0 : 1
+      }
+    },
+    shopcarBuy () {
+      this.orderInit()
+      for (let ware of this.user.shopcar) {
+        if (ware.state === 1) {
+          this.order.wares.push(ware)
+        }
+      }
+      if (this.order.wares.length) {
+        this.$router.push('/order')
+      } else {
+        return $.toast('请选择要购买的商品')
+      }
+    }
   }
 }
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 /*购物车界面样式*/
 #tab4
   & > .content
     bottom 2.5rem
     padding-bottom 2.5rem
+  .content-inner
+    padding-bottom 2.9rem
   .bar-sec
     .col-50
       text-align center
       line-height 2.2rem
-      color #222
+      color fc_dark
       float left
       width 50%
     .icon
-      color #fdfefe
+      color bc_light
 
 #no-ware
-  color #1c72c1
+  color mc
   text-align center
   margin-top 8rem
   span
@@ -86,7 +173,7 @@ export default {
 
 .button-checked
   border none !important
-  background-color #1975c8 !important
+  background-color mc !important
   &:after
     position absolute !important
     top .2rem !important
@@ -108,11 +195,11 @@ export default {
   .list-block
     margin 0
     width 70%
-    background-color #1a7ace
-    color #222
+    background-color mc
+    color fc_dark
     .item-inner
       &:after
-        background-color #1a7ace
+        background-color fc_light
   .item-inner
     padding 0 .6rem 0 0
     box-sizing border-box

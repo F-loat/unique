@@ -1,7 +1,7 @@
 <template lang="pug">
 #newAddress.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person/addresses' }")
+    a.icon.icon-left.pull-left(@click='$router.back()')
     h1.title  添加地址 
   .content
     .content-inner
@@ -21,7 +21,7 @@
             .item-title.label 地址：
             .item-input
               input#address-site.input(type='text', placeholder='路名/小区/楼号/门牌号')
-      a.add(v-on:click='newAddress') 新增
+      a.add(@click='newAddress') 新增
 </template>
 
 <script>
@@ -29,6 +29,7 @@ import $ from 'zepto'
 import { mapGetters } from 'vuex'
 
 export default {
+  name: 'new-address',
   computed: {
     ...mapGetters({
       user: 'getUserInfo'
@@ -62,7 +63,7 @@ export default {
             } else {
               this.user.addresses.push(data.address)
               $.toast('地址添加成功')
-              this.$router.go('/person/addresses')
+              this.$router.back()
             }
           }
         })
@@ -73,9 +74,11 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #newAddress
   .content
-    background-color #fdfefe
+    background-color bc_light
   .address
     margin .4rem 2rem
     height 2.4rem
@@ -92,7 +95,7 @@ export default {
   height 2.2rem
   line-height 2.2rem
   text-align center
-  background-color #1975c8
-  color #000
+  background-color mc
+  color fc_dark
   font-size .8rem
 </style>

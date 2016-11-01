@@ -1,7 +1,7 @@
 <template lang="pug">
 #fastLoginPage.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(to="/person")
     h1.title 快速登录
   .content
     .content-inner
@@ -18,8 +18,7 @@
               input#fastLog-identify.input.pull-left(type='number', placeholder='请输入验证码')
               input#fastGet-identify.pull-right(v-on:click='fastGetIdentify', type='button', value='获取验证码')
       #fastLogin-now(v-on:click='fastLogin') 快速登录
-      router-link.signin-turn.pull-right(:to="{ path: '/person/login' }") 账号密码登录
-      a.signin-turn.pull-right(href=" https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=http%3A%2F%2Fcakeees.top&response_type=code&scope=snsapi_userinfo&state=wxoauth#wechat_redirect") 微信登录
+      router-link.signin-turn.pull-right(to="/person/login") 账号密码登录
 </template>
 
 <script>
@@ -27,6 +26,7 @@ import $ from 'zepto'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'fast-login',
   methods: {
     ...mapActions([
       'userInfo'
@@ -87,7 +87,7 @@ export default {
               $.toast('登录成功，正在为您跳转')
               this.userInfo()
               setTimeout(() => {
-                this.$router.go('/person')
+                this.$router.push('/person')
               }, 1000)
             } else {
               $.toast(data.err)
@@ -101,9 +101,11 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #fastLoginPage
   .content
-    background-color #fdfefe
+    background-color bc_light
   .address
     margin .4rem 1.4rem
     height 2.4rem
@@ -111,7 +113,7 @@ export default {
       width 28% !important
   .input
     font-size .8rem !important
-    line-height 2.15rem !importane
+    line-height 2.15rem !important
   .signin-turn
     font-size .75rem
     color #ccc
@@ -119,7 +121,7 @@ export default {
 
 #fastLogin-now
   text-align center
-  background-color #1a7ace
+  background-color mc
   margin 1.2rem auto 0
   height 1.8rem
   line-height 1.8rem
@@ -132,7 +134,7 @@ export default {
   line-height 1.5rem
   margin-top .2rem
   padding 0
-  background-color #1a7ace
+  background-color mc
   border none
   transition all ease .3s
   &:active

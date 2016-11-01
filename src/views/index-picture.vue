@@ -1,5 +1,5 @@
 <template lang="pug">
-#tab3.tab.view
+#tab3.tab
   header.bar.bar-nav
     h1.title 照片蛋糕
   .content
@@ -14,13 +14,18 @@
 </template>
 
 <script>
+export default {
+  name: 'index-picture'
+}
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 /*照片蛋糕界面样式*/
 #tab3
   .content
-    background-color #fbfafa
+    background-color bc_light
     bottom 2.5rem
   .row
     position absolute

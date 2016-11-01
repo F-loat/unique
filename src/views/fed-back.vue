@@ -1,7 +1,7 @@
 <template lang="pug">
 #fedBack.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person' }")
+    router-link.icon.icon-left.pull-left(to="/person")
     h1.title 用户反馈
   .content
     .item-content
@@ -14,12 +14,16 @@
 </template>
 
 <script>
+export default {
+  name: 'fed-back'
+}
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 .content
-  background-color #fdfefe
-  background-color #fdfefe
+  background-color bc_light
 
 .content-block
   margin 0
@@ -34,7 +38,7 @@
     width 90%
     height 8rem
     margin 1rem 5% 0 5%
-    background-color #fdfefe
+    background-color bc_light
     border none
     box-shadow none
     transition all ease .3s
@@ -46,8 +50,8 @@
     display block
     width 4.8rem
     height 2.4rem
-    background-color #1975c8
-    color #000
+    background-color mc
+    color fc_dark
     line-height 2.4rem
     margin 0 auto
 </style>

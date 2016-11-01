@@ -1,7 +1,7 @@
 <template lang="pug">
 #registPage.view
   header.bar.bar-nav
-    router-link.icon.icon-left.pull-left(:to="{ path: '/person/login' }")
+    router-link.icon.icon-left.pull-left(to="/person/login")
     h1.title 注册
   .content
     .content-inner
@@ -28,7 +28,7 @@
               input#reg-identify.input.pull-left(type='number', placeholder='请输入验证码')
               input#get-identify.pull-right(v-on:click='getIdentify', type='button', value='获取验证码')
       #regist-now(v-on:click='regist') 注册 
-      router-link.signin-turn.pull-right(:to="{ path: '/person/login' }") 已有账号？去登陆~
+      router-link.signin-turn.pull-right(to="/person/login") 已有账号？去登陆~
 </template>
 
 <script>
@@ -37,6 +37,7 @@ import md5 from 'md5'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'person-regist',
   methods: {
     ...mapActions([
       'userInfo'
@@ -69,7 +70,7 @@ export default {
               $.toast('注册成功，正在为您登录')
               this.userInfo()
               setTimeout(() => {
-                this.$router.go('/person')
+                this.$router.push('/person')
               }, 1000)
             } else {
               $.toast(data.err)
@@ -118,9 +119,11 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../themes/'
+
 #registPage
   .content
-    background-color #fdfefe
+    background-color bc_light
   .list-block
     .item-inner
       padding-right 0
@@ -139,7 +142,7 @@ export default {
 
 #regist-now
   text-align center
-  background-color #1a7ace
+  background-color mc
   margin 1.2rem auto 0
   height 1.8rem
   line-height 1.8rem
@@ -152,7 +155,7 @@ export default {
   line-height 1.5rem
   margin-top .2rem
   padding 0
-  background-color #1a7ace
+  background-color mc
   border none
   transition all ease .3s
   &:active

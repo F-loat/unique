@@ -13,6 +13,15 @@ class Ware {
   }
 }
 
+class Wares {
+  constructor () {
+    this.a = []
+    this.b = []
+    this.c = []
+    this.d = []
+  }
+}
+
 class User {
   constructor () {
     this.nickname = ''
@@ -40,12 +49,7 @@ class Order {
 // 创建一个对象来保存应用启动时的初始状态
 const state = {
   user: new User(),
-  wares: {
-    a: [],
-    b: [],
-    c: [],
-    d: []
-  },
+  wares: new Wares(),
   ware: new Ware(),
   order: new Order()
 }
@@ -60,9 +64,12 @@ const mutations = {
       url: '/request/user',
       dataType: 'json',
       success: data => {
-        if (data.state !== 0) {
+        if (data) {
+          for (let order of data.orders) {
+            order.orderDate = new Date(order.orderDate).toLocaleString()
+            order.receive = new Date(order.receive).toLocaleString()
+          }
           state.user = data
-          state.user.headimgurl = state.user.headimgurl || 'http://cakeees.top/upload/img/head.jpg'
         }
       },
       error: () => $.toast('用户信息获取失败')
@@ -73,17 +80,19 @@ const mutations = {
       type: 'get',
       url: '/request/ware',
       success: data => {
+        var temp = new Wares()
         data.forEach((ware) => {
           if (ware.type === 0) {
-            state.wares.a.push(ware)
+            temp.a.push(ware)
           } else if (ware.type === 1) {
-            state.wares.b.push(ware)
+            temp.b.push(ware)
           } else if (ware.type === 2) {
-            state.wares.c.push(ware)
+            temp.c.push(ware)
           } else if (ware.type === 3) {
-            state.wares.d.push(ware)
+            temp.d.push(ware)
           }
         })
+        state.wares = temp
       },
       error: () => $.toast('商品信息获取失败')
     })
