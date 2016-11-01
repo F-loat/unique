@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var wareSchema = new mongoose.Schema({
     type: Number,
     img: String,
+    imgs: [String],
     nameEn: String,
     name: String,
     description: [String],

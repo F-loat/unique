@@ -4,19 +4,22 @@ var mongoose = require('mongoose');
 var User = require('../models/user');
 var Shopcar = require('../models/shopcar');
 var Address = require('../models/address');
+var Order = require('../models/order');
 var OAuth = require('wechat-oauth');
-var client = new OAuth('wx3eb86a311c6b9da4', '38cfd0b73c0c082302320214ad96a2b7');
-var url = client.getAuthorizeURL('http://cakeees.top', 'wxoauth', 'snsapi_userinfo');
-console.log(url)
+var wx = require('./key/wx.json');
+var client = new OAuth(wx.appid, wx.appsecret);
 
 //数据
 exports.wxoauth = function (req, res) {
-  if (req.session.userId) {
+  if (req.query.code === "undefined") {
+    return res.json({"turnUrl" : "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=" + req.headers.referer + "&response_type=code&scope=snsapi_userinfo&state=wxoauth&connect_redirect=1#wechat_redirect", "state" : 0})
+  }
+  if (req.session.openid) {
     res.json({ "state": 1 })
   } else {
     client.getUserByCode(req.query.code, (err, result) => {
       if (err) {
-        return res.send(err)
+        return res.json({"turnUrl" : "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=" + req.headers.referer + "&response_type=code&scope=snsapi_userinfo&state=wxoauth&connect_redirect=1#wechat_redirect", "state" : 0, "err" : err})
       } else if (result.openid) {
         User
           .findOne({ openid: result.openid })
@@ -67,68 +70,72 @@ exports.info = function (req, res) {
       populate: { path: 'info' }
     })
     .exec((err, user) => {
-      user ? res.send(user) : res.status(404)
+      res.send(user)
     })
 }
 exports.identify = function (req, res) {
-  var phone = req.body.phone;
-  var time = new Date();
+  var phone = req.body.phone
+  var time = new Date()
   time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString()
-  var hasher = crypto.createHash("md5");
-  hasher.update('78445ac96e8a4934841611662e5d2da6' + '61678420dc00404eadf070e3f898e219' + time);
-  var code = parseInt(Math.random() * 1000000);
-  request.post({
-    url: 'https://api.miaodiyun.com/20150822/industrySMS/sendSMS',
-    form: {
-      accountSid: '78445ac96e8a4934841611662e5d2da6',
-      smsContent: '【优力克】您的验证码是' + code + '，在30分钟内有效。如非本人操作请忽略本短信。',
-      to: phone,
-      timestamp: time,
-      sig: hasher.digest('hex')
+  var hasher = crypto.createHash("md5")
+  hasher.update('78445ac96e8a4934841611662e5d2da6' + '61678420dc00404eadf070e3f898e219' + time)
+  var code = parseInt(Math.random() * 1000000)
+  request.post(
+    {
+      url: 'https://api.miaodiyun.com/20150822/industrySMS/sendSMS',
+      form: {
+        accountSid: '78445ac96e8a4934841611662e5d2da6',
+        smsContent: '【优力克】您的验证码是' + code + '，在30分钟内有效。如非本人操作请忽略本短信。',
+        to: phone,
+        timestamp: time,
+        sig: hasher.digest('hex')
+      },
+      encoding: 'utf8'
     },
-    encoding: 'utf8'
-  },
-  function (error, response, body) {
-    if (response.statusCode == 200) {
-      body = JSON.parse(body);
-      if (body.respCode === "00000") {
-        User
-          .findOne({ phone: phone })
-          .exec((err, user) => {
-            if (user) {
-              User
-                .update({
-                  phone: phone
-                }, {
-                  $set: { identify: code, identifyDate: Date.now() }
-                })
-                .exec((err) => {
-                  if (err) {
-                    return res.json({ "state": 0, "err": err })
-                  }
-                  res.json({ "state": 1 })
-                })
-            } else {
-              User
-                .create({
-                  phone: phone,
-                  nickname: phone,
-                  identify: code
-                })
-                .then(() => {
-                  res.json({ "state": 1 })
-                })
-                .catch((err) => {
-                  res.json({ "state": 0, "err": err })
-                })
-            }
-          })
-      } else {
-        res.json({ "state": 0, "errCode": body.respCode })
+    function (error, response, body) {
+      if (response.statusCode == 200) {
+        body = JSON.parse(body)
+        if (body.respCode === "00000") {
+          User
+            .findOne({ phone: phone })
+            .exec((err, user) => {
+              if (user) {
+                User
+                  .update({
+                    phone: phone
+                  }, {
+                    $set: { identify: code, identifyDate: Date.now() }
+                  })
+                  .exec((err) => {
+                    if (err) {
+                      return res.json({ "state": 0, "err": err })
+                    }
+                    res.json({ "state": 1 })
+                  })
+              } else {
+                User
+                  .create({
+                    phone: phone,
+                    nickname: phone,
+                    identify: code,
+                    identifyDate: Date.now()
+                  })
+                  .then(() => {
+                    res.json({ "state": 1 })
+                  })
+                  .catch((err) => {
+                    res.json({ "state": 0, "err": err })
+                  })
+              }
+            })
+        } else if (body.respCode === "00104") {
+          res.json({ "state": 0, "err": "该手机号当天接受短信次数已达上限" })
+        } else {
+          res.json({ "state": 0, "errCode": body.respCode })
+        }
       }
     }
-  }
-);
+  )
 }
 exports.fastLogin = function(req, res) {
   var phone = req.body.phone
@@ -290,6 +297,21 @@ exports.deleteAddress = function (req, res) {
       _id: req.session.userId 
     }, {
       $pull: { addresses: addressId } 
+    })
+    .exec()
+}
+exports.deleteOrder = function (req, res) {
+  var orderId = req.body.orderId
+  Order
+    .remove({ _id: orderId })
+    .exec((err) => {
+      res.json({ "state": 1 })
+    })
+  User
+    .update({
+      _id: req.session.userId 
+    }, {
+      $pull: { orders: orderId } 
     })
     .exec()
 }

@@ -8,6 +8,9 @@ var Ware = require('../models/ware')
 var Order = require('../models/order')
 var User = require('../models/user')
 var Shopcar = require('../models/shopcar')
+var wx = require('./key/wx.json')
+var WechatAPI = require('wechat-api')
+var api = new WechatAPI(wx.appid, wx.appsecret)
 
 exports.wareInfo = function (req, res) {
   Ware
@@ -129,6 +132,7 @@ exports.pay = function (req, res) {
         currency: "cny",
         subject: "优力克蛋糕",
         body: "蛋糕",
+        metadata: {'openid': req.session.openid},
         extra: {
           success_url: 'http://cakeees.top/person/orders',
           app_pay: true
@@ -149,6 +153,7 @@ exports.pay = function (req, res) {
         currency: "cny",
         subject: "优力克蛋糕",
         body: "蛋糕",
+        metadata: {'openid': req.session.openid},
         extra: {
           open_id: req.session.openid
         }
@@ -217,6 +222,7 @@ exports.payAgain = function (req, res) {
           currency: "cny",
           subject: "优力克蛋糕",
           body: "蛋糕",
+          metadata: {'openid': req.session.openid},
           extra: {
             success_url: 'http://cakeees.top/person/orders',
             app_pay: true
@@ -237,6 +243,7 @@ exports.payAgain = function (req, res) {
           currency: "cny",
           subject: "优力克蛋糕",
           body: "蛋糕",
+          metadata: {'openid': req.session.openid},
           extra: {
             open_id: req.session.openid
           }
@@ -259,6 +266,34 @@ exports.paySucceeded = function (req, res) {
         if (err) { return console.log(err) }
         res.sendStatus(200)
       })
+
+    var templateId = 'CpqROodtbcvJyXyCPZ5ajZaNhFCxCC7MSmgWHbWxnaI'
+    var backurl = 'http://cakeees.top'
+    var topColor = '#FF0000'
+    var data = {
+      first: {
+        "value": '交易信息：',
+        "color": "#222222"
+      },
+      product: {
+        "value": req.body.data.object.body,
+        "color": "#222222"
+      },
+      price: {
+        "value": req.body.data.object.amount * 0.01 + '元',
+        "color": "#222222"
+      },
+      time: {
+        "value": new Date(Date.now()).toLocaleString(),
+        "color": "#222222"
+      },
+      remark: {
+        "value": '',
+        "color": "#222222"
+      }
+    }
+    api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data)
+    api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data)
   } else {
     res.sendStatus(200)
   }

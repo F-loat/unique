@@ -5,8 +5,7 @@ var userSchema = new mongoose.Schema({
     headimgurl: String,
     password: String,
     phone: {
-        type: String,
-        unique: true
+        type: String
     },
     openid: {
         type: String,

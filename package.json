@@ -22,6 +22,7 @@
     "mongoose": "^4.5.4",
     "pingpp": "^2.0.8",
     "request": "^2.74.0",
+    "wechat-api": "^1.28.1",
     "wechat-oauth": "^1.1.1"
   },
   "repository": {
