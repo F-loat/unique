@@ -12,14 +12,14 @@ var client = new OAuth(wx.appid, wx.appsecret);
 //数据
 exports.wxoauth = function (req, res) {
   if (req.query.code === "undefined") {
-    return res.json({"turnUrl" : "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=" + req.headers.referer + "&response_type=code&scope=snsapi_userinfo&state=wxoauth&connect_redirect=1#wechat_redirect", "state" : 0})
+    return res.json({"turnUrl" : client.getAuthorizeURL(req.headers.referer, 'wxoauth', 'snsapi_userinfo'), "state" : 0})
   }
   if (req.session.openid) {
     res.json({ "state": 1 })
   } else {
     client.getUserByCode(req.query.code, (err, result) => {
       if (err) {
-        return res.json({"turnUrl" : "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3eb86a311c6b9da4&redirect_uri=" + req.headers.referer + "&response_type=code&scope=snsapi_userinfo&state=wxoauth&connect_redirect=1#wechat_redirect", "state" : 0, "err" : err})
+        return res.json({"turnUrl" : client.getAuthorizeURL(req.headers.referer, 'wxoauth', 'snsapi_userinfo'), "state" : 0, "err" : err})
       } else if (result.openid) {
         User
           .findOne({ openid: result.openid })

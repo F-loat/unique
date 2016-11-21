@@ -122,149 +122,134 @@ exports.pay = function (req, res) {
   }
 
   function creat () {
-    if (payway === 1) {
-      pingpp.charges.create({
-        order_no: order_no,
-        app: { id: "app_8uP0qDHKm1C4P0Ki" },
-        channel: 'alipay_wap',
-        amount: (price + 0) * 100,
-        client_ip: "123.206.9.219",
-        currency: "cny",
-        subject: "优力克蛋糕",
-        body: "蛋糕",
-        metadata: {'openid': req.session.openid},
-        extra: {
-          success_url: 'http://cakeees.top/person/orders',
-          app_pay: true
-        }
-      }, (err, charge) => {
-        if (err) {
-          return console.log(err)
-        }
-        res.send(charge)
-      })
-    } else {
-      pingpp.charges.create({
-        order_no: order_no,
-        app: { id: "app_8uP0qDHKm1C4P0Ki" },
-        channel: 'wx_pub',
-        amount: (price + 0) * 100,
-        client_ip: "123.206.9.219",
-        currency: "cny",
-        subject: "优力克蛋糕",
-        body: "蛋糕",
-        metadata: {'openid': req.session.openid},
-        extra: {
-          open_id: req.session.openid
-        }
-      }, (err, charge) => {
-        if (err) {
-          return console.log(err)
-        }
-        res.send(charge)
-      })
-    }
-
-    Order
-      .create({
-        order_no: order_no,
-        onwer: req.session.userId,
-        wares: wares,
-        receive: receivingTime,
-        address: addressId,
-        msg: msg,
-        fee: price,
-        payway: payway
-      })
-      .then((order) => {
-        User
-          .update({ _id: req.session.userId }, { $addToSet: { orders: order._id } })
-          .exec((err) => {
-            if (err) { console.log(err) }
-          })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-
-    //删除购物车及用户信息中的相关订单
-    for (let ware of wares) {
-      if(ware._id) {
-        Shopcar
-          .remove({_id:ware._id})
-          .exec((err) => {
-            if (err) { console.log(err) }
-          })
-        User
-          .update({_id:req.session.userId},{ $pull: { shopcar: ware._id } })
-          .exec((err) => {
-            if (err) { console.log(err) }
-          })
+    var option = {
+      order_no: order_no,
+      app: { id: "app_8uP0qDHKm1C4P0Ki" },
+      amount: (price + 0) * 100,
+      client_ip: "123.206.9.219",
+      currency: "cny",
+      subject: "优力克蛋糕",
+      body: "蛋糕",
+      metadata: {
+        'userId': req.session.userId,
+        'openid': req.session.openid,
+        'wares': wares,
+        'receive': receivingTime,
+        'address': addressId,
+        'msg': msg,
+        'fee': price + 0,
+        'payway': payway
       }
     }
+    if (payway === 1) {
+      option.channel = 'alipay_wap',
+      option.extra = {
+        success_url: 'http://cakeees.top/person/orders',
+        app_pay: true
+      }
+    } else {
+      option.channel = 'wx_pub',
+      option.extra = {
+        open_id: req.session.openid
+      }
+    }
+    pingpp.charges.create(option, (err, charge) => {
+      if (err) {
+        return console.log(err)
+      }
+      res.send(charge)
+    })
   }
 }
-exports.payAgain = function (req, res) {
-  var orderId = req.body.orderId
+exports.buyAgain = function (req, res) {
+  var time = new Date()
+  time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString() + time.getMilliseconds().toString()
+  var order_no = time + req.session.userId.slice(9, 11)
   Order
-    .findById(orderId)
+    .findById(req.body.orderId)
     .exec((err, order) => {
       if (err) {
         return console.log(err)
       }
-      if (req.body.payway === '1') {
-        pingpp.charges.create({
-          order_no: orderId,
-          app: { id: "app_8uP0qDHKm1C4P0Ki" },
-          channel: 'alipay_wap',
-          amount: order.fee * 100,
-          client_ip: "123.206.9.219",
-          currency: "cny",
-          subject: "优力克蛋糕",
-          body: "蛋糕",
-          metadata: {'openid': req.session.openid},
-          extra: {
-            success_url: 'http://cakeees.top/person/orders',
-            app_pay: true
-          }
-        }, (err, charge) => {
-          if (err) {
-            return console.log(err)
-          }
-          res.send(charge)
-        })
-      } else {
-        pingpp.charges.create({
-          order_no: orderId,
-          app: { id: "app_8uP0qDHKm1C4P0Ki" },
-          channel: 'wx_pub',
-          amount: order.fee * 100,
-          client_ip: "123.206.9.219",
-          currency: "cny",
-          subject: "优力克蛋糕",
-          body: "蛋糕",
-          metadata: {'openid': req.session.openid},
-          extra: {
-            open_id: req.session.openid
-          }
-        }, (err, charge) => {
-          if (err) {
-            return console.log(err)
-          }
-          res.send(charge)
-        })
+      console.log(order)
+      var option = {
+        order_no: order_no,
+        app: { id: "app_8uP0qDHKm1C4P0Ki" },
+        amount: order.fee * 100,
+        client_ip: "123.206.9.219",
+        currency: "cny",
+        subject: "优力克蛋糕",
+        body: "蛋糕",
+        metadata: {
+          'userId': req.session.userId,
+          'openid': req.session.openid,
+          'wares': order.wares,
+          'receive': order.receivingTime,
+          'address': order.addressId,
+          'msg': order.msg,
+          'fee': order.price,
+          'payway': order.payway
+        }
       }
+      if (req.body.payway === '1') {
+        option.channel = 'alipay_wap',
+        option.extra = {
+          success_url: 'http://cakeees.top/person/orders',
+          app_pay: true
+        }
+      } else {
+        option.channel = 'wx_pub',
+        option.extra = {
+          open_id: req.session.openid
+        }
+      }
+      pingpp.charges.create(option, (err, charge) => {
+        if (err) {
+          return console.log(err)
+        }
+        res.send(charge)
+      })
     })
 }
 exports.paySucceeded = function (req, res) {
   var app = req.body.data.object.app
   var order_no = req.body.data.object.order_no
+  var metadata = req.body.data.object.metadata
   if (app == "app_8uP0qDHKm1C4P0Ki") {
     Order
-      .update({ order_no: order_no }, { $set: { state: 1 } })
-      .exec((err) => {
-        if (err) { return console.log(err) }
-        res.sendStatus(200)
+      .create({
+        order_no: order_no,
+        onwer: metadata.userId,
+        wares: metadata.wares,
+        receive: metadata.receive,
+        address: metadata.addressId,
+        msg: metadata.msg,
+        fee: metadata.fee,
+        payway: metadata.payway,
+        state: 1
+      })
+      .then((order) => {
+        User
+          .update({ _id: metadata.userId }, { $addToSet: { orders: order._id } })
+          .exec()
+        //删除购物车及用户信息中的相关订单
+        for (let ware of metadata.wares) {
+          if(ware._id) {
+            Shopcar
+              .remove({_id:ware._id})
+              .exec((err) => {
+                if (err) { console.log(err) }
+              })
+            User
+              .update({_id:req.session.userId},{ $pull: { shopcar: ware._id } })
+              .exec((err) => {
+                if (err) { console.log(err) }
+              })
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err)
       })
 
     var templateId = 'CpqROodtbcvJyXyCPZ5ajZaNhFCxCC7MSmgWHbWxnaI'
@@ -292,8 +277,8 @@ exports.paySucceeded = function (req, res) {
         "color": "#222222"
       }
     }
-    api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data)
-    api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data)
+    api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data, (err, result) => { res.sendStatus(200) })
+    api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data, (err, result) => {})
   } else {
     res.sendStatus(200)
   }
