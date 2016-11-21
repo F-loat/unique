@@ -7,9 +7,9 @@
   .content
     .content-inner
       .buttons-tab
-        a.tab-link.active.button(href='#oTab1') 待付款
-        a.tab-link.button(href='#oTab2') 待收货
-        a.tab-link.button(href='#oTab3') 已完成
+        a.tab-link.active.button(href='#oTab1') 未完成
+        a.tab-link.button(href='#oTab2') 已完成
+        a.tab-link.button(href='#oTab3') 全部订单
       .content-block
         .tabs
           #oTab1.tab.active
@@ -19,17 +19,31 @@
                 p
                   a(@click="$router.push('/ware')") 去逛逛~
               div(v-else)
-                ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state===0')
-                    .o-wait 等待支付
-                    div
-                      img(:src='order.wares[0].info.img')
-                      .o-order-info
-                        p 下单时间：{{order.orderDate}}
-                        p 总价：￥{{order.fee}}
-                        .buttons.clearfix(:data-order-id='order._id')
-                          .button.button-warning.pull-right(@click='payAgain') 去支付
-                          .button.button-light.icon.icon-remove.pull-right(@click='deleteOrder') 删除
+                ul.o-order-wrap
+                  li(v-for='(order, index) in user.orders', v-if='order.state===1')
+                    router-link(:to='"/person/orders/" + order._id + "?index=" + index')
+                      .o-order
+                        p.o-show-detail
+                          span {{order.orderDate}}
+                          span(style="margin-left: 6px") 查看明细>
+                        p.o-wait 等待制作配送
+                        div.o-state
+                          span.icon.icon-code
+                          span ···
+                          span.icon.icon-code
+                          span ···
+                          span.icon.icon-code
+                        p
+                          span {{order.wares[0].info.name}}
+                          span.pull-right x1
+                        p.o-weight {{order.wares[0].weight}}磅
+                        p
+                          span 等···
+                          span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
+                    table.buy-again
+                      tr
+                        td(@click="cancel(order._id)") 取消订单
+                        td(@click="buyAgain(order._id)") 再次购买
           #oTab2.tab
             .content-block
               .no-order(v-if='!user.orders.length')
@@ -37,15 +51,22 @@
                 p
                   a(@click="$router.push('/ware')") 去逛逛~
               div(v-else)
-                ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state===1')
-                    .o-wait 等待配送
-                    div
-                      img(:src='order.wares[0].info.img')
-                      .o-order-info
-                        p 下单时间：{{order.orderDate}}
-                        p 总价：￥{{order.fee}}
-                        .button.button-dark 查看详情
+                ul.o-order-wrap
+                  li(v-for='(order, index) in user.orders', v-if='order.state===2')
+                    router-link(:to='"/person/orders/" + order._id + "?index=" + index')
+                      .o-order
+                        p
+                          span.icon.icon-check
+                          span 已收货
+                          span.pull-right {{order.orderDate}}下单
+                        p
+                          span {{order.wares[0].info.name}}
+                          span.pull-right x1
+                        p.o-weight {{order.wares[0].weight}}磅
+                        p
+                          span 等···
+                          span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
+                    .buy-again(@click="buyAgain(order._id)") 再次购买                
           #oTab3.tab
             .content-block
               .no-order(v-if='!user.orders.length')
@@ -53,15 +74,49 @@
                 p
                   a(@click="$router.push('/ware')") 去逛逛~
               div(v-else)
-                ul
-                  li.o-order(v-for='order in user.orders', v-if='order.state===2')
-                    div 订单已完成
-                    div
-                      img(:src='order.wares[0].info.img')
-                      .o-order-info
-                        p 下单时间：{{order.orderDate}}
-                        p 总价：￥{{order.fee}}
-                        .button.button-dark 去评价
+                ul.o-order-wrap
+                  li(v-for='(order, index) in user.orders')
+                    div(v-if='order.state===2')
+                      router-link(:to='"/person/orders/" + order._id + "?index=" + index')
+                        .o-order
+                          p
+                            span.icon.icon-check
+                            span 已收货
+                            span.pull-right {{order.orderDate}}下单
+                          p
+                            span {{order.wares[0].info.name}}
+                            span.pull-right x1
+                          p.o-weight {{order.wares[0].weight}}磅
+                          p
+                            span 等···
+                            span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
+                      table.buy-again
+                        tr
+                          td(@click="buyAgain(order._id)") 再次购买
+                    div(v-if='order.state===1')
+                      router-link(:to='"/person/orders/" + order._id + "?index=" + index')
+                        .o-order
+                          p.o-show-detail
+                            span {{order.orderDate}}
+                            span(style="margin-left: 6px") 查看明细>
+                          p.o-wait 等待制作配送
+                          div.o-state
+                            span.icon.icon-code
+                            span ···
+                            span.icon.icon-code
+                            span ···
+                            span.icon.icon-code
+                          p
+                            span {{order.wares[0].info.name}}
+                            span.pull-right x1
+                          p.o-weight {{order.wares[0].weight}}磅
+                          p
+                            span 等···
+                            span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
+                      table.buy-again
+                        tr
+                          td(@click="cancel(order._id)") 取消订单
+                          td(@click="buyAgain(order._id)") 再次购买
 </template>
 
 <script>
@@ -83,9 +138,8 @@ export default {
     ...mapActions([
       'userInfo'
     ]),
-    payAgain (e) {
+    buyAgain (orderId) {
       function pay (way) {
-        var orderId = $(e.target).parent().data('orderId')
         $.ajax({
           type: 'post',
           url: '/request/ware/pay/again',
@@ -127,6 +181,11 @@ export default {
         })
       } else pay('1')
     },
+    cancel (orderId) {
+      $.prompt('请输入理由', function (value) {
+        $.toast('提交成功')
+      })
+    },
     deleteOrder (e) {
       var orderId = $(e.target).parent().data('orderId')
       $.confirm('确认删除？', () => {
@@ -155,7 +214,7 @@ export default {
 
 #myOrders
   .content
-    background-color bc_light
+    background-color #e4e4e4
   .content-block
     margin 0
     padding 0
@@ -172,17 +231,36 @@ export default {
     line-height 2.4rem
     margin 0 auto
 
+.o-order-wrap
+  padding 12px
+  li
+    margin-bottom 12px
+  a
+    color #222
+
 .o-order
-  background-color bc_light
-  margin .6rem 0 0
-  padding .4rem .6rem 0
-  img
-    width 30%
-  .button-warning
-    width 40%
-  .button-light
-    color #ccc
-    margin-right 12px
+  padding 6px 12px
+  background-color #fff
+  margin-top 6px
+  border-top 3px solid #dfba76
+
+.o-show-detail
+  font-size 14px
+  text-align center
+
+.o-wait
+  font-size 18px
+  text-align center
+  margin 0
+
+.o-state
+  font-size 28px
+  text-align center
+  border-radius 50%
+
+.o-weight
+  color #ccc
+  border-bottom 1px solid #ccc
 
 .o-order-info
   width 70%
@@ -193,6 +271,11 @@ export default {
     margin .6rem 0
     font-size .7rem
 
-.o-wait
-  color #ff6600
+.buy-again
+  width 100%
+  font-size 16px
+  color #222
+  text-align center
+  background-color #f2f2f2
+  line-height 50px
 </style>

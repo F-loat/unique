@@ -86,6 +86,12 @@ const routes = [
     }
   },
   {
+    path: '/person/orders/:oid',
+    component (resolve) {
+      require(['../views/order-detail'], resolve)
+    }
+  },
+  {
     path: '/person/addresses',
     component (resolve) {
       require(['../views/person-addresses'], resolve)
@@ -97,12 +103,12 @@ const routes = [
       require(['../views/new-address'], resolve)
     }
   },
-  {
-    path: '/person/coupons',
-    component (resolve) {
-      require(['../views/person-coupons'], resolve)
-    }
-  },
+  // {
+  //   path: '/person/coupons',
+  //   component (resolve) {
+  //     require(['../views/person-coupons'], resolve)
+  //   }
+  // },
   {
     path: '/fedBack',
     component (resolve) {
@@ -119,6 +125,18 @@ const routes = [
     path: '/userAgreement',
     component (resolve) {
       require(['../views/user-agreement'], resolve)
+    }
+  },
+  {
+    path: '/admin/orderManage',
+    component (resolve) {
+      require(['../views/admin/order-manage'], resolve)
+    }
+  },
+  {
+    path: '/admin/orderManage/:oid',
+    component (resolve) {
+      require(['../views/admin/order-detail'], resolve)
     }
   },
   {

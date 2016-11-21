@@ -1,7 +1,6 @@
 <template lang="pug">
-transition(name="fade")
-  keep-alive
-    router-view
+keep-alive
+  router-view
 </template>
 
 <script>
@@ -11,22 +10,20 @@ import { mapActions } from 'vuex'
 export default {
   methods: {
     ...mapActions([
-      'userInfo',
-      'waresInfo'
+      'userInfo'
     ]),
-    tryAuth () {
+    tryAuth (time, isWeixin) {
       setTimeout(() => {
-        if (this.$route.fullPath !== '/') {
+        if (isWeixin && this.$route.query.state === 'wxoauth') {
           $.ajax({
             type: 'get',
             url: '/request/user/wxoauth?code=' + this.$route.query.code,
             success: (data) => {
-              if (data.turnUrl) return (window.location.href = data.turnUrl)
-              if (data.state === 1) this.userInfo()
+              this.userInfo()
             }
           })
         } else {
-          this.tryAuth()
+          time > 1 ? this.tryAuth(time - 1) : this.userInfo()
         }
       }, 300)
     }
@@ -35,7 +32,7 @@ export default {
     this.$nextTick(() => {
       var ua = navigator.userAgent.toLowerCase()
       var isWeixin = ua.indexOf('micromessenger') !== -1
-      if (isWeixin) this.tryAuth()
+      this.tryAuth(3, isWeixin)
     })
   }
 }

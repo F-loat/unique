@@ -65,6 +65,12 @@ const mutations = {
       dataType: 'json',
       success: data => {
         if (data) {
+          var ua = navigator.userAgent.toLowerCase()
+          var isWeixin = ua.indexOf('micromessenger') !== -1
+          if (isWeixin && data.turnUrl) {
+            return (window.location.href = data.turnUrl)
+          }
+          if (data.turnUrl) return false
           for (let order of data.orders) {
             order.orderDate = new Date(order.orderDate).toLocaleString()
             order.receive = new Date(order.receive).toLocaleString()

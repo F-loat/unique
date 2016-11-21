@@ -29,17 +29,17 @@
                   i 送货时间
                   span
                     input#datetime-picker(type='text')
-              li.item-content.item-link
-                .item-inner
-                  i 优惠券
-                  span 0张可用
+              //- li.item-content.item-link
+              //-   .item-inner
+              //-     i 优惠券
+              //-     span 0张可用
               li.item-content.item-link
                 .item-inner
                   i 订单留言
                   span#order-message(v-on:click='orderMessage') 请填写您对商品的特殊要求
             .distributionFee 配送费￥10.00
             div
-              .pay-way-title 支付方式
+              .pay-way-title 支付方式（选择微信支付可使用相关优惠券）
               ul.pay-way
                 li(v-if="wx")
                   label.label-checkbox.item-content
@@ -71,7 +71,7 @@ import pingpp from 'pingpp'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'ware-detail',
+  name: 'ware-order',
   activated () {
     if (this.$route.params.wareId) {
       this.wareInfo(this.$route.params.wareId)
@@ -171,9 +171,6 @@ export default {
 #wareOrder
   .content
     background-color bc_light
-  header
-    a
-      color fc_dark
   .address
     text-align center
     line-height 2.2rem
@@ -182,6 +179,9 @@ export default {
       .item-link
         &:active
           background-color bc_light
+
+#address-id
+  color fc_dark
 
 .picker-modal
   .bar

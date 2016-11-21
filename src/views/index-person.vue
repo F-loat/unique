@@ -22,12 +22,12 @@
               .item-title
                 i.icon.icon-card
                 i 收货地址
-        li.item-content.item-link
-          router-link(to="/person/coupons")
-            .item-inner
-              .item-title
-                i.icon.icon-code
-                i 我的优惠券
+        //- li.item-content.item-link
+        //-   router-link(to="/person/coupons")
+        //-     .item-inner
+        //-       .item-title
+        //-         i.icon.icon-code
+        //-         i 我的优惠券
         li.item-content.item-link
           router-link(to="/fedBack")
             .item-inner
