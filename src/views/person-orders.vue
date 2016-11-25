@@ -35,7 +35,7 @@
                           span.icon.icon-code
                         p
                           span {{order.wares[0].info.name}}
-                          span.pull-right x1
+                          span.pull-right x{{order.wares[0].sum}}
                         p.o-weight {{order.wares[0].weight}}磅
                         p
                           span 等···
@@ -61,7 +61,7 @@
                           span.pull-right {{order.orderDate}}下单
                         p
                           span {{order.wares[0].info.name}}
-                          span.pull-right x1
+                          span.pull-right x{{order.wares[0].sum}}
                         p.o-weight {{order.wares[0].weight}}磅
                         p
                           span 等···
@@ -85,7 +85,7 @@
                             span.pull-right {{order.orderDate}}下单
                           p
                             span {{order.wares[0].info.name}}
-                            span.pull-right x1
+                            span.pull-right x{{order.wares[0].sum}}
                           p.o-weight {{order.wares[0].weight}}磅
                           p
                             span 等···
@@ -108,7 +108,7 @@
                             span.icon.icon-code
                           p
                             span {{order.wares[0].info.name}}
-                            span.pull-right x1
+                            span.pull-right x{{order.wares[0].sum}}
                           p.o-weight {{order.wares[0].weight}}磅
                           p
                             span 等···

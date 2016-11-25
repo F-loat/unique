@@ -90,7 +90,8 @@ export default {
   },
   data () {
     return {
-      wx: navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1
+      wx: navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1,
+      ispay: false
     }
   },
   computed: {
@@ -127,6 +128,7 @@ export default {
       $('.modal-text-input').val($('#order-message').text())
     },
     pay () {
+      if (this.ispay) return $.toast('调用支付中')
       if (this.user.nickname) {
         if ($('#alipay').is(':checked')) {
           this.order.payway = 1
@@ -138,6 +140,7 @@ export default {
         } else {
           return $.toast('请先添加地址')
         }
+        this.ispay = true
         this.order.receivingTime = $('#datetime-picker').val()
         $.ajax({
           type: 'post',
@@ -148,10 +151,13 @@ export default {
           success: (data) => {
             pingpp.createPayment(data, (result, err) => {
               if (result === 'success') {
+                this.ispay = false
                 this.$router.push('/person/orders')
               } else if (result === 'fail') {
+                this.ispay = false
                 $.toast('付款失败，请稍后再试')
               } else if (result === 'cancel') {
+                this.ispay = false
                 $.toast('已取消支付')
               }
             })
@@ -174,6 +180,8 @@ export default {
   .address
     text-align center
     line-height 2.2rem
+    a
+     color #222
   &:not(.watch-active-state)
     .list-block
       .item-link

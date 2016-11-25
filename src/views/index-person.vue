@@ -47,7 +47,7 @@
                 i.icon.icon-app
                 i 用户使用协议
         li.item-content.item-link(v-if='user.type===9')
-          a.external(href='admin.html')
+          router-link(to="/admin/orderManage")
             .item-inner
               .item-title
                 i.icon.icon-settings

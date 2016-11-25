@@ -14,14 +14,14 @@
         h6.webFont {{ware.info.name}}
         p.bewrite 独一无二的蛋糕
         p.bewrite 献给独一无二 的你
-      .detail-dishes(v-if='ware.info.type==9')
-        .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='奶油'}") 奶油
-        .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='抹茶'}") 抹茶
-        .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='巧克力'}") 巧克力
+      //- .detail-dishes(v-if='ware.info.type==9')
+      //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='奶油'}") 奶油
+      //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='抹茶'}") 抹茶
+      //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='巧克力'}") 巧克力
       .detail-weight
-        .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===1}") 1.0磅
-        .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===1.5}") 1.5磅
-        .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===2}") 2.0磅
+        .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===1}") 1.0磅
+        .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===1.5}") 1.5磅
+        .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===2}") 2.0磅
         .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===2.5}") 2.5磅
       .detail-detail
         .size
@@ -171,13 +171,6 @@ export default {
 .detail-weight
   font-size 0
   border-right 1px #ccc solid
-  display -webkit-box
-  display -moz-box
-  display -ms-flexbox
-  display -webkit-flex
-  display flex
-  -webkit-justify-content space-between
-  justify-content space-between
 
 .dishTab,
 .weightTab
@@ -190,9 +183,10 @@ export default {
   width 33.33%
 
 .weightTab
-  width 20%
+  width 22%
   box-sizing border-box
   position relative
+  display inline-block
 
 .weightTab.active
   border 1px solid #996600

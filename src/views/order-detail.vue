@@ -17,15 +17,15 @@
             li(v-for="ware in order.wares")
               p
                 span {{ware.info.name}}
-                span.pull-right x1 ￥{{ware.info.price}}
+                span.pull-right x{{ware.sum}} ￥{{ware.info.price}}
               p.od-weight {{ware.weight}}磅
           p
             span 配送费
-            span.pull-right ￥22
+            span.pull-right ￥0
           p
             span 优惠券
-            span.pull-right -￥222
-          p(style="text-align: right") 合计 ￥{{order.fee}}
+            span.pull-right -￥0
+          p(style="text-align: right") 合计 ￥{{order.fee-0}}
         table.buy-again
           tr
             td(v-if="true", @click="cancel") 取消订单
@@ -53,7 +53,7 @@
               td {{order.address.site}}
             tr
               td 订单留言
-              td {{order.msg}}
+              td {{order.msg || '无'}}
           table
             tr
               td 支付方式
@@ -73,6 +73,7 @@ export default {
   activated () {
     this.$nextTick(() => {
       this.order = this.user.orders[this.$route.query.index]
+      console.log(this.order)
     })
   },
   computed: {
