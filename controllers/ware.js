@@ -222,7 +222,7 @@ exports.paySucceeded = function (req, res) {
         onwer: metadata.userId,
         wares: metadata.wares,
         receive: metadata.receive,
-        address: metadata.addressId,
+        address: metadata.address,
         msg: metadata.msg,
         fee: metadata.fee,
         payway: metadata.payway,
