@@ -8,10 +8,39 @@ var Ware = require('../models/ware')
 var Order = require('../models/order')
 var User = require('../models/user')
 var Shopcar = require('../models/shopcar')
+var Address = require('../models/address')
 var wx = require('./key/wx.json')
 var WechatAPI = require('wechat-api')
 var api = new WechatAPI(wx.appid, wx.appsecret)
 
+exports.addImg = function (req, res) {
+  console.log(req.file)
+  res.json({ state: 1, filename: req.file.filename, type: req.query.type })
+}
+exports.delImg = function (req, res) {
+  fs.unlink('public/upload/img/' + req.query.filename, (err) => {
+    if (err) {
+      return res.json({ state: 0, err: err })
+    }
+    res.json({ state: 1 })
+  })
+}
+exports.addWare = function (req, res) {
+  Ware.create({
+    name: req.body.name,
+    nameEn: req.body.nameEn,
+    type: req.body.type,
+    depiction: req.body.depiction,
+    img: req.body.img,
+    imgs: req.body.imgs,
+    price: req.body.price
+  }, err => {
+    if (err) {
+      return res.json({ "state": 0, "err": err })
+    }
+    res.json({ "state": 1 })
+  })
+}
 exports.wareInfo = function (req, res) {
   Ware
     .findById(req.params.wareId)
@@ -20,10 +49,48 @@ exports.wareInfo = function (req, res) {
     })
 }
 exports.waresInfo = function (req, res) {
+  var option = {}
+  if (req.query.type) option.type = req.query.type
   Ware
-    .find()
+    .find(option)
     .exec((err, wares) => {
       res.send(wares)
+    })
+}
+exports.delWare = function (req, res) {
+  Ware
+    .findById(req.query.wareId)
+    .then(ware => {
+      if (ware.type < 0) {
+        for (let img of ware.imgs) {
+          fs.unlink('public/upload/img/' + img, (err) => {
+            if (err) console.log(err)
+          })
+        }
+        fs.unlink('public/upload/img/' + ware.img, (err) => {
+          if (err) console.log(err)
+        })
+        ware.remove()
+      } else {
+        ware.type = (ware.type + 1) * -1
+        ware.save()
+      }
+      res.json({ state: 1 })
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
+    })
+}
+exports.recoverWare = function (req, res) {
+  Ware
+    .findById(req.query.wareId)
+    .then(ware => {
+      ware.type = (-1 * ware.type) - 1
+      ware.save()
+      res.json({ state: 1 })
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
     })
 }
 exports.addToShopcar = function (req, res) {
@@ -109,7 +176,7 @@ exports.pay = function (req, res) {
       Ware
         .findById(wares[i].info._id)
         .exec((err, ware) => {
-          price += ware.price * weight * sum
+          price += ware.price[0].val * weight * sum
           resolve(i)
         })
     })
@@ -117,7 +184,10 @@ exports.pay = function (req, res) {
   for (var i = 0; i < wares.length; i++) {
     getPrice(i)
       .then((i) => {
-        if (i == wares.length - 1) { creat() }
+        if (i == wares.length - 1) {
+          price = price + 0
+          creat()
+        }
     })
   }
 
@@ -125,11 +195,11 @@ exports.pay = function (req, res) {
     var option = {
       order_no: order_no,
       app: { id: "app_8uP0qDHKm1C4P0Ki" },
-      amount: (price + 0) * 100,
+      amount: price * 100,
       client_ip: "123.206.9.219",
       currency: "cny",
-      subject: "优力克蛋糕",
-      body: "蛋糕",
+      subject: "优力克",
+      body: wares[0].info.name,
       metadata: {
         'userId': req.session.userId,
         'openid': req.session.openid,
@@ -137,7 +207,7 @@ exports.pay = function (req, res) {
         'receive': receivingTime,
         'address': addressId,
         'msg': msg,
-        'fee': price + 0,
+        'fee': price,
         'payway': payway
       }
     }
@@ -178,8 +248,8 @@ exports.buyAgain = function (req, res) {
         amount: order.fee * 100,
         client_ip: "123.206.9.219",
         currency: "cny",
-        subject: "优力克蛋糕",
-        body: "蛋糕",
+        subject: "优力克",
+        body: "再次购买",
         metadata: {
           'userId': req.session.userId,
           'openid': req.session.openid,
@@ -212,13 +282,12 @@ exports.buyAgain = function (req, res) {
     })
 }
 exports.paySucceeded = function (req, res) {
-  var app = req.body.data.object.app
-  var order_no = req.body.data.object.order_no
   var metadata = req.body.data.object.metadata
-  if (app == "app_8uP0qDHKm1C4P0Ki") {
+  if (req.body.data.object.app == "app_8uP0qDHKm1C4P0Ki") {
     Order
       .create({
-        order_no: order_no,
+        order_no: req.body.data.object.order_no,
+        chargeid: req.body.data.object.id,
         onwer: metadata.userId,
         wares: metadata.wares,
         receive: metadata.receive,
@@ -251,34 +320,40 @@ exports.paySucceeded = function (req, res) {
       .catch(err => {
         console.log(err)
       })
-
-    var templateId = 'CpqROodtbcvJyXyCPZ5ajZaNhFCxCC7MSmgWHbWxnaI'
-    var backurl = 'http://cakeees.top'
-    var topColor = '#FF0000'
-    var data = {
-      first: {
-        "value": '交易信息：',
-        "color": "#222222"
-      },
-      product: {
-        "value": req.body.data.object.body,
-        "color": "#222222"
-      },
-      price: {
-        "value": req.body.data.object.amount * 0.01 + '元',
-        "color": "#222222"
-      },
-      time: {
-        "value": new Date(Date.now()).toLocaleString(),
-        "color": "#222222"
-      },
-      remark: {
-        "value": '',
-        "color": "#222222"
-      }
-    }
-    api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data, (err, result) => { res.sendStatus(200) })
-    api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data, (err, result) => {})
+    Address.findById(metadata.address)
+      .then(address => {
+        var templateId = 'qaPHP4onh7FcdPWzyJ-pc_OVfqzaIY-ckDHEa6kgakk'
+        var backurl = 'http://cakeees.top/person/orders'
+        var topColor = '#FF0000'
+        var data = {
+          first: {
+            "value": '您的订单已完成付款，我们将即时为您发货。',
+            "color": "#222222"
+          },
+          orderProductName: {
+            "value": req.body.data.object.body,
+            "color": "#222222"
+          },
+          orderProductPrice: {
+            "value": metadata.fee + '元',
+            "color": "#222222"
+          },
+          orderAddress: {
+            "value": metadata.receive + '前，将商品送至' + address.site,
+            "color": "#222222"
+          },
+          orderName: {
+            "value": req.body.data.object.order_no,
+            "color": "#222222"
+          },
+          remark: {
+            "value": '',
+            "color": "#222222"
+          }
+        }
+        api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data, (err, result) => { res.sendStatus(200) })
+        api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data, (err, result) => {})
+      })
   } else {
     res.sendStatus(200)
   }

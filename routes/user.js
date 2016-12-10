@@ -13,8 +13,7 @@ router.post('/fastLogin', User.fastLogin);
 router.get('/logout', User.logout);
 router.post('/address/new', Filter.login, User.newAddress);
 router.post('/address/default', Filter.login, User.defaultAddress);
-router.post('/address/edit', Filter.login, User.editAddress);
 router.post('/address/delete', Filter.login, User.deleteAddress);
-router.post('/order/delete', Filter.login, User.deleteOrder);
+router.post('/order/refund', Filter.login, User.applyRefund);
 
 module.exports = router;

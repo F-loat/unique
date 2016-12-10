@@ -34,7 +34,8 @@ exports.wxoauth = function (req, res) {
                 .create({
                   openid: result.openid,
                   nickname: result.nickname,
-                  headimgurl: result.headimgurl
+                  headimgurl: result.headimgurl,
+                  regDate: Date.now()
                 })
                 .then((user) => {
                   req.session.userId = user._id
@@ -61,7 +62,7 @@ exports.info = function (req, res) {
     })
     .populate({
       path: 'orders',
-      select: 'address fee msg receive wares orderDate state',
+      select: 'order_no address fee msg receive wares orderDate state',
       populate: { path: 'address wares.info' }
     })
     .populate({
@@ -70,7 +71,7 @@ exports.info = function (req, res) {
       populate: { path: 'info' }
     })
     .exec((err, user) => {
-      res.send(user)
+      res.json({ state: 1, user: user })
     })
 }
 exports.identify = function (req, res) {
@@ -282,9 +283,6 @@ exports.defaultAddress = function (req, res) {
         })
     })
 }
-exports.editAddress = function (req, res) {
-
-}
 exports.deleteAddress = function (req, res) {
   var addressId = req.body.addressId;
   Address
@@ -300,18 +298,12 @@ exports.deleteAddress = function (req, res) {
     })
     .exec()
 }
-exports.deleteOrder = function (req, res) {
+exports.applyRefund = function (req, res) {
   var orderId = req.body.orderId
   Order
-    .remove({ _id: orderId })
-    .exec((err) => {
-      res.json({ "state": 1 })
+    .update({ _id: orderId }, { state: -1, refundmsg: req.body.refundmsg })
+    .exec(err => {
+      if (err) return res.json({ state: 0, err: err })
+      res.json({ state: 1 })
     })
-  User
-    .update({
-      _id: req.session.userId 
-    }, {
-      $pull: { orders: orderId } 
-    })
-    .exec()
 }

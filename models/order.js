@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var orderSchema = new mongoose.Schema({
   order_no: String,
+  chargeid: String,
   onwer: String,
   state: {
     type: Number,
@@ -27,6 +28,7 @@ var orderSchema = new mongoose.Schema({
   },
   coupon: String,
   msg: String,
+  refundmsg: String,
   fee: Number,
   payway: Number
 })

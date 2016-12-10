@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var compression = require('compression');//gzip
-var path = require('path');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoose = require('mongoose');
@@ -11,8 +9,6 @@ var admin = require('./controllers/key/mongodb.json');
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://'+admin.name+':'+admin.pwd+'@123.206.9.219/unique');
 
-app.use(compression());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
@@ -29,10 +25,6 @@ app.use(session({
 
 app.use('/request/user', require('./routes/user'));
 app.use('/request/ware', require('./routes/ware'));
-
-app.get('*', function (req, res){
-  res.header('Content-Type', 'text/html');
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-})
+app.use('/request/order', require('./routes/order'));
 
 module.exports = app;
