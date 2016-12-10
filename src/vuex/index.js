@@ -6,7 +6,10 @@ Vue.use(Vuex)
 
 class Ware {
   constructor () {
-    this.info = {}
+    this.info = {
+      price: [{}],
+      depiction: ''
+    }
     this.weight = 1
     this.dish = ''
     this.sum = 1
@@ -71,11 +74,7 @@ const mutations = {
             return (window.location.href = data.turnUrl)
           }
           if (data.turnUrl) return false
-          for (let order of data.orders) {
-            order.orderDate = new Date(order.orderDate).toLocaleString()
-            order.receive = new Date(order.receive).toLocaleString()
-          }
-          state.user = data
+          state.user = data.user
         }
       },
       error: () => $.toast('用户信息获取失败')
@@ -106,13 +105,8 @@ const mutations = {
   WAREINIT (state) {
     state.ware = new Ware()
   },
-  WAREINFO (state, wareId) {
-    $.ajax({
-      type: 'get',
-      url: '/request/ware/' + wareId,
-      success: data => { state.ware.info = data },
-      error: () => $.toast('商品信息获取失败')
-    })
+  WAREINFO (state, data) {
+    state.ware.info = data
   },
   ORDERINIT (state) {
     state.order = new Order()
@@ -136,7 +130,18 @@ const actions = {
     commit('WAREINIT')
   },
   wareInfo ({ commit }, wareId) {
-    commit('WAREINFO', wareId)
+    $.ajax({
+      type: 'get',
+      url: '/request/ware/' + wareId,
+      success: data => {
+        commit('WAREINFO', data)
+        $.hidePreloader()
+      },
+      error: () => {
+        $.toast('商品信息获取失败')
+        $.hidePreloader()
+      }
+    })
   },
   orderInit ({ commit }) {
     commit('ORDERINIT')

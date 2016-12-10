@@ -25,19 +25,19 @@
                       .o-order
                         p.o-show-detail
                           span {{order.orderDate}}
-                          span(style="margin-left: 6px") 查看明细>
+                          span(style="margin-left: 12px;") 查看明细>
                         p.o-wait 等待制作配送
                         div.o-state
-                          span.icon.icon-code
+                          span.icon.iconfont.icon-zhifuwenti.active
                           span ···
-                          span.icon.icon-code
+                          span.icon.iconfont.icon-peisongzhong
                           span ···
-                          span.icon.icon-code
-                        p
+                          span.icon.iconfont.icon-wancheng
+                        p.fs-65
                           span {{order.wares[0].info.name}}
                           span.pull-right x{{order.wares[0].sum}}
-                        p.o-weight {{order.wares[0].weight}}磅
-                        p
+                        p.fs-65.o-weight {{order.wares[0].weight}}磅
+                        p.fs-65.o-total
                           span 等···
                           span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
                     table.buy-again
@@ -59,11 +59,11 @@
                           span.icon.icon-check
                           span 已收货
                           span.pull-right {{order.orderDate}}下单
-                        p
+                        p.fs-65
                           span {{order.wares[0].info.name}}
                           span.pull-right x{{order.wares[0].sum}}
-                        p.o-weight {{order.wares[0].weight}}磅
-                        p
+                        p.fs-65.o-weight {{order.wares[0].weight}}磅
+                        p.fs-65.o-total
                           span 等···
                           span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
                     .buy-again(@click="buyAgain(order._id)") 再次购买                
@@ -83,11 +83,11 @@
                             span.icon.icon-check
                             span 已收货
                             span.pull-right {{order.orderDate}}下单
-                          p
+                          p.fs-65
                             span {{order.wares[0].info.name}}
                             span.pull-right x{{order.wares[0].sum}}
-                          p.o-weight {{order.wares[0].weight}}磅
-                          p
+                          p.fs-65.o-weight {{order.wares[0].weight}}磅
+                          p.fs-65.o-total
                             span 等···
                             span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
                       table.buy-again
@@ -98,19 +98,19 @@
                         .o-order
                           p.o-show-detail
                             span {{order.orderDate}}
-                            span(style="margin-left: 6px") 查看明细>
+                            span(style="margin-left: 12px;") 查看明细>
                           p.o-wait 等待制作配送
                           div.o-state
-                            span.icon.icon-code
+                            span.icon.iconfont.icon-zhifuwenti.active
                             span ···
-                            span.icon.icon-code
+                            span.icon.iconfont.icon-peisongzhong
                             span ···
-                            span.icon.icon-code
-                          p
+                            span.icon.iconfont.icon-wancheng
+                          p.fs-65
                             span {{order.wares[0].info.name}}
                             span.pull-right x{{order.wares[0].sum}}
-                          p.o-weight {{order.wares[0].weight}}磅
-                          p
+                          p.fs-65.o-weight {{order.wares[0].weight}}磅
+                          p.fs-65.o-total
                             span 等···
                             span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
                       table.buy-again
@@ -218,6 +218,10 @@ export default {
   .content-block
     margin 0
     padding 0
+  .buttons-tab .button
+    color rgba(0, 0, 0, .4)
+  .buttons-tab .button.active
+    color #176ab3
 
 .no-order
   text-align center
@@ -226,8 +230,8 @@ export default {
     display block
     width 4.8rem
     height 2.4rem
-    background-color mc
-    color fc_dark
+    background-color #dfba76
+    color #fff
     line-height 2.4rem
     margin 0 auto
 
@@ -245,11 +249,11 @@ export default {
   border-top 3px solid #dfba76
 
 .o-show-detail
-  font-size 14px
+  font-size .65rem
   text-align center
 
 .o-wait
-  font-size 18px
+  font-size 1rem
   text-align center
   margin 0
 
@@ -257,23 +261,31 @@ export default {
   font-size 28px
   text-align center
   border-radius 50%
+  color #ccc
+  .icon
+    font-size 1.6rem
+  .active
+    color #222
 
 .o-weight
-  color #ccc
-  border-bottom 1px solid #ccc
+  color #aaa
+  border-bottom 1px solid #eee
+
+.o-total
+  color #aaa
 
 .o-order-info
   width 70%
   float right
   padding-left .6rem
-  margin-top -.4rem
+  margin-top .4rem
   p
     margin .6rem 0
     font-size .7rem
 
 .buy-again
   width 100%
-  font-size 16px
+  font-size .7rem
   color #222
   text-align center
   background-color #f2f2f2

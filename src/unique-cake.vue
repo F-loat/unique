@@ -40,6 +40,7 @@ export default {
 
 <style lang="stylus">
 @import './themes/'
+@import 'assets/iconfont/iconfont.css'
 
 /*主体背景色*/
 .page, .page-group
@@ -104,6 +105,9 @@ header.bar .title,header .icon
 .dark-blue,.modal-button
   color bc_dark
 
+.fs-65
+  font-size .65rem
+
 @font-face
   font-family 'webFont'
   src url('./assets/fonts/webFont.eot')
@@ -142,6 +146,8 @@ label.label-checkbox input[type=checkbox]:checked+.item-media i.icon-form-checkb
     background-color mc
   img
     width 6rem
+    height 6rem
+    object-fit cover
     margin-left .75rem
   .item-inner
     color fc_dark

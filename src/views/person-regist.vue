@@ -33,7 +33,6 @@
 
 <script>
 import $ from 'zepto'
-import md5 from 'md5'
 import { mapActions } from 'vuex'
 
 export default {
@@ -62,7 +61,7 @@ export default {
           dataType: 'json',
           data: {
             phone: phone,
-            password: md5(password),
+            password: password,
             identify: identify
           },
           success: (data) => {

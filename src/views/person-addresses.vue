@@ -7,14 +7,12 @@
     .content-inner
       transition-group(name="fade", tag="ul")
         li.clearfix.ready-address(v-on:click='defaultAddress', v-for='(address, index) in user.addresses', :data-address-id='index',
-         key='index')
+         key='index', :class="{ active: (address.state == 1) }")
           span.pull-left.address-detail
             h4 {{address.phone}}（{{address.receiver}}）
             p {{address.site}}
           .pull-right.address-operation
-            span.address-edit.icon.icon-edit(v-on:click='editAddress') 编辑
-            span.address-delete.icon.icon-remove(v-on:click='deleteAddress') 删除
-          span.badge.pull-right(v-if='address.state==1') 默认
+            span.address-delete.icon.iconfont.icon-huishouzhan1(v-on:click='deleteAddress')
       router-link.add(to="/person/addresses/new") 新增
 </template>
 
@@ -77,9 +75,6 @@ export default {
           })
         })
       }
-    },
-    editAddress () {
-      $.toast('暂未开放')
     }
   }
 }
@@ -95,37 +90,40 @@ export default {
     margin 0
     padding 0
   .ready-address
-    margin .6rem 1.2rem
-    height 2.4rem
+    margin .4rem 0
+    padding .6rem 1.2rem
+    background-color #eee
     p
       font-size .65rem
     .label
       width 20% !important
-    .icon
-      font-size .7rem
+  .ready-address.active
+    border-left 4px solid #dfba76
   .input
     font-size .8rem !important
     line-height 2.15rem !important
   .badge
     margin .2rem
+  .address-delete
+    font-size 1rem
+    line-height 2rem
 
-#myAddresses .ready-address h4,
-#myAddresses .ready-address p
-  margin 0
-  font-weight normal
+  .ready-address h4, .ready-address p
+    margin 0
+    font-weight normal
 
-#myAddresses .add,
-#myAddresses .add:active
-  display block
-  width 100%
-  height 2.2rem
-  line-height 2.2rem
-  text-align center
-  background-color mc
-  color fc_dark
-  font-size .8rem
-  margin-top .4rem
+  .add, .add:active
+    display block
+    width 30%
+    margin 0 auto
+    height 2.2rem
+    line-height 2.2rem
+    text-align center
+    background-color #dfba76
+    color fc_dark
+    font-size .8rem
+    margin-top .4rem
 
-.address-detail
-  width 64%
+  .address-detail
+    width 64%
 </style>

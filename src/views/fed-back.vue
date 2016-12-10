@@ -12,7 +12,6 @@
       p
         a 提交
 </template>
-
 <script>
 export default {
   name: 'fed-back'
@@ -42,6 +41,7 @@ export default {
     border none
     box-shadow none
     transition all ease .3s
+    font-size .75rem
     &:focus
       box-shadow 0px 0px 10px 1px rgba(0, 0, 0, 0.2)
 #fed-submit
@@ -50,8 +50,8 @@ export default {
     display block
     width 4.8rem
     height 2.4rem
-    background-color mc
-    color fc_dark
+    background-color #dfba76
+    color #222
     line-height 2.4rem
     margin 0 auto
 </style>

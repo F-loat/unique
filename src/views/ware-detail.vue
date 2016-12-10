@@ -7,48 +7,56 @@
     .content-inner
       .swiper-container
         .swiper-wrapper
-          .swiper-slide(v-for="img in ware.info.imgs")
-            img.detail-img(v-bind:src='img')
+          .swiper-slide(v-for="img in ware.info.imgs", :key="img")
+            img.detail-img(:src="'/upload/img/' + img")
       .detail-content
-        h5 {{ware.info.nameEn}}
-        h6.webFont {{ware.info.name}}
-        p.bewrite 独一无二的蛋糕
-        p.bewrite 献给独一无二 的你
+        h5.webFont {{ware.info.nameEn}}
+        h6 {{ware.info.name}}
+        p(v-for="depc in ware.info.depiction.split('/')").bewrite {{depc}}
       //- .detail-dishes(v-if='ware.info.type==9')
       //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='奶油'}") 奶油
       //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='抹茶'}") 抹茶
       //-   .dishTab(v-on:click='dishChange', :class="{'active': ware.dish==='巧克力'}") 巧克力
-      .detail-weight
+      .detail-weight(v-if="ware.info.type === 0 || ware.info.type === 1")
         .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===1}") 1.0磅
         .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===1.5}") 1.5磅
         .weightTab(v-on:click='weightChange', style="margin-right: 4%", :class="{'active': ware.weight===2}") 2.0磅
         .weightTab(v-on:click='weightChange', :class="{'active': ware.weight===2.5}") 2.5磅
-      .detail-detail
-        .size
+      .detail-weight(v-if="ware.info.type === 2")
+        .weightTab.active(style="width: 100%") 1份
+      .detail-weight(v-if="ware.info.type === 3")
+        .weightTab.active(style="width: 100%") 1束
+      .detail-detail(v-if="ware.info.type === 0 || ware.info.type === 1")
+        .size(:class="{'fsize': ware.info.type === 0, 'ysize': ware.info.type === 1}")
         div
-          span.icon.icon-friends
+          span.icon.iconfont.icon-chicun
           | 14*14cm
         div
-          span.icon.icon-friends
+          span.icon.iconfont.icon-chidouren2
           | 适合7~8人分享
         div
-          span.icon.icon-friends
+          span.icon.iconfont.icon-canju
           | 含10套餐具
         div
-          span.icon.icon-friends
+          span.icon.iconfont.icon-shijian
           | 需提前8小时预定
       .detail-notice
+        div(v-if="ware.info.type === 0 || ware.info.type === 1 || ware.info.type === 2")
+          h5
+            span.icon.iconfont.icon-zhuyi2 注意事项
+          p 1、对本蛋糕食材过敏者，请您选择其他款蛋糕；
+          p 2、订购5磅以上蛋糕，请与客服人员联系，订购电话：15822922123
+        div(v-if="ware.info.type === 3")
+          h5
+            span.icon.iconfont.icon-zhuyi2 养护说明
+          p 1、请您打开包装后，小心地将花取出，并放入装有适量清水的花瓶中；
+          p 2、每日或隔日更换一次水，防止根茎长期浸泡造成的腐烂
         h5
-          span.icon.icon-friends
-          | 保鲜条件
-        p 1、对本蛋糕食材过敏者，请您选择其他款蛋糕；
-        p 2、订购5磅以上蛋糕，请与客服人员联系，订购电话：15822922123
-        h5
-          span.icon.icon-friends
+          span.icon.iconfont.icon-banjiapeisong
           | 配送说明
         p 目前只开通天津地区线上订购配送服务，超出范围暂不配送，请谅解。
     #detail-handle
-      #detail-price ￥{{ware.info.price}}/磅
+      #detail-price ￥{{ware.info.price[0].val * ware.weight * ware.sum}}
       #detail-shopcar(v-on:click='addToShopcar') 加入购物车
       #detail-buy
         a(v-on:click='promptBuy') 立即购买
@@ -61,10 +69,12 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'ware-detail',
   activated () {
+    $.showPreloader()
     this.wareInit()
     this.wareInfo(this.$route.params.wareId)
     setTimeout(() => $('.swiper-container').swiper({
-      autoplay: '3000'
+      autoplay: '3000',
+      loop: true
     }), 300)
   },
   computed: {
@@ -147,25 +157,27 @@ export default {
 
 .detail-img
   width 100%
+  object-fit cover
   
 .swiper-container
   min-height 12rem
   padding 0
 
 .detail-content
-  margin .8rem 1.6rem
+  margin .6rem 1.5rem
   & > h5
-    font-size 1.2rem
+    font-size 1.3rem
   & > h6
-    font-size .8rem
+    font-size .65rem
     font-weight bold
     margin-bottom .4rem
   & > p
-    font-size .7rem
+    font-size .65rem
+    opacity .7
 
 .detail-dishes,
 .detail-weight
-  margin .4rem 1.6rem
+  margin .4rem 1.5rem
 
 .detail-dishes,
 .detail-weight
@@ -174,10 +186,12 @@ export default {
 
 .dishTab,
 .weightTab
-  font-size .85rem
+  font-size .65rem
   text-align center
-  background-color bc_light
-  line-height 1.8rem
+  background-color rgba(255, 255, 255, .5)
+  line-height 1.6rem
+  color rgba(0, 0, 0, .3)
+  transition background-color .3s
 
 .dishTab
   width 33.33%
@@ -189,6 +203,7 @@ export default {
   display inline-block
 
 .weightTab.active
+  background-color #fff
   border 1px solid #996600
   color #996600
 
@@ -207,30 +222,34 @@ export default {
   padding 1rem 2rem
   font-size 0
   border-bottom 1px #ccc solid
-  background-color #f2f2f2
+  background-color #f9f9f9
   margin 1rem auto
   & > div
     display inline-block
     width 50%
-    font-size .75rem
+    font-size .65rem
   .size
-    background url('../assets/img/size.jpg') center center no-repeat
+    background center center no-repeat
     width 100%
     min-height 6rem
     background-size 80%
     margin-bottom .4rem
     transition background-size 0.3s ease
+  .fsize
+    background-image url('../assets/img/fsize.jpg')
+  .ysize
+    background-image url('../assets/img/ysize.jpg')
 
 .detail-notice
   margin 0 2.4rem 2.2rem
-  & > h5
+  h5
     margin-top 1.6rem !important
     margin-bottom .6rem !important
-    font-size .85rem
+    font-size .7rem
     span
       padding-right .2rem
-  & > p
-    font-size .7rem
+  p
+    font-size .65rem
 
 #detail-handle
   width 100%
@@ -252,15 +271,18 @@ export default {
 #detail-price
   width 40%
   background-color mc
-  color fc_dark
+  color #fff
+  font-weight bold
 
 #detail-shopcar
   width 30%
   background-color bc_light
+  font-size .8rem !important
 
 #detail-buy
   width 30%
   background-color bc_confirm
+  font-size .8rem !important
   a
     color fc_dark
 </style>

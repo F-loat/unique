@@ -14,8 +14,7 @@ module.exports = {
   },
   externals: {
     'zepto': 'Zepto',
-    'pingpp': 'pingpp',
-    'md5': 'md5'
+    'pingpp': 'pingpp'
   },
   resolve: {
     extensions: ['', '.js', '.vue'],

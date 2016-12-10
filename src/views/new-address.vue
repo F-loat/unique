@@ -91,11 +91,12 @@ export default {
 #newAddress .add,
 #newAddress .add:active
   display block
-  width 100%
+  width 30%
+  margin 0 auto
   height 2.2rem
   line-height 2.2rem
   text-align center
-  background-color mc
+  background-color #dfba76
   color fc_dark
   font-size .8rem
 </style>

@@ -5,28 +5,30 @@
     h1.title 订单确认
   .content
     .content-inner
-      header.address.bar.bar-nav.bar-sec.row
-        div
-          router-link(to="/person/addresses", v-if='!this.address') 添加收货地址
-          router-link#address-id(to="/person/addresses", v-else, :data-address-id='address._id') {{address.site}}
       .order-list-wrap
         .content-inner
           ul.order-list.list-block.media-list
             li(v-for='ware in order.wares')
               label.label-checkbox.item-content
                 .item-media
-                  img(v-bind:src='ware.info.img')
+                  img(:src="'/upload/img/' + ware.info.img")
                 .item-inner
                   .item-title {{ware.info.nameEn}}
                   .item-subtitle {{ware.info.name}}
-                  .item-subtitle 规格：{{ware.weight}} 磅
+                  .item-subtitle 规格：{{ware.weight}}
                   .item-subtitle 数量：{{ware.sum}}
-                  .item-text.pull-left ￥{{ware.info.price}}/磅
+                  .item-text.pull-left ￥{{ware.info.price[0].val}}
           .order-about.list-block
             ul
               li.item-content.item-link
+                router-link.item-inner(to="/person/addresses")
+                  i 收货地址
+                  span
+                    div(v-if='!this.address') 添加收货地址
+                    #address-id(v-else, :data-address-id='address._id') {{address.site}}
+              li.item-content.item-link
                 .item-inner
-                  i 送货时间
+                  i 送达时间
                   span
                     input#datetime-picker(type='text')
               //- li.item-content.item-link
@@ -37,9 +39,11 @@
                 .item-inner
                   i 订单留言
                   span#order-message(v-on:click='orderMessage') 请填写您对商品的特殊要求
-            .distributionFee 配送费￥10.00
+            .distributionFee 开业初期免配送费
             div
-              .pay-way-title 支付方式（选择微信支付可使用相关优惠券）
+              .pay-way-title 支付方式
+                span(v-if="wx") 
+                |（选择微信支付可使用相关优惠券）
               ul.pay-way
                 li(v-if="wx")
                   label.label-checkbox.item-content
@@ -61,7 +65,7 @@
       .list-block.media-list.pull-left
         label.label-checkbox.item-content
           .item-inner
-            .pull-right 共￥{{order.price.toFixed(2)}}
+            .pull-right 共￥{{order.price.toFixed(2) - (-0)}}
       #pay.order(v-on:click='pay') 下单
 </template>
 
@@ -81,7 +85,7 @@ export default {
       this.$router.push('/shopcar')
     }
     for (let ware of this.order.wares) {
-      this.order.price += ware.info.price * ware.sum * ware.weight
+      this.order.price += ware.info.price[0].val * ware.sum * ware.weight
     }
     var date = new Date()
     $('#datetime-picker').datetimePicker({
@@ -177,9 +181,6 @@ export default {
 #wareOrder
   .content
     background-color bc_light
-  .address
-    text-align center
-    line-height 2.2rem
     a
      color #222
   &:not(.watch-active-state)
@@ -238,7 +239,6 @@ export default {
   margin .2rem 1rem
 
 .order-list-wrap
-  margin-top 3rem
   padding-bottom 2.9rem
 
 .pay-way-title

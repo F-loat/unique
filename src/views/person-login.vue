@@ -22,7 +22,6 @@
 
 <script>
 import $ from 'zepto'
-import md5 from 'md5'
 import { mapActions } from 'vuex'
 
 export default {
@@ -45,7 +44,7 @@ export default {
           dataType: 'json',
           data: {
             phone: phone,
-            password: md5(password)
+            password: password
           },
           success: (data) => {
             if (data.state === 1) {
@@ -86,7 +85,7 @@ export default {
 
 #login-now
   text-align center
-  background-color fc_light
+  background-color mc
   margin 1.2rem auto 0
   height 1.8rem
   line-height 1.8rem

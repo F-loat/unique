@@ -8,24 +8,24 @@
         .od-wares
           .o-wait 等待制作配送
             div.o-state
-              span.icon.icon-code
+              span.icon.iconfont.icon-zhifuwenti.active
               span ···
-              span.icon.icon-code
+              span.icon.iconfont.icon-peisongzhong
               span ···
-              span.icon.icon-code
+              span.icon.iconfont.icon-wancheng
           ul
             li(v-for="ware in order.wares")
               p
                 span {{ware.info.name}}
-                span.pull-right x{{ware.sum}} ￥{{ware.info.price}}
+                span.pull-right x{{ware.sum}} ￥{{ware.info.price[0].val}}
               p.od-weight {{ware.weight}}磅
           p
             span 配送费
             span.pull-right ￥0
-          p
-            span 优惠券
-            span.pull-right -￥0
-          p(style="text-align: right") 合计 ￥{{order.fee-0}}
+          //- p
+          //-   span 优惠券
+          //-   span.pull-right -￥0
+          p(style="text-align: right") 合计 ￥{{order.fee}}
         table.buy-again
           tr
             td(v-if="true", @click="cancel") 取消订单
@@ -34,7 +34,7 @@
           table
             tr
               td 订单号：
-              td 45154654651516151648
+              td {{order.order_no}}
             tr
               td 下单时间
               td {{order.orderDate}}
@@ -160,6 +160,7 @@ export default {
   p
     margin 0
     line-height 1.8
+    font-size .65rem
 
 .od-weight
   color #ccc
@@ -168,7 +169,7 @@ export default {
 
 .buy-again
   width 100%
-  font-size 16px
+  font-size .7rem
   color #222
   text-align center
   background-color #f2f2f2
@@ -180,7 +181,7 @@ export default {
   padding 16px
   width 100%
   text-align left
-  font-size 14px
+  font-size .65rem
   tr
     line-height 28px
   
@@ -193,4 +194,9 @@ export default {
   font-size 28px
   text-align center
   border-radius 50%
+  color #ccc
+  .icon
+    font-size 1.6rem
+  .active
+    color #222
 </style>

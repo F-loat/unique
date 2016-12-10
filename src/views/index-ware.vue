@@ -10,83 +10,59 @@
       #mTab1.tab
         #mousse-list.content
           .content-inner
-            transition-group.clearfix(
-              name="fade",
-              tag="ul",
-              @before-enter="beforeEnter",
-              @enter="enter",
-              @leave="leave")
+            ul.clearfix#mousse_wrap
               li.ware-wrap(v-for='(ware, index) in wares.c', :key='ware._id', :data-index='index')
                 router-link(:to="'/ware/' + ware._id", :data-id='index')
-                  div
-                    img(v-bind:src='ware.img')
+                  .ware-item(v-lazy:background-image.mousse_wrap="'/upload/img/' + ware.img")
                 .ware-detail
                   div
-                    h5 {{ware.name}}
-                    p.webFont {{ware.nameEn}}
+                    h5.webFont {{ware.nameEn}}
+                    p {{ware.name}}
                   .ware-buy
-                    span.icon.icon-cart.pull-right
-                    p ￥{{ware.price}}/磅
+                    span.icon.iconfont.icon-cart.pull-right
+                    p(style="opacity: .6") ￥{{ware.price[0].val}}
       #mTab2.tab.active
         #cake-f-list.content
           .content-inner
-            transition-group.clearfix(
-              name="fade",
-              tag="ul",
-              @before-enter="beforeEnter",
-              @enter="enter",
-              @leave="leave")
+            ul.clearfix#cakef_wrap
               li.ware-wrap(v-for='(ware, index) in wares.a', :key='ware._id', :data-index='index')
                 router-link(:to="'/ware/' + ware._id", :data-id='index')
-                  div
-                    img(v-bind:src='ware.img')
+                  .ware-item(v-lazy:background-image.cakef_wrap="'/upload/img/' + ware.img")
                 .ware-detail
                   div
-                    h5 {{ware.name}}
-                    p.webFont {{ware.nameEn}}
+                    h5.webFont {{ware.nameEn}}
+                    p {{ware.name}}
                   .ware-buy
-                    span.icon.icon-cart.pull-right
-                    p ￥{{ware.price}}/磅
+                    span.icon.iconfont.icon-cart.pull-right
+                    p(style="opacity: .6") ￥{{ware.price[0].val}}
       #mTab3.tab
         #cake-y-list.content
           .content-inner
-            transition-group.clearfix(
-              name="fade",
-              tag="ul",
-              @before-enter="beforeEnter",
-              @enter="enter",
-              @leave="leave")
+            ul.clearfix#cakey_wrap
               li.ware-wrap(v-for='(ware, index) in wares.b', :key='ware._id', :data-index='index')
                 router-link(:to="'/ware/' + ware._id", :data-id='index')
-                  div
-                    img(v-bind:src='ware.img')
+                  .ware-item(v-lazy:background-image.cakey_wrap="'/upload/img/' + ware.img")
                 .ware-detail
                   div
-                    h5 {{ware.name}}
-                    p.webFont {{ware.nameEn}}
+                    h5.webFont {{ware.nameEn}}
+                    p {{ware.name}}
                   .ware-buy
-                    span.icon.icon-cart.pull-right
-                    p ￥{{ware.price}}/磅
+                    span.icon.iconfont.icon-cart.pull-right
+                    p(style="opacity: .6") ￥{{ware.price[0].val}}
       #mTab4.tab
         #flower-list.content
           .content-inner
-            transition-group.clearfix(
-              name="fade",
-              tag="ul",
-              @before-enter="beforeEnter",
-              @enter="enter",
-              @leave="leave")
+            ul.clearfix#flower_wrap
               li.ware-wrap(v-for='(ware, index) in wares.d', :key='ware._id', :data-index='index')
                 router-link(:to="'/ware/' + ware._id", :data-id='index')
-                  div
-                    img(v-bind:src='ware.img')
+                  .ware-item(v-lazy:background-image.flower_wrap="'/upload/img/' + ware.img")
                 .ware-detail
                   div
-                    h5 {{ware.name}}
-                    p.webFont {{ware.nameEn}}
+                    h5.webFont {{ware.nameEn}}
+                    p {{ware.name}}
                   .ware-buy
-                    span.icon.icon-cart.pull-right
-                    p ￥{{ware.price}}/磅
+                    span.icon.iconfont.icon-cart.pull-right
+                    p(style="opacity: .6") ￥{{ware.price[0].val}}
 </template>
 
 <script>
@@ -103,21 +79,7 @@ export default {
   methods: {
     ...mapActions([
       'waresInfo'
-    ]),
-    beforeEnter (el) {
-      el.style.opacity = 0
-    },
-    enter (el, done) {
-      setTimeout(function () {
-        el.style.opacity = 1
-      }, el.dataset.index * 100)
-    },
-    leave (el, done) {
-      setTimeout(function () {
-        el.style.opacity = 0
-        el.remove()
-      }, el.dataset.index * 100)
-    }
+    ])
   },
   mounted () {
     this.$nextTick(() => {
@@ -130,6 +92,26 @@ export default {
 
 <style lang="stylus">
 @import '../themes/'
+
+@keyframes fadeIn
+  from
+    opacity 0
+  to
+    opacity 1
+    
+@-webkit-keyframes fadeIn
+  from
+    opacity 0
+  to
+    opacity 1
+
+.ware-item[lazy=loaded]
+  animation-duration 1s
+  animation-fill-mode both
+  animation-name fadeIn
+  -webkit-animation-duration 1s
+  -webkit-animation-fill-mode both
+  -webkit-animation-name fadeIn
 
 /*分类蛋糕页面*/
 #tab2
@@ -146,9 +128,11 @@ export default {
   .webFont
     font-weight bold
 
-#tab2 .buttons-tab .button,
+#tab2 .buttons-tab .button
+  color rgba(255, 255, 255, .5)
+  background-color mc
 #tab2 .buttons-tab .button.active
-  color fc_light
+  color #fff
   background-color mc
 
 .ware-wrap
@@ -161,13 +145,12 @@ export default {
     display block
     & > div
       width 100%
-      box-shadow 0px 0px 16px 1px rgba(0, 0, 0, 0.2)
-      font-size 0
+      box-shadow 0px 0px 6px 1px rgba(0, 0, 0, 0.2)
       padding-bottom 100%
-      overflow hidden
+      background-size cover
+      background-position center center
       & > img
-        width 100%
-        position absolute
+        height 38vw
 
 .ware-detail
   background-color rgba(32,32,32,0.45)
@@ -183,14 +166,17 @@ export default {
     margin 0
     font-size 0.6rem
     line-height 1.6
+    color #fff
   p
     margin 0
     font-size 0.5rem
     line-height 1.3
+    font-weight bold
+    color #fff
   span
     font-size 0.8rem
     line-height 1.3
-    margin-right 0.5rem
+    margin-right 0.3rem
 
 .ware-buy
   position absolute

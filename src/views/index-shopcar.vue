@@ -6,19 +6,9 @@
     .content
       transition(name="fade")
         #no-ware(v-if='!user.shopcar.length')
-          span.icon.icon-cart
+          span.icon.iconfont.icon-cart
           h4 购物车空空如也
       transition(name="fade")
-        div(v-if='user.shopcar.length')
-          header.bar.bar-nav.bar-sec
-            span.col-50
-              span.icon.icon-app
-              |  方形蜡烛
-              span.icon.icon-check
-            span.col-50
-              span.icon.icon-computer
-              |  餐具套餐
-              span.icon.icon-check
           #shopcar-list.content(data-type='js')
             .content-inner
               transition-group(name="fade", tag="ul").order-list.list-block.media-list
@@ -27,16 +17,16 @@
                     .item-media
                       i.icon.icon-form-checkbox(:class="{'button-checked': ware.state}", @click='check')
                     .item-media
-                      img(v-bind:src='ware.info.img')
+                      img(:src="'/upload/img/' + ware.info.img")
                     .item-inner
                       .item-title {{ware.info.nameEn}}
                       .item-subtitle {{ware.info.name}}
-                      .item-subtitle 重量：{{ware.weight}}磅
-                      .item-text.pull-left ￥{{ware.info.price*ware.sum*ware.weight}}
+                      .item-subtitle 规格：{{ware.weight}}
+                      .item-text.pull-left ￥{{ware.info.price[0].val *ware.weight *ware.sum}}
                       .pull-right(:data-shopcar-id='index')
-                        span.icon.icon-down(@click='sumChange(+1,$event)')
+                        span.icon.iconfont.icon-zititubiaojianshaofangxinglunkuo(@click='sumChange(+1,$event)')
                         |  {{ware.sum}}
-                        span.icon.icon-up(@click='sumChange(-1,$event)')
+                        span.icon.iconfont.icon-tianjia(@click='sumChange(-1,$event)')
   #buy-now(v-if='user.shopcar.length', transition='fade')
     .list-block.media-list.pull-left
       label.label-checkbox.item-content
@@ -63,7 +53,7 @@ export default {
       var price = 0
       for (let ware of this.user.shopcar) {
         if (ware.state === 1) {
-          price += ware.info.price * ware.sum * ware.weight
+          price += ware.info.price[0].val * ware.weight * ware.sum
         }
       }
       return price.toFixed(2)
@@ -151,15 +141,9 @@ export default {
     padding-bottom 2.5rem
   .content-inner
     padding-bottom 2.9rem
-  .bar-sec
-    .col-50
-      text-align center
-      line-height 2.2rem
-      color fc_dark
-      float left
-      width 50%
-    .icon
-      color bc_light
+
+.order-list
+  margin .4rem 0
 
 #no-ware
   color mc

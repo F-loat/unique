@@ -14,13 +14,13 @@
           router-link(to="/person/orders")
             .item-inner
               .item-title
-                i.icon.icon-edit
+                i.icon.iconfont.icon-quanbudingdan-01
                 i 我的订单
         li.item-content.item-link
           router-link(to="/person/addresses")
             .item-inner
               .item-title
-                i.icon.icon-card
+                i.icon.iconfont.icon-gerenziliao
                 i 收货地址
         //- li.item-content.item-link
         //-   router-link(to="/person/coupons")
@@ -38,14 +38,14 @@
           router-link(to="/aboutUs")
             .item-inner
               .item-title
-                i.icon.icon-friends
+                i.icon.iconfont.icon-quanzi
                 i 关于我们
-        li.item-content.item-link
-          router-link(to="/userAgreement")
-            .item-inner
-              .item-title
-                i.icon.icon-app
-                i 用户使用协议
+        //- li.item-content.item-link
+        //-   router-link(to="/userAgreement")
+        //-     .item-inner
+        //-       .item-title
+        //-         i.icon.icon-app
+        //-         i 用户使用协议
         li.item-content.item-link(v-if='user.type===9')
           router-link(to="/admin/orderManage")
             .item-inner
@@ -54,7 +54,7 @@
                 i 后台管理
       #Tel
         a.call(href='tel:15822922123')
-          span.icon.icon-phone
+          span.icon.iconfont.icon-kefu--
           span 客服电话
           span 15822922123
 </template>
@@ -104,6 +104,7 @@ export default {
     bottom 2.5rem
   .list-block
     margin 0
+    font-size .75rem
     .item-content
       padding 0 0.75rem
   .bar
@@ -128,7 +129,7 @@ export default {
     a
       display block
       width 100%
-      color fc_gray
+      color fc_dark
 
 #Tel
   width 100%
@@ -138,8 +139,8 @@ export default {
   margin-top 1rem
   border 1px solid #f7f7f7
   span
-    font-size .85rem
+    font-size .9rem
     line-height 2.2rem
     margin 0 0.3rem
-    color fc_dark
+    color rgba(0, 0, 0, .4)
 </style>
