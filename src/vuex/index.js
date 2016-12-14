@@ -8,7 +8,8 @@ class Ware {
   constructor () {
     this.info = {
       price: [{}],
-      depiction: ''
+      depiction: '',
+      imgs: []
     }
     this.weight = 1
     this.dish = ''

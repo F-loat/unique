@@ -76,7 +76,7 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ware-order',
-  activated () {
+  mounted () {
     if (this.$route.params.wareId) {
       this.wareInfo(this.$route.params.wareId)
       this.orderInit()
@@ -87,9 +87,9 @@ export default {
     for (let ware of this.order.wares) {
       this.order.price += ware.info.price[0].val * ware.sum * ware.weight
     }
-    var date = new Date()
+    var date = this.$moment().add(13, 'hours')
     $('#datetime-picker').datetimePicker({
-      value: [date.getFullYear(), (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1), date.getDate() > 9 ? date.getDate() : '0' + date.getDate(), '11', '30']
+      value: [date.format('Y'), date.format('MM'), date.format('DD'), date.format('HH'), '00']
     })
   },
   data () {
@@ -116,6 +116,7 @@ export default {
     ...mapActions([
       'userInfo',
       'wareInfo',
+      'waresInfo',
       'orderInit',
       'orderWares'
     ]),
@@ -144,18 +145,40 @@ export default {
         } else {
           return $.toast('请先添加地址')
         }
+        if (!this.$moment().add(12, 'hours').isBefore(this.$moment($('#datetime-picker').val()))) return $.toast('送达时间距现在应大于12小时')
         this.ispay = true
-        this.order.receivingTime = $('#datetime-picker').val()
+        var wares = []
+        for (let ware of this.order.wares) {
+          wares.push({
+            info: {
+              _id: ware.info._id,
+              name: ware.info.name,
+              type: ware.info.type
+            },
+            weight: ware.weight,
+            dish: ware.dish,
+            sum: ware.sum,
+            isShopcar: ware._id
+          })
+        }
         $.ajax({
           type: 'post',
           url: '/request/ware/pay',
           data: {
-            order: JSON.stringify(this.order)
+            order: JSON.stringify({
+              wares: wares,
+              msg: this.order.msg,
+              addressId: this.order.addressId,
+              receivingTime: $('#datetime-picker').val(),
+              payway: this.order.payway,
+              price: this.order.price
+            })
           },
           success: (data) => {
             pingpp.createPayment(data, (result, err) => {
               if (result === 'success') {
                 this.ispay = false
+                this.waresInfo()
                 this.$router.push('/person/orders')
               } else if (result === 'fail') {
                 this.ispay = false
@@ -223,7 +246,7 @@ export default {
     color fc_dark
     .item-inner
       &:after
-        background-color fc_light
+        display none
   .item-inner
     padding 0 .6rem 0 0
     box-sizing border-box

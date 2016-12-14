@@ -183,7 +183,7 @@ export default {
     color fc_dark
     .item-inner
       &:after
-        background-color fc_light
+        display none
   .item-inner
     padding 0 .6rem 0 0
     box-sizing border-box

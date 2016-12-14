@@ -24,7 +24,7 @@
                     router-link(:to='"/person/orders/" + order._id + "?index=" + index')
                       .o-order
                         p.o-show-detail
-                          span {{order.orderDate}}
+                          span {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
                           span(style="margin-left: 12px;") 查看明细>
                         p.o-wait 等待制作配送
                         div.o-state

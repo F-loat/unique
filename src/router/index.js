@@ -6,21 +6,21 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component (resolve) {
-      require(['../components/nav-bottom'], resolve)
+    components: {
+      alive: resolve => require(['../components/nav-bottom'], resolve)
     },
     redirect: '/index',
     children: [
       {
         path: 'index',
-        component (resolve) {
-          require(['../views/index-main'], resolve)
+        components: {
+          alive: resolve => require(['views/index-main'], resolve)
         }
       },
       {
         path: 'ware',
-        component (resolve) {
-          require(['../views/index-ware'], resolve)
+        components: {
+          alive: resolve => require(['views/index-ware'], resolve)
         }
       },
       // {
@@ -31,76 +31,76 @@ const routes = [
       // },
       {
         path: 'shopcar',
-        component (resolve) {
-          require(['../views/index-shopcar'], resolve)
+        components: {
+          alive: resolve => require(['views/index-shopcar'], resolve)
         }
       },
       {
         path: 'person',
-        component (resolve) {
-          require(['../views/index-person'], resolve)
+        components: {
+          alive: resolve => require(['views/index-person'], resolve)
         }
       }
     ]
   },
   {
     path: '/ware/:wareId',
-    component (resolve) {
-      require(['../views/ware-detail'], resolve)
+    components: {
+      reset: resolve => require(['views/ware-detail'], resolve)
     }
   },
   {
     path: '/order',
-    component (resolve) {
-      require(['../views/ware-order'], resolve)
+    components: {
+      reset: resolve => require(['views/ware-order'], resolve)
     }
   },
   {
     path: '/order/:wareId',
-    component (resolve) {
-      require(['../views/ware-order'], resolve)
+    components: {
+      reset: resolve => require(['views/ware-order'], resolve)
     }
   },
   {
     path: '/person/fastLogin',
-    component (resolve) {
-      require(['../views/fast-login'], resolve)
+    components: {
+      alive: resolve => require(['views/fast-login'], resolve)
     }
   },
   {
     path: '/person/regist',
-    component (resolve) {
-      require(['../views/person-regist'], resolve)
+    components: {
+      alive: resolve => require(['views/person-regist'], resolve)
     }
   },
   {
     path: '/person/login',
-    component (resolve) {
-      require(['../views/person-login'], resolve)
+    components: {
+      alive: resolve => require(['views/person-login'], resolve)
     }
   },
   {
     path: '/person/orders',
-    component (resolve) {
-      require(['../views/person-orders'], resolve)
+    components: {
+      alive: resolve => require(['views/person-orders'], resolve)
     }
   },
   {
     path: '/person/orders/:oid',
-    component (resolve) {
-      require(['../views/order-detail'], resolve)
+    components: {
+      reset: resolve => require(['views/order-detail'], resolve)
     }
   },
   {
     path: '/person/addresses',
-    component (resolve) {
-      require(['../views/person-addresses'], resolve)
+    components: {
+      alive: resolve => require(['views/person-addresses'], resolve)
     }
   },
   {
     path: '/person/addresses/new',
-    component (resolve) {
-      require(['../views/new-address'], resolve)
+    components: {
+      alive: resolve => require(['views/new-address'], resolve)
     }
   },
   // {
@@ -111,32 +111,32 @@ const routes = [
   // },
   {
     path: '/fedBack',
-    component (resolve) {
-      require(['../views/fed-back'], resolve)
+    components: {
+      alive: resolve => require(['views/fed-back'], resolve)
     }
   },
   {
     path: '/aboutUs',
-    component (resolve) {
-      require(['../views/about-us'], resolve)
+    components: {
+      alive: resolve => require(['views/about-us'], resolve)
     }
   },
   {
     path: '/userAgreement',
-    component (resolve) {
-      require(['../views/user-agreement'], resolve)
+    components: {
+      alive: resolve => require(['views/user-agreement'], resolve)
     }
   },
   {
     path: '/admin/orderManage',
-    component (resolve) {
-      require(['../views/admin/order-manage'], resolve)
+    components: {
+      alive: resolve => require(['views/admin/order-manage'], resolve)
     }
   },
   {
     path: '/admin/orderManage/:oid',
-    component (resolve) {
-      require(['../views/admin/order-detail'], resolve)
+    components: {
+      alive: resolve => require(['views/admin/order-detail'], resolve)
     }
   },
   {

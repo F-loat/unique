@@ -1,27 +1,30 @@
 <template lang="pug">
 #tab2.tab
   header.buttons-tab
-    a.button.tab-link(href='#mTab1') 甜点
-    a.button.tab-link.active(href='#mTab2') 方形蛋糕
+    a.button.tab-link.active(href='#mTab1') 甜点
+    a.button.tab-link(href='#mTab2') 方形蛋糕
     a.button.tab-link(href='#mTab3') 圆形蛋糕
     a.button.tab-link(href='#mTab4') 鲜花
   .content
     .tabs
-      #mTab1.tab
+      #mTab1.tab.active
         #mousse-list.content
           .content-inner
             ul.clearfix#mousse_wrap
               li.ware-wrap(v-for='(ware, index) in wares.c', :key='ware._id', :data-index='index')
                 router-link(:to="'/ware/' + ware._id", :data-id='index')
                   .ware-item(v-lazy:background-image.mousse_wrap="'/upload/img/' + ware.img")
-                .ware-detail
-                  div
-                    h5.webFont {{ware.nameEn}}
-                    p {{ware.name}}
-                  .ware-buy
-                    span.icon.iconfont.icon-cart.pull-right
-                    p(style="opacity: .6") ￥{{ware.price[0].val}}
-      #mTab2.tab.active
+                div(v-if="ware.stock !== 0")
+                  .ware-stock 库存：{{ware.stock}}个
+                  .ware-detail
+                    div
+                      h5.webFont {{ware.nameEn}}
+                      p {{ware.name}}
+                    .ware-buy
+                      span.icon.iconfont.icon-cart.pull-right
+                      p(style="opacity: .6") ￥{{ware.price[0].val}}
+                .ware-stock-none(v-else) 已售罄
+      #mTab2.tab
         #cake-f-list.content
           .content-inner
             ul.clearfix#cakef_wrap
@@ -151,6 +154,25 @@ export default {
       background-position center center
       & > img
         height 38vw
+
+.ware-stock
+  position absolute
+  top 0
+  right 0
+  font-size .65rem
+  background-color rgba(255, 255, 255, .4)
+  padding 2px 4px
+
+.ware-stock-none
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+  color #fff
+  text-align center
+  font-size 1rem
+  background-color rgba(0, 0, 0, .4)
 
 .ware-detail
   background-color rgba(32,32,32,0.45)

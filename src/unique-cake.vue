@@ -1,6 +1,8 @@
 <template lang="pug">
-keep-alive
-  router-view
+#unique
+  keep-alive
+    router-view(name="alive")
+  router-view(name="reset")
 </template>
 
 <script>

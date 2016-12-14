@@ -1,7 +1,7 @@
 <template lang="pug">
 div.view
   keep-alive
-    router-view
+    router-view(name="alive")
   nav.bar.bar-tab
     router-link.tab-item(to="/index", replace)
       span.icon.iconfont.icon-zhuye

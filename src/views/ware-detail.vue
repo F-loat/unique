@@ -7,8 +7,10 @@
     .content-inner
       .swiper-container
         .swiper-wrapper
-          .swiper-slide(v-for="img in ware.info.imgs", :key="img")
-            img.detail-img(:src="'/upload/img/' + img")
+          //- .swiper-slide(v-for="img in ware.info.imgs", :key="img")
+          //-   img.detail-img(:src="'/upload/img/' + img")
+          .swiper-slide
+            img.detail-img(:src="ware.info.imgs[0] ? '/upload/img/' + ware.info.imgs[0] : null")
       .detail-content
         h5.webFont {{ware.info.nameEn}}
         h6 {{ware.info.name}}
@@ -29,17 +31,22 @@
       .detail-detail(v-if="ware.info.type === 0 || ware.info.type === 1")
         .size(:class="{'fsize': ware.info.type === 0, 'ysize': ware.info.type === 1}")
         div
-          span.icon.iconfont.icon-chicun
-          | 14*14cm
+          span.icon.iconfont.icon-chicun(v-if="ware.weight===1") 14*14cm
+          span.icon.iconfont.icon-chicun(v-if="ware.weight===1.5") 16*16cm
+          span.icon.iconfont.icon-chicun(v-if="ware.weight===2") 18*18cm
+          span.icon.iconfont.icon-chicun(v-if="ware.weight===2.5") 20*20cm
         div
-          span.icon.iconfont.icon-chidouren2
-          | 适合7~8人分享
+          span.icon.iconfont.icon-chidouren2(v-if="ware.weight===1") 适合1~2人分享
+          span.icon.iconfont.icon-chidouren2(v-if="ware.weight===1.5") 适合2~3人分享
+          span.icon.iconfont.icon-chidouren2(v-if="ware.weight===2") 适合3~4人分享
+          span.icon.iconfont.icon-chidouren2(v-if="ware.weight===2.5") 适合5~6人分享
         div
-          span.icon.iconfont.icon-canju
-          | 含10套餐具
+          span.icon.iconfont.icon-canju(v-if="ware.weight===1") 含2套餐具
+          span.icon.iconfont.icon-canju(v-if="ware.weight===1.5") 含3套餐具
+          span.icon.iconfont.icon-canju(v-if="ware.weight===2") 含4套餐具
+          span.icon.iconfont.icon-canju(v-if="ware.weight===2.5") 含6套餐具
         div
-          span.icon.iconfont.icon-shijian
-          | 需提前8小时预定
+          span.icon.iconfont.icon-shijian 提前12小时预定
       .detail-notice
         div(v-if="ware.info.type === 0 || ware.info.type === 1 || ware.info.type === 2")
           h5
@@ -54,7 +61,7 @@
         h5
           span.icon.iconfont.icon-banjiapeisong
           | 配送说明
-        p 目前只开通天津地区线上订购配送服务，超出范围暂不配送，请谅解。
+        p 目前只开通天津商业大学线上订购配送服务，超出范围暂不配送，请谅解。
     #detail-handle
       #detail-price ￥{{ware.info.price[0].val * ware.weight * ware.sum}}
       #detail-shopcar(v-on:click='addToShopcar') 加入购物车
@@ -68,13 +75,13 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ware-detail',
-  activated () {
+  mounted () {
     $.showPreloader()
     this.wareInit()
     this.wareInfo(this.$route.params.wareId)
     setTimeout(() => $('.swiper-container').swiper({
       autoplay: '3000',
-      loop: true
+      loop: false
     }), 300)
   },
   computed: {

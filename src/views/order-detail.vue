@@ -37,11 +37,11 @@
               td {{order.order_no}}
             tr
               td 下单时间
-              td {{order.orderDate}}
+              td {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
           table(style="border-top: 1px solid #bbb; border-bottom: 1px solid #bbb")
             tr
-              td 送货时间
-              td {{order.receive}}
+              td 送达时间
+              td {{$moment(order.receive).format('YYYY-MM-DD HH:mm:ss')}}
             tr
               td 收货人
               td {{order.address.receiver}}
@@ -70,10 +70,9 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'order-detail',
-  activated () {
+  mounted () {
     this.$nextTick(() => {
       this.order = this.user.orders[this.$route.query.index]
-      console.log(this.order)
     })
   },
   computed: {
