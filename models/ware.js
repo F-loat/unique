@@ -14,6 +14,10 @@ var wareSchema = new mongoose.Schema({
   uploadDate: {
     type: Date,
     default: Date.now()
+  },
+  stock: {
+    type: Number,
+    default: 0
   }
 })
 

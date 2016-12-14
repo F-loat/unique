@@ -53,6 +53,7 @@ exports.waresInfo = function (req, res) {
   if (req.query.type) option.type = req.query.type
   Ware
     .find(option)
+    .sort({ stock: -1})
     .exec((err, wares) => {
       res.send(wares)
     })
@@ -190,7 +191,6 @@ exports.pay = function (req, res) {
         }
     })
   }
-
   function creat () {
     var option = {
       order_no: order_no,
@@ -301,19 +301,29 @@ exports.paySucceeded = function (req, res) {
         User
           .update({ _id: metadata.userId }, { $addToSet: { orders: order._id } })
           .exec()
-        //删除购物车及用户信息中的相关订单
+        // 删除购物车及用户信息中的相关订单 & 修改商品库存
         for (let ware of metadata.wares) {
-          if(ware._id) {
+          // 判断是否为购物车中商品
+          if (ware.isShopcar) {
             Shopcar
-              .remove({_id:ware._id})
+              .remove({_id: ware.isShopcar})
               .exec((err) => {
                 if (err) { console.log(err) }
               })
             User
-              .update({_id:req.session.userId},{ $pull: { shopcar: ware._id } })
+              .update({_id: req.session.userId},{ $pull: { shopcar: ware.isShopcar } })
               .exec((err) => {
                 if (err) { console.log(err) }
               })
+          }
+          if (ware.info.type === 2) {
+            Ware
+              .findById(ware.info._id)
+              .then(data => {
+                data.stock -= ware.sum
+                data.save()
+              })
+              .catch(err => console.log(err))
           }
         }
       })
