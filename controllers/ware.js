@@ -14,7 +14,6 @@ var WechatAPI = require('wechat-api')
 var api = new WechatAPI(wx.appid, wx.appsecret)
 
 exports.addImg = function (req, res) {
-  console.log(req.file)
   res.json({ state: 1, filename: req.file.filename, type: req.query.type })
 }
 exports.delImg = function (req, res) {
@@ -53,7 +52,7 @@ exports.waresInfo = function (req, res) {
   if (req.query.type) option.type = req.query.type
   Ware
     .find(option)
-    .sort({ stock: -1})
+    .sort({ stock: -1, uploadDate: -1})
     .exec((err, wares) => {
       res.send(wares)
     })
@@ -169,7 +168,7 @@ exports.pay = function (req, res) {
   time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString() + time.getMilliseconds().toString()
   var order_no = time + req.session.userId.slice(9, 11)
   var price = 0
-
+  
   function getPrice (i) {
     return new Promise((resolve, reject) => {
       var weight = wares[i].weight
@@ -363,6 +362,10 @@ exports.paySucceeded = function (req, res) {
         }
         api.sendTemplate(req.body.data.object.metadata.openid, templateId, backurl, topColor, data, (err, result) => { res.sendStatus(200) })
         api.sendTemplate('oSOjqwaaxYH8HIsnEAGgKDd6A-Vk', templateId, backurl, topColor, data, (err, result) => {})
+        api.sendTemplate('oSOjqwTnJyJUstaqiLt91uTlr1aU', templateId, backurl, topColor, data, (err, result) => {})
+        api.sendTemplate('oSOjqwf2q3bUAfK82J0q6abLtMB8', templateId, backurl, topColor, data, (err, result) => {})
+        api.sendTemplate('oSOjqwdn7D4rBL_pXA2YA9YiI0sI', templateId, backurl, topColor, data, (err, result) => {})
+        api.sendTemplate('oSOjqwTnYS32c0TP7jbSHp_9gvBw', templateId, backurl, topColor, data, (err, result) => {})
       })
   } else {
     res.sendStatus(200)
