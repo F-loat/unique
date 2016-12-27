@@ -163,7 +163,7 @@ export default {
         }
         $.ajax({
           type: 'post',
-          url: '/request/ware/pay',
+          url: this.$domain + '/request/ware/pay',
           data: {
             order: JSON.stringify({
               wares: wares,

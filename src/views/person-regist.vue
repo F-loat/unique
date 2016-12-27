@@ -57,7 +57,7 @@ export default {
       } else {
         $.ajax({
           type: 'post',
-          url: '/request/user/regist',
+          url: this.$domain + '/request/user/regist',
           dataType: 'json',
           data: {
             phone: phone,
@@ -84,7 +84,7 @@ export default {
         if (phone.length === 11) {
           $.ajax({
             type: 'post',
-            url: '/request/user/regist/identify',
+            url: this.$domain + '/request/user/regist/identify',
             data: {
               phone: phone
             },

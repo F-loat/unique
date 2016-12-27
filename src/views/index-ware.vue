@@ -189,6 +189,11 @@ export default {
     font-size 0.6rem
     line-height 1.6
     color #fff
+    overflow hidden
+    height: 0.96rem
+  h5 ~ p
+    height 0.65rem
+    overflow hidden 
   p
     margin 0
     font-size 0.5rem

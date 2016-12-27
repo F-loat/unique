@@ -57,7 +57,8 @@
           table
             tr
               td 支付方式
-              td 支付宝
+              td(v-if="order.payway === 0") 微信支付
+              td(v-else) 支付宝支付
             tr
               td 支付状态
               td 已支付
@@ -93,7 +94,7 @@ export default {
         var orderId = $(e.target).parent().data('orderId')
         $.ajax({
           type: 'post',
-          url: '/request/ware/pay/again',
+          url: this.$domain + '/request/ware/pay/again',
           data: {
             payway: way,
             orderId: orderId
@@ -141,7 +142,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../themes/'
 
 #Order

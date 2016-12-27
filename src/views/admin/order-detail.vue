@@ -7,33 +7,32 @@
     .content-inner
         .od-wares
           h2.od-title
-            span 2222222
-            span.pull-right 未分配
+            span 订单状态
+            span.pull-right(v-if="order.state === 1") 未分配
+            span.pull-right(v-if="order.state === 1.1") 已分配
+            span.pull-right(v-if="order.state === 2") 已完成
           ul
             li(v-for="ware in order.wares")
               p
                 span {{ware.info.name}}
-                span.pull-right x1 ￥{{ware.info.price}}
+                span.pull-right x1 ￥{{ware.info.price[0].val}}
               p.od-weight {{ware.weight}}磅
           p
             span 配送费
-            span.pull-right ￥22
-          p
-            span 优惠券
-            span.pull-right -￥222
+            span.pull-right ￥0
           p(style="text-align: right") 合计 ￥{{order.fee}}
         .od-infos
           table
             tr
               td 订单号：
-              td 45154654651516151648
+              td {{order.order_no}}
             tr
               td 下单时间
-              td {{order.orderDate}}
+              td {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
           table(style="border-top: 1px solid #bbb; border-bottom: 1px solid #bbb")
             tr
               td 送货时间
-              td {{order.receive}}
+              td {{$moment(order.receive).format('YYYY-MM-DD HH:mm:ss')}}
             tr
               td 收货人
               td {{order.address.receiver}}
@@ -45,29 +44,28 @@
               td {{order.address.site}}
             tr
               td 订单留言
-              td {{order.msg}}
+              td {{order.msg || '无'}}
           table
             tr
               td 支付方式
-              td 支付宝
+              td(v-if="order.payway === 0") 微信支付
+              td(v-else) 支付宝支付
             tr
               td 支付状态
               td 已支付
+        .content-block
+          .button.button-fill(v-if="order.state === 1", @click="assigned") 标记已分配
+          .button.button-fill(v-if="order.state === 1.1", @click="complete") 标记已完成
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import $ from 'zepto'
 
 export default {
   name: 'order-detail',
   activated () {
     this.$nextTick(() => {
-      this.order = this.user.orders[this.$route.query.index]
-    })
-  },
-  computed: {
-    ...mapGetters({
-      user: 'getUserInfo'
+      this.getOrder()
     })
   },
   data () {
@@ -78,6 +76,51 @@ export default {
     }
   },
   methods: {
+    getOrder () {
+      $.ajax({
+        type: 'get',
+        url: '/request/order/one?_id=' + this.$route.params.oid,
+        dataType: 'json',
+        success: data => {
+          if (data) {
+            this.order = data.order
+          }
+        },
+        error: () => $.toast('订单信息获取失败')
+      })
+    },
+    assigned () {
+      $.ajax({
+        type: 'get',
+        url: '/request/order/assigned?_id=' + this.$route.params.oid,
+        dataType: 'json',
+        success: data => {
+          if (data.state === 1) {
+            $.toast('操作成功')
+            this.getOrder()
+          } else {
+            $.toast('操作失败')
+          }
+        },
+        error: () => $.toast('操作失败')
+      })
+    },
+    complete () {
+      $.ajax({
+        type: 'get',
+        url: '/request/order/complete?_id=' + this.$route.params.oid,
+        dataType: 'json',
+        success: data => {
+          if (data.state === 1) {
+            $.toast('操作成功')
+            this.getOrder()
+          } else {
+            $.toast('操作失败')
+          }
+        },
+        error: () => $.toast('操作失败')
+      })
+    }
   }
 }
 </script>

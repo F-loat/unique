@@ -21,6 +21,7 @@ export default {
       setTimeout(() => {
         this.$refs.text.style.opacity = 1
         this.$refs.text.style.transform = 'translate(-50%, 0)'
+        this.$refs.text.style.webkitTransform = 'translate(-50%, 0)'
       }, 2400)
     })
   }
@@ -44,6 +45,7 @@ export default {
   top 100px
   opacity 0
   transform translate(-50%, 0)
+  -webkit-transform translate(-50%, 0)
   
 .fengexian
   position absolute
@@ -59,4 +61,5 @@ export default {
   font-size 18px
   opacity 0
   transform translate(-80%, 0)
+  -webkit-transform translate(-80%, 0)
 </style>

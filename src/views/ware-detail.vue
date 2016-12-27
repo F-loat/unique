@@ -120,7 +120,7 @@ export default {
           }
           $.ajax({
             type: 'post',
-            url: '/request/ware/shopcar/add ',
+            url: this.$domain + '/request/ware/shopcar/add',
             dataType: 'json',
             data: {
               ware: JSON.stringify(ware)

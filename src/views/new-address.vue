@@ -52,7 +52,7 @@ export default {
         }
         $.ajax({
           type: 'post',
-          url: '/request/user/address/new',
+          url: this.$domain + '/request/user/address/new',
           dataType: 'json',
           data: {
             addressInfo: JSON.stringify(newAddress)

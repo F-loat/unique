@@ -92,7 +92,7 @@ export default {
     syncShopcarSum (shopcarId) {
       $.ajax({
         type: 'post',
-        url: '/request/ware/shopcar/sum',
+        url: this.$domain + '/request/ware/shopcar/sum',
         dataType: 'json',
         data: {
           wareId: this.user.shopcar[shopcarId]._id,
@@ -141,9 +141,8 @@ export default {
     padding-bottom 2.5rem
   .content-inner
     padding-bottom 2.9rem
-
-.order-list
-  margin .4rem 0
+  .order-list
+    margin .4rem 0
 
 #no-ware
   color mc

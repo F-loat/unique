@@ -81,7 +81,7 @@ export default {
       $.confirm('确认注销？', () => {
         $.ajax({
           type: 'get',
-          url: '/request/user/logout',
+          url: this.$domain + '/request/user/logout',
           success: (data) => {
             if (data.state === 1) {
               $.toast('注销成功')

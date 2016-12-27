@@ -40,7 +40,7 @@ export default {
       } else {
         $.ajax({
           type: 'post',
-          url: '/request/user/login',
+          url: this.$domain + '/request/user/login',
           dataType: 'json',
           data: {
             phone: phone,

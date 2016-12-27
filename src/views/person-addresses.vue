@@ -40,7 +40,7 @@ export default {
         this.user.addresses[addressId].state = 1
         $.ajax({
           type: 'post',
-          url: '/request/user/address/default',
+          url: this.$domain + '/request/user/address/default',
           dataType: 'json',
           data: {
             addressId: this.user.addresses[addressId]._id
@@ -61,7 +61,7 @@ export default {
         $.confirm('确认删除？', () => {
           $.ajax({
             type: 'post',
-            url: '/request/user/address/delete',
+            url: this.$domain + '/request/user/address/delete',
             dataType: 'json',
             data: {
               addressId: this.user.addresses[addressId]._id

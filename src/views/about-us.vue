@@ -4,7 +4,7 @@
     router-link.icon.icon-left.pull-left(to="/person")
     h1.title 关于我们
   .content
-    p lll
+    p 优力克
 </template>
 
 <script>

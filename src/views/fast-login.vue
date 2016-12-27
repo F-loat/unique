@@ -37,7 +37,7 @@ export default {
         if (phone.length === 11) {
           $.ajax({
             type: 'post',
-            url: '/request/user/fastLogin/identify',
+            url: this.$domain + '/request/user/fastLogin/identify',
             data: {
               phone: phone
             },
@@ -76,7 +76,7 @@ export default {
       } else {
         $.ajax({
           type: 'post',
-          url: '/request/user/fastLogin',
+          url: this.$domain + '/request/user/fastLogin',
           dataType: 'json',
           data: {
             phone: phone,

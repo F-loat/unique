@@ -19,7 +19,7 @@ export default {
         if (isWeixin && this.$route.query.code) {
           $.ajax({
             type: 'get',
-            url: '/request/user/wxoauth?code=' + this.$route.query.code,
+            url: this.$domain + '/request/user/wxoauth?code=' + this.$route.query.code,
             success: (data) => {
               this.userInfo()
             }

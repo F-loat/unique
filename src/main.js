@@ -7,6 +7,8 @@ import uniqueCake from './unique-cake'
 moment.locale('zh-cn')
 
 Vue.prototype.$moment = moment
+Vue.prototype.$domain = ''
+
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: '/upload/error.png',

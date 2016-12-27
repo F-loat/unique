@@ -142,7 +142,7 @@ export default {
       function pay (way) {
         $.ajax({
           type: 'post',
-          url: '/request/ware/pay/again',
+          url: this.$domain + '/request/ware/pay/again',
           data: {
             payway: way,
             orderId: orderId
@@ -191,7 +191,7 @@ export default {
       $.confirm('确认删除？', () => {
         $.ajax({
           type: 'post',
-          url: '/request/user/order/delete',
+          url: this.$domain + '/request/user/order/delete',
           dataType: 'json',
           data: {
             orderId: orderId
@@ -209,7 +209,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../themes/'
 
 #myOrders
@@ -240,6 +240,7 @@ export default {
   li
     margin-bottom 12px
   a
+    display block
     color #222
 
 .o-order

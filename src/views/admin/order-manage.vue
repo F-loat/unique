@@ -2,7 +2,7 @@
 #manageOrders.view
   header.bar.bar-nav
     router-link.icon.icon-left.pull-left(to="/person")
-    a.icon.icon-refresh.pull-right(@click='userInfo()')
+    a.icon.icon-refresh.pull-right(@click='getOrders()')
     h1.title 订单管理
   .content
     .content-inner
@@ -15,138 +15,79 @@
           #aoTab1.tab.active
             .content-block
               ul.o-order-wrap
-                li(v-for='(order, index) in user.orders', v-if='order.state===1')
+                li(v-for='(order, index) in orders', v-if='order.state === 1')
                   router-link(:to='"/admin/orderManage/" + order._id + "?index=" + index')
                     .o-order
                       p.o-show-detail
-                        span.pull-left {{order.orderDate}}
+                        span {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
                         span.pull-right(style="margin-left: 6px") 未分配>
                       p
                         span {{order.wares[0].info.name}}
                         span.pull-right x1
                       p.o-weight {{order.wares[0].weight}}磅
                       div
-                        span 等···
+                        span 收货人：{{order.address.receiver}}
                         span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
           #aoTab2.tab
             .content-block
               ul.o-order-wrap
-                li(v-for='(order, index) in user.orders', v-if='order.state===2')
+                li(v-for='(order, index) in orders', v-if='order.state === 1.1')
                   router-link(:to='"/admin/orderManage/" + order._id + "?index=" + index')
                     .o-order
                       p.o-show-detail
-                        span.pull-left {{order.orderDate}}
+                        span {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
                         span.pull-right(style="margin-left: 6px") 已分配>
                       p
                         span {{order.wares[0].info.name}}
                         span.pull-right x1
                       p.o-weight {{order.wares[0].weight}}磅
                       div
-                        span 等···
+                        span 收货人：{{order.address.receiver}}
                         span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
           #aoTab3.tab
             .content-block
               ul.o-order-wrap
-                li(v-for='(order, index) in user.orders')
+                li(v-for='(order, index) in orders',  v-if='order.state === 2')
                   router-link(:to='"/admin/orderManage/" + order._id + "?index=" + index')
                     .o-order
                       p.o-show-detail
-                        span.pull-left {{order.orderDate}}
+                        span {{$moment(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}}
                         span.pull-right(style="margin-left: 6px") 已分配>
                       p
                         span {{order.wares[0].info.name}}
                         span.pull-right x1
                       p.o-weight {{order.wares[0].weight}}磅
                       div
-                        span 等···
+                        span 收货人：{{order.address.receiver}}
                         span.pull-right 共{{order.wares.length}}件 ￥{{order.fee}}
 </template>
 
 <script>
 import $ from 'zepto'
-import pingpp from 'pingpp'
-import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'person-orders',
-  computed: {
-    ...mapGetters({
-      user: 'getUserInfo'
-    })
-  },
   activated () {
-    this.userInfo()
+    this.getOrders()
+  },
+  data () {
+    return {
+      orders: []
+    }
   },
   methods: {
-    ...mapActions([
-      'userInfo'
-    ]),
-    buyAgain (e) {
-      function pay (way) {
-        var orderId = $(e.target).parent().data('orderId')
-        $.ajax({
-          type: 'post',
-          url: '/request/ware/pay/again',
-          data: {
-            payway: way,
-            orderId: orderId
-          },
-          success: (data) => {
-            pingpp.createPayment(data, function (result, err) {
-              if (result === 'success') {
-                this.userInfo()
-              } else if (result === 'fail') {
-                $.toast('付款失败，请稍后再试')
-              } else if (result === 'cancel') {
-                $.toast('已取消支付')
-              }
-            })
+    getOrders () {
+      $.ajax({
+        type: 'get',
+        url: '/request/order/all',
+        dataType: 'json',
+        success: data => {
+          if (data) {
+            console.log(data)
+            this.orders = data.orders
           }
-        })
-      }
-      var ua = navigator.userAgent.toLowerCase()
-      var isWeixin = ua.indexOf('micromessenger') !== -1
-      if (isWeixin) {
-        $.modal({
-          title: '使用何种方式支付？',
-          buttons: [
-            {
-              text: '支付宝',
-              onClick: () => pay('1')
-            },
-            {
-              text: '微信支付',
-              onClick: () => pay('0')
-            },
-            {
-              text: '取消'
-            }
-          ]
-        })
-      } else pay('1')
-    },
-    cancel (e) {
-      $.prompt('请输入理由', function (value) {
-        $.toast('提交成功')
-      })
-    },
-    deleteOrder (e) {
-      var orderId = $(e.target).parent().data('orderId')
-      $.confirm('确认删除？', () => {
-        $.ajax({
-          type: 'post',
-          url: '/request/user/order/delete',
-          dataType: 'json',
-          data: {
-            orderId: orderId
-          },
-          success: (data) => {
-            if (data.state === 0) {
-              return $.toast('数据同步失败，请重新登录尝试')
-            }
-            this.userInfo()
-          }
-        })
+        },
+        error: () => $.toast('订单信息获取失败')
       })
     }
   }
@@ -170,8 +111,8 @@ export default {
     display block
     width 4.8rem
     height 2.4rem
-    background-color mc
-    color fc_dark
+    background-color #dfba76
+    color #fff
     line-height 2.4rem
     margin 0 auto
 
@@ -180,6 +121,7 @@ export default {
   li
     margin-bottom 12px
   a
+    display block
     color #222
 
 .o-order
@@ -189,14 +131,10 @@ export default {
   border-top 3px solid #dfba76
 
 .o-show-detail
-  overflow hidden
-  font-size 14px
-  text-align center
-  border-bottom 1px solid #ccc
-  line-height 28px
+  font-size .65rem
 
 .o-wait
-  font-size 18px
+  font-size 1rem
   text-align center
   margin 0
 
@@ -204,25 +142,25 @@ export default {
   font-size 28px
   text-align center
   border-radius 50%
+  color #ccc
+  .icon
+    font-size 1.6rem
+  .active
+    color #222
 
 .o-weight
-  color #ccc
-  border-bottom 1px solid #ccc
+  color #aaa
+  border-bottom 1px solid #eee
+
+.o-total
+  color #aaa
 
 .o-order-info
   width 70%
   float right
   padding-left .6rem
-  margin-top -.4rem
+  margin-top .4rem
   p
     margin .6rem 0
     font-size .7rem
-
-.buy-again
-  width 100%
-  font-size 16px
-  color #222
-  text-align center
-  background-color #f2f2f2
-  line-height 50px
 </style>
