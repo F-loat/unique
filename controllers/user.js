@@ -14,46 +14,36 @@ exports.wxoauth = function (req, res) {
   if (req.query.code === "undefined") {
     return res.json({"turnUrl" : client.getAuthorizeURL(req.headers.referer, 'wxoauth', 'snsapi_userinfo'), "state" : 0})
   }
-  if (req.session.openid) {
-    res.json({ "state": 1 })
-  } else {
-    client.getUserByCode(req.query.code, (err, result) => {
-      if (err) {
-        return res.json({"turnUrl" : client.getAuthorizeURL(req.headers.referer, 'wxoauth', 'snsapi_userinfo'), "state" : 0, "err" : err})
-      } else if (result.openid) {
-        User
-          .findOne({ openid: result.openid })
-          .exec((err, user) => {
-            if (user) {
-              req.session.userId = user._id
-              req.session.openid = user.openid
-              req.session.type = user.type
-              res.json({ "state": 1 })
-            } else {
-              User
-                .create({
-                  openid: result.openid,
-                  nickname: result.nickname,
-                  headimgurl: result.headimgurl,
-                  regDate: Date.now()
-                })
-                .then((user) => {
-                  req.session.userId = user._id
-                  req.session.openid = user.openid
-                  req.session.type = user.type
-                  res.json({ "state": 1 })
-                })
-                .catch(err => {
-                  res.json({ "state": 0, "err": err })
-                })
-            }
+  if (req.session.openid) return res.json({ "state": 1 })
+  client.getUserByCode(req.query.code, (err, result) => {
+    if (err) {
+      return res.json({"turnUrl" : client.getAuthorizeURL(req.headers.referer, 'wxoauth', 'snsapi_userinfo'), "state" : 0, "err" : err})
+    }
+    if (!result.openid) return res.json({ "state": 0, "result": result })
+    User
+      .findOne({ openid: result.openid })
+      .then(user => {
+        if (user) return user
+        return User
+          .create({
+            openid: result.openid,
+            nickname: result.nickname,
+            headimgurl: result.headimgurl,
+            regDate: Date.now()
           })
-      } else {
-        res.json({ "state": 0, "result": result })
-      }
-    })
-  }
+      })
+      .then(user => {
+        req.session.userId = user._id
+        req.session.openid = user.openid
+        req.session.type = user.type
+        res.json({ "state": 1 })
+      })
+      .catch(err => {
+        res.json({ "state": 0, "err": err })
+      })
+  })
 }
+
 exports.info = function (req, res) {
   User
     .findById(req.session.userId, '-password -identify -identifyDate')
@@ -70,10 +60,14 @@ exports.info = function (req, res) {
       select: 'info sum weight state dish img',
       populate: { path: 'info' }
     })
-    .exec((err, user) => {
+    .then(user => {
       res.json({ state: 1, user: user })
     })
+    .catch(err => {
+      res.json({ state: 0, err: err })
+    })
 }
+
 exports.identify = function (req, res) {
   var phone = req.body.phone
   var time = new Date()
@@ -138,29 +132,27 @@ exports.identify = function (req, res) {
     }
   )
 }
+
 exports.fastLogin = function(req, res) {
   var phone = req.body.phone
   var identify = req.body.identify
   User
     .findOne({ phone: phone })
-    .exec((err, user) => {
-      if (user) {
-        if ((Date.now() - user.identifyDate) > 30 * 60 * 1000) {
-          res.json({ "state": 0, "err": "验证码超时,请重新获取" });
-        } else {
-          if (identify == user.identify) {
-            req.session.userId = user._id;
-            req.session.type = user.type;
-            res.json({ "state": 1 })
-          } else {
-            res.json({ "state": 0, "err": "验证码输入错误" })
-          }
-        }
-      } else {
-        res.json({ "state": 0, "err": "请先获取验证码" })
+    .then(user => {
+      if (!user) return res.json({ "state": 0, "err": "请先获取验证码" })
+      if ((Date.now() - user.identifyDate) > 30 * 60 * 1000) {
+        return res.json({ "state": 0, "err": "验证码超时,请重新获取" });
       }
-    })
+      if (identify != user.identify) return res.json({ "state": 0, "err": "验证码输入错误" })
+      req.session.userId = user._id;
+      req.session.type = user.type;
+      res.json({ "state": 1 });
+  })
+  .catch(err => {
+    res.json({ state: 0, err: err })
+  })
 }
+
 exports.regist = function (req, res) {
   var phone = req.body.phone
   var password = req.body.password
@@ -203,6 +195,7 @@ exports.regist = function (req, res) {
       }
     })
 }
+
 exports.login = function (req, res) {
   var phone = req.body.phone
   var password = req.body.password
@@ -211,28 +204,24 @@ exports.login = function (req, res) {
   password = hasher.digest('hex')
   User
     .findOne({ phone: phone })
-    .exec((err, user) => {
-      if (user) {
-        if (user.password) {
-          if (password == user.password) {
-            req.session.userId = user._id;
-            req.session.type = user.type;
-            res.json({ "state": 1 })
-          } else {
-            res.json({ "state": 0, "err": "密码输入错误" })
-          }
-        } else {
-          res.json({ "state": 0, "err": "请使用快速登录或前往注册" })
-        }
-      } else {
-        res.json({ "state": 0, "err": "该手机号尚未注册，请注册后登录" })
-      }
+    .then(user => {
+      if (!user) return res.json({ "state": 0, "err": "该手机号尚未注册，请注册后登录" })
+      if (!user.password) return res.json({ "state": 0, "err": "密码输入错误" })
+      if (password != user.password) return res.json({ "state": 0, "err": "请使用快速登录或前往注册" })
+      req.session.userId = user._id;
+      req.session.type = user.type;
+      return res.json({ "state": 1 });
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
     })
 }
+
 exports.logout = function (req, res) {
   req.session.destroy();
   res.json({ "state": 1 })
 }
+
 exports.newAddress = function (req, res) {
   var addressInfo = JSON.parse(req.body.addressInfo)
   Address
@@ -243,61 +232,64 @@ exports.newAddress = function (req, res) {
       site: addressInfo.site,
       state: addressInfo.state
     })
-    .then((address) => {
+    .then(address => {
       User
         .update({
           _id: req.session.userId
         }, {
           $addToSet: { addresses: address._id }
         })
-        .exec((err) => {
-          if (err) {
-            return res.json({ "state": 0, "err": err })
-          }
-          res.json({ "state": 1 ,"address": address})
-        })
+        .exec()
+      return address
     })
-    .catch((err) => {
-      console.log(err)
+    .then(address => {
+      res.json({ "state": 1 ,"address": address})
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
     })
 }
+
 exports.defaultAddress = function (req, res) {
   var addressId = req.body.addressId
   Address
     .find({ onwer: req.session.userId })
-    .exec((err, addresses) => {
+    .then(addresses => {
       for (let address of addresses) {
         address.state = 0
-        address.save()
       }
-    })
-    .then(() => {
-      Address
+      addresses.save()
+      return Address
         .update({
             _id: addressId
           }, {
             $set: { state: 1 }
           })
-        .exec((err) => {
-          res.json({ "state": 1 })
-        })
+    })
+    .exec((err) => {
+      res.json({ "state": 1 })
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
     })
 }
+
 exports.deleteAddress = function (req, res) {
   var addressId = req.body.addressId;
   Address
     .remove({ _id: addressId })
-    .exec((err) => {
-      res.json({ "state": 1 })
-    })
+    .exec()
   User
     .update({
       _id: req.session.userId 
     }, {
       $pull: { addresses: addressId } 
     })
-    .exec()
+    .exec((err) => {
+      res.json({ "state": 1 })
+    })
 }
+
 exports.applyRefund = function (req, res) {
   var orderId = req.body.orderId
   Order

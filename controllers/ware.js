@@ -14,16 +14,20 @@ var WechatAPI = require('wechat-api')
 var api = new WechatAPI(wx.appid, wx.appsecret)
 
 exports.addImg = function (req, res) {
-  res.json({ state: 1, filename: req.file.filename, type: req.query.type })
+  res.json({
+    state: 1,
+    filename: req.file.filename,
+    type: req.query.type
+  })
 }
+
 exports.delImg = function (req, res) {
   fs.unlink('public/upload/img/' + req.query.filename, (err) => {
-    if (err) {
-      return res.json({ state: 0, err: err })
-    }
+    if (err) return res.json({ state: 0, err: err })
     res.json({ state: 1 })
   })
 }
+
 exports.addWare = function (req, res) {
   Ware.create({
     name: req.body.name,
@@ -34,12 +38,11 @@ exports.addWare = function (req, res) {
     imgs: req.body.imgs,
     price: req.body.price
   }, err => {
-    if (err) {
-      return res.json({ "state": 0, "err": err })
-    }
+    if (err) return res.json({ "state": 0, "err": err })
     res.json({ "state": 1 })
   })
 }
+
 exports.wareInfo = function (req, res) {
   Ware
     .findById(req.params.wareId)
@@ -53,10 +56,14 @@ exports.waresInfo = function (req, res) {
   Ware
     .find(option)
     .sort({ stock: -1, uploadDate: -1})
-    .exec((err, wares) => {
+    .then(wares => {
       res.send(wares)
     })
+    .catch(err => {
+      res.json({ state: 0, err: err })
+    })
 }
+
 exports.delWare = function (req, res) {
   Ware
     .findById(req.query.wareId)
@@ -81,6 +88,7 @@ exports.delWare = function (req, res) {
       res.json({ state: 0, err: err })
     })
 }
+
 exports.recoverWare = function (req, res) {
   Ware
     .findById(req.query.wareId)
@@ -93,42 +101,37 @@ exports.recoverWare = function (req, res) {
       res.json({ state: 0, err: err })
     })
 }
+
 exports.addToShopcar = function (req, res) {
   var ware = JSON.parse(req.body.ware)
   var weight = ware.weight
   var wareId = ware.wareId
   Shopcar
     .findOne({ onwer: req.session.userId, info: wareId, weight: weight })
-    .exec((err, order) => {
+    .then(order => {
       if (order) {
         order.sum++
         order.save()
-        Shopcar
-          .find({ onwer: req.session.userId })
-          .populate({ path: 'info' })
-          .exec((err, orders) => {
-            res.json({ "state": 1, "shopcar": orders })
-          })
       } else {
         Shopcar
           .create({ onwer: req.session.userId, info: wareId, weight: weight })
-          .then(ware => {
-            User
-              .update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } })
-              .exec()
-            Shopcar
-              .find({ onwer: req.session.userId })
-              .populate({ path: 'info' })
-              .exec((err, orders) => {
-                res.json({ "state": 1, "shopcar": orders })
-              })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        User
+          .update({ _id: req.session.userId }, { $addToSet: { shopcar: ware._id } })
+          .exec()
       }
     })
+    .then(() => {
+      return Shopcar.find({ onwer: req.session.userId })
+    })
+    .populate({ path: 'info' })
+    .then(orders => {
+      res.json({ "state": 1, "shopcar": orders })
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
+    })
 }
+
 exports.shopcarSumChange = function (req, res) {
   var _id = req.body.wareId
   var sum = req.body.sum
@@ -157,6 +160,7 @@ exports.shopcarSumChange = function (req, res) {
       })
   }
 }
+
 exports.pay = function (req, res) {
   var order = JSON.parse(req.body.order)
   var wares = order.wares
@@ -230,6 +234,7 @@ exports.pay = function (req, res) {
     })
   }
 }
+
 exports.buyAgain = function (req, res) {
   var time = new Date()
   time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString() + time.getMilliseconds().toString()
@@ -280,6 +285,7 @@ exports.buyAgain = function (req, res) {
       })
     })
 }
+
 exports.paySucceeded = function (req, res) {
   var metadata = req.body.data.object.metadata
   if (req.body.data.object.app == "app_8uP0qDHKm1C4P0Ki") {
