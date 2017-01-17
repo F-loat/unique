@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueLazyload from 'vue-lazyload'
+import FastClick from 'fastclick'
 import store from './vuex/'
 import router from './router/'
 import moment from 'moment'
@@ -16,6 +17,8 @@ Vue.use(VueLazyload, {
   attempt: 3,
   listenEvents: ['click', 'scroll', 'touchstart', 'touchmove']
 })
+
+FastClick.attach(document.body)
 
 new Vue({
   router,

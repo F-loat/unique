@@ -2,8 +2,16 @@ var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
+const vuxLoader = require('vux-loader')
 
-module.exports = {
+var env = process.env.NODE_ENV
+// check env & config/index.js to decide whether to enable CSS source maps for the
+// various preprocessor loaders added to vue-loader at the end of this file
+var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
+var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
+var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
+
+let webpackConfig = {
   entry: {
     app: './src/main.js'
   },
@@ -17,14 +25,13 @@ module.exports = {
     'pingpp': 'pingpp'
   },
   resolve: {
-    extensions: ['', '.js', '.vue'],
+    extensions: ['', '.js', '.vue', '.json'],
     fallback: [path.join(__dirname, '../node_modules')],
     alias: {
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
       'components': path.resolve(__dirname, '../src/components'),
-      'views': path.resolve(__dirname, '../src/views'),
-      vue: 'vue/dist/vue.js'
+      'views': path.resolve(__dirname, '../src/views')
     }
   },
   resolveLoader: {
@@ -35,13 +42,17 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'eslint',
-        include: projectRoot,
+        include: [
+          path.join(projectRoot, 'src')
+        ],
         exclude: /node_modules/
       },
       {
         test: /\.js$/,
         loader: 'eslint',
-        include: projectRoot,
+        include: [
+          path.join(projectRoot, 'src')
+        ],
         exclude: /node_modules/
       }
     ],
@@ -57,16 +68,14 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel',
-        include: projectRoot,
+        include: [
+          path.join(projectRoot, 'src')
+        ],
         exclude: /node_modules/
       },
       {
         test: /\.json$/,
         loader: 'json'
-      },
-      {
-        test: /\.html$/,
-        loader: 'vue-html'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -90,6 +99,23 @@ module.exports = {
     formatter: require('eslint-friendly-formatter')
   },
   vue: {
-    loaders: utils.cssLoaders()
+    loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
+    postcss: [
+      require('autoprefixer')({
+        browsers: ['last 2 versions']
+      })
+    ]
   }
 }
+
+
+module.exports = vuxLoader.merge(webpackConfig, {
+  plugins: [
+    {
+      name: 'vux-ui'
+    },
+    {
+      name: 'duplicate-style'
+    }
+  ]
+})
