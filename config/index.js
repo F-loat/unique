@@ -18,19 +18,19 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 3000,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/request': {
-        target: 'http://127.0.0.1:8888/request',
+        target: 'http://127.0.0.1:8080/request',
         changeOrigin: true,
         pathRewrite: {
           '^/request': ''
         }
       },
       '/upload': {
-        target: 'http://127.0.0.1:8888/upload',
+        target: 'http://127.0.0.1:8080/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/upload': ''

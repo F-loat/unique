@@ -4,18 +4,30 @@ module.exports = {
   parserOptions: {
     sourceType: 'module'
   },
-  // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
-  extends: 'standard',
+  extends: 'airbnb-base',
   // required to lint *.vue files
   plugins: [
     'html'
   ],
+  // check if imports actually resolve
+  'settings': {
+    'import/resolver': {
+      'webpack': {
+        'config': 'build/webpack.base.conf.js'
+      }
+    }
+  },
+  'globals': {
+    'document': true
+  },
   // add your custom rules here
   'rules': {
-    // allow paren-less arrow functions
-    'arrow-parens': 0,
-    // allow async-await
-    'generator-star-spacing': 0,
+    // don't require .vue extension when importing
+    'import/extensions': ['off', 'always', {
+      'js': 'never',
+      'vue': 'never'
+    }],
+    'import/no-unresolved': [0, {commonjs: true, amd: true}],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

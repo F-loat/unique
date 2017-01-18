@@ -20,10 +20,6 @@ let webpackConfig = {
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
     filename: '[name].js'
   },
-  externals: {
-    'zepto': 'Zepto',
-    'pingpp': 'pingpp'
-  },
   resolve: {
     extensions: ['', '.js', '.vue', '.json'],
     fallback: [path.join(__dirname, '../node_modules')],
@@ -60,10 +56,6 @@ let webpackConfig = {
       {
         test: /\.vue$/,
         loader: 'vue'
-      },
-      {
-        test: /\.pug$/,
-        loader: 'pug-loader'
       },
       {
         test: /\.js$/,

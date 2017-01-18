@@ -1,153 +1,138 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
+const requireViewsAsync = name => resolve => require([`views/${name}.vue`], resolve); // eslint-disable-line
+const requireComponentsAsync = name => resolve => require([`components/${name}.vue`], resolve); // eslint-disable-line
 
 const routes = [
   {
     path: '/',
     components: {
-      alive: resolve => require(['../components/nav-bottom'], resolve)
+      alive: requireComponentsAsync('nav-bottom'),
     },
     redirect: '/index',
     children: [
       {
         path: 'index',
         components: {
-          alive: resolve => require(['views/index-main'], resolve)
-        }
+          alive: requireViewsAsync('tab/main'),
+        },
       },
       {
         path: 'ware',
         components: {
-          alive: resolve => require(['views/index-ware'], resolve)
-        }
+          alive: requireViewsAsync('tab/wares'),
+        },
       },
-      // {
-      //   path: 'picture',
-      //     component (resolve) {
-      //       require(['../views/index-picture'], resolve)
-      //     }
-      // },
       {
         path: 'shopcar',
         components: {
-          alive: resolve => require(['views/index-shopcar'], resolve)
-        }
+          alive: requireViewsAsync('tab/shopcar'),
+        },
       },
       {
         path: 'person',
         components: {
-          alive: resolve => require(['views/index-person'], resolve)
-        }
-      }
-    ]
+          alive: requireViewsAsync('tab/person'),
+        },
+      },
+    ],
   },
   {
     path: '/ware/:wareId',
     components: {
-      reset: resolve => require(['views/ware-detail'], resolve)
-    }
+      reset: requireViewsAsync('ware/detail'),
+    },
   },
   {
-    path: '/order',
+    path: '/order/:wareId?',
     components: {
-      reset: resolve => require(['views/ware-order'], resolve)
-    }
-  },
-  {
-    path: '/order/:wareId',
-    components: {
-      reset: resolve => require(['views/ware-order'], resolve)
-    }
+      reset: requireViewsAsync('ware/order'),
+    },
   },
   {
     path: '/person/fastLogin',
     components: {
-      alive: resolve => require(['views/fast-login'], resolve)
-    }
+      alive: requireViewsAsync('user/fast-login'),
+    },
   },
   {
     path: '/person/regist',
     components: {
-      alive: resolve => require(['views/person-regist'], resolve)
-    }
+      alive: requireViewsAsync('user/regist'),
+    },
   },
   {
     path: '/person/login',
     components: {
-      alive: resolve => require(['views/person-login'], resolve)
-    }
+      alive: requireViewsAsync('user/login'),
+    },
   },
   {
     path: '/person/orders',
     components: {
-      alive: resolve => require(['views/person-orders'], resolve)
-    }
+      alive: requireViewsAsync('order/list'),
+    },
   },
   {
     path: '/person/orders/:oid',
     components: {
-      reset: resolve => require(['views/order-detail'], resolve)
-    }
+      reset: requireViewsAsync('order/detail'),
+    },
   },
   {
     path: '/person/addresses',
     components: {
-      alive: resolve => require(['views/person-addresses'], resolve)
-    }
+      alive: requireViewsAsync('address/list'),
+    },
   },
   {
     path: '/person/addresses/new',
     components: {
-      alive: resolve => require(['views/new-address'], resolve)
-    }
+      alive: requireViewsAsync('address/new'),
+    },
   },
-  // {
-  //   path: '/person/coupons',
-  //   component (resolve) {
-  //     require(['../views/person-coupons'], resolve)
-  //   }
-  // },
   {
     path: '/fedBack',
     components: {
-      alive: resolve => require(['views/fed-back'], resolve)
-    }
+      alive: requireViewsAsync('other/fed-back'),
+    },
   },
   {
     path: '/aboutUs',
     components: {
-      alive: resolve => require(['views/about-us'], resolve)
-    }
+      alive: requireViewsAsync('other/about-us'),
+    },
   },
   {
     path: '/userAgreement',
     components: {
-      alive: resolve => require(['views/user-agreement'], resolve)
-    }
+      alive: requireViewsAsync('other/user-agreement'),
+    },
   },
   {
     path: '/admin/orderManage',
     components: {
-      alive: resolve => require(['views/admin/order-manage'], resolve)
-    }
+      alive: requireViewsAsync('admin/order/list'),
+    },
   },
   {
     path: '/admin/orderManage/:oid',
     components: {
-      alive: resolve => require(['views/admin/order-detail'], resolve)
-    }
+      alive: requireViewsAsync('admin/order/detail'),
+    },
   },
   {
     path: '*',
-    redirect: '/index'
-  }
-]
+    redirect: '/index',
+  },
+];
 
 const router = new VueRouter({
   mode: 'history',
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
