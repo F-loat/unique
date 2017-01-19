@@ -1,22 +1,24 @@
 <template>
-  <div>
-    <keep-alive>
-      <router-view name="alive"></router-view>
-    </keep-alive>
+  <div class="unique">
+    <div class="tabbar-content">
+      <keep-alive>
+        <router-view name="alive"></router-view>
+      </keep-alive>
+    </div>
     <tabbar>
-      <tabbar-item selected>
+      <tabbar-item @on-item-click="handleClick('/index')" :selected="$route.path === '/index'">
         <span slot="icon" class="iconfont icon-zhuye"></span>
         <span slot="label">首页</span>
       </tabbar-item>
-      <tabbar-item>
+      <tabbar-item @on-item-click="handleClick('/ware')" :selected="$route.path === '/ware'">
         <span slot="icon" class="iconfont icon-shangcheng"></span>
         <span slot="label">分类列表</span>
       </tabbar-item>
-      <tabbar-item link="/component/demo" :badge="null">
+      <tabbar-item @on-item-click="handleClick('/shopcar')" :selected="$route.path === '/shopcar'" :badge="null">
         <span slot="icon" class="iconfont icon-cart"></span>
         <span slot="label">购物车</span>
       </tabbar-item>
-      <tabbar-item>
+      <tabbar-item @on-item-click="handleClick('/person')" :selected="$route.path === '/person'">
         <span slot="icon" class="iconfont icon-icon_gerenzhongxin"></span>
         <span slot="label">我</span>
       </tabbar-item>
@@ -33,19 +35,22 @@ export default {
     Tabbar,
     TabbarItem,
   },
-  mounted() {
-  },
-  computed: {
+  methods: {
+    handleClick(link) {
+      this.$router.replace(link);
+    },
   },
 };
 </script>
 
 <style lang="less">
+@import '~styles/theme.less';
+
 /*底部导航颜色*/
-div.weui_tabbar {
-  background-color: #444a5a;
-  .weui_tabbar_item {
-    color: rgba(255, 255, 255, .35);
+.unique .weui_tabbar {
+  background-color: @tabbar-background-color;
+  .weui_tabbar_item, .weui_tabbar_label {
+    color: @tabbar-text-color;
     transition: color .5s;
   }
   .weui_tabbar_icon {
@@ -57,8 +62,22 @@ div.weui_tabbar {
   .weui_tabbar_label {
     font-size: 0.45rem;
   }
-  .weui_bar_item_on, .weui_bar_item_on .weui_tabbar_label {
-    color: #fff;
+  .weui_bar_item_on {
+    color: @tabbar-text-active-color;
+  }
+}
+
+.tabbar-content {
+  position: absolute;
+  top: 0;
+  bottom: 55px;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  @media screen and (min-width: 540px) {
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, .3);
+    width: 540px;
+    margin: 0 auto;
   }
 }
 </style>

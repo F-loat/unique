@@ -17,13 +17,13 @@ const routes = [
       {
         path: 'index',
         components: {
-          alive: requireViewsAsync('tab/main'),
+          alive: requireViewsAsync('tab/index'),
         },
       },
       {
         path: 'ware',
         components: {
-          alive: requireViewsAsync('tab/wares'),
+          alive: requireViewsAsync('tab/ware'),
         },
       },
       {
@@ -47,79 +47,73 @@ const routes = [
     },
   },
   {
-    path: '/order/:wareId?',
+    path: '/ware/:wareId/order',
     components: {
       reset: requireViewsAsync('ware/order'),
     },
   },
   {
-    path: '/person/fastLogin',
+    path: '/user/fastLogin',
     components: {
       alive: requireViewsAsync('user/fast-login'),
     },
   },
   {
-    path: '/person/regist',
+    path: '/user/regist',
     components: {
       alive: requireViewsAsync('user/regist'),
     },
   },
   {
-    path: '/person/login',
+    path: '/user/login',
     components: {
       alive: requireViewsAsync('user/login'),
     },
   },
   {
-    path: '/person/orders',
+    path: '/order',
     components: {
       alive: requireViewsAsync('order/list'),
     },
   },
   {
-    path: '/person/orders/:oid',
+    path: '/order/:oid',
     components: {
       reset: requireViewsAsync('order/detail'),
     },
   },
   {
-    path: '/person/addresses',
+    path: '/address',
     components: {
       alive: requireViewsAsync('address/list'),
     },
   },
   {
-    path: '/person/addresses/new',
+    path: '/address/new',
     components: {
       alive: requireViewsAsync('address/new'),
     },
   },
   {
-    path: '/fedBack',
+    path: '/fedback',
     components: {
       alive: requireViewsAsync('other/fed-back'),
     },
   },
   {
-    path: '/aboutUs',
+    path: '/about',
     components: {
       alive: requireViewsAsync('other/about-us'),
     },
   },
   {
-    path: '/userAgreement',
-    components: {
-      alive: requireViewsAsync('other/user-agreement'),
-    },
-  },
-  {
-    path: '/admin/orderManage',
+    path: '/admin/order',
     components: {
       alive: requireViewsAsync('admin/order/list'),
     },
   },
   {
-    path: '/admin/orderManage/:oid',
+    path: '/admin/order/:oid',
     components: {
       alive: requireViewsAsync('admin/order/detail'),
     },

@@ -26,8 +26,9 @@ let webpackConfig = {
     alias: {
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
+      'styles': path.resolve(__dirname, '../src/styles'),
       'components': path.resolve(__dirname, '../src/components'),
-      'views': path.resolve(__dirname, '../src/views')
+      'views': path.resolve(__dirname, '../src/views'),
     }
   },
   resolveLoader: {
@@ -108,6 +109,9 @@ module.exports = vuxLoader.merge(webpackConfig, {
     },
     {
       name: 'duplicate-style'
-    }
+    },{
+      name: 'less-theme',
+      path: 'src/styles/theme.less'
+    },
   ]
 })

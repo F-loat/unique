@@ -1,10 +1,10 @@
 <template>
-<div id="unique">
-  <keep-alive>
-    <router-view name="alive"></router-view>
-  </keep-alive>
-  <router-view name="reset"></router-view>
-</div>
+  <div class="unique-wrapper">
+    <keep-alive>
+      <router-view name="alive"></router-view>
+    </keep-alive>
+    <router-view name="reset"></router-view>
+  </div>
 </template>
 
 <script>
@@ -22,4 +22,5 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import 'assets/iconfont/iconfont.css';
+@import '~styles/reset.less';
 </style>

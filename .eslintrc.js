@@ -18,7 +18,8 @@ module.exports = {
     }
   },
   'globals': {
-    'document': true
+    'document': true,
+    'window': true
   },
   // add your custom rules here
   'rules': {
