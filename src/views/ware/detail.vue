@@ -1,6 +1,8 @@
 <template>
-  <div>
+  <div class="unique">
     <x-header>商品详情</x-header>
+    <div class="x-content">
+    </div>
   </div>
 </template>
 

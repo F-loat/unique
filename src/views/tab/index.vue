@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="unique">
     <img class="main-bg" src="~assets/img/bg_main.jpg">
   </div>
 </template>
 
 <script>
 export default {
-  name: 'index',
+  name: 'tab-index',
   mounted() {
     this.$nextTick(() => {
     });

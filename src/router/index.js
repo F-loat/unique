@@ -41,33 +41,33 @@ const routes = [
     ],
   },
   {
-    path: '/ware/:wareId',
+    path: '/ware/:id',
     components: {
       reset: requireViewsAsync('ware/detail'),
     },
   },
   {
-    path: '/ware/:wareId/order',
+    path: '/ware/:id/order',
     components: {
       reset: requireViewsAsync('ware/order'),
     },
   },
   {
-    path: '/user/fastLogin',
+    path: '/user/fastlogin',
     components: {
-      alive: requireViewsAsync('user/fast-login'),
+      reset: requireViewsAsync('user/fastlogin'),
     },
   },
   {
     path: '/user/regist',
     components: {
-      alive: requireViewsAsync('user/regist'),
+      reset: requireViewsAsync('user/regist'),
     },
   },
   {
     path: '/user/login',
     components: {
-      alive: requireViewsAsync('user/login'),
+      reset: requireViewsAsync('user/login'),
     },
   },
   {
@@ -77,7 +77,7 @@ const routes = [
     },
   },
   {
-    path: '/order/:oid',
+    path: '/order/:id',
     components: {
       reset: requireViewsAsync('order/detail'),
     },
@@ -97,13 +97,13 @@ const routes = [
   {
     path: '/fedback',
     components: {
-      alive: requireViewsAsync('other/fed-back'),
+      alive: requireViewsAsync('other/fedback'),
     },
   },
   {
     path: '/about',
     components: {
-      alive: requireViewsAsync('other/about-us'),
+      alive: requireViewsAsync('other/about'),
     },
   },
   {
@@ -113,7 +113,7 @@ const routes = [
     },
   },
   {
-    path: '/admin/order/:oid',
+    path: '/admin/order/:id',
     components: {
       alive: requireViewsAsync('admin/order/detail'),
     },

@@ -1,6 +1,8 @@
 <template>
-  <div>
+  <div class="unique">
     <x-header>订单确认</x-header>
+    <div class="x-content">
+    </div>
   </div>
 </template>
 

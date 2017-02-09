@@ -109,9 +109,14 @@ module.exports = vuxLoader.merge(webpackConfig, {
     },
     {
       name: 'duplicate-style'
-    },{
+    },
+    {
       name: 'less-theme',
       path: 'src/styles/theme.less'
     },
+    {
+      name: 'script-parser',
+      fn: source => source // source.replace('/request', 'http://cakeees.top/request')
+    }
   ]
 })

@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="unique">
     <blur :blur-amount="40" url="http://cakeees.top/static/img/logo.b8e1e82.png">
       <div class="person-headimg">
         <p><img src="~assets/img/logo.png"></p>
-        <p><router-link to="/user/fastLogin">登录/注册</router-link></p>
+        <p><router-link to="/user/fastlogin">登录/注册</router-link></p>
       </div>
     </blur>
     <group class="person-function-list">
@@ -34,7 +34,7 @@
 import { Blur, Cell, Group } from 'vux';
 
 export default {
-  name: '',
+  name: 'tab-person',
   components: {
     Blur,
     Cell,

@@ -1,16 +1,18 @@
 <template>
-  <div>
-     <tab :line-width=2 active-color='#444a5a' v-model="index">
-      <tab-item :selected="tab === item" v-for="item in list" @click="tab = item">{{item}}</tab-item>
+  <div class="unique">
+    <tab :line-width=2 active-color='#444a5a' v-model="index">
+      <tab-item :selected="tab === title" v-for="title of titles" @click="tab = title">{{title}}</tab-item>
     </tab>
     <swiper v-model="index" :show-dots="false" :height="height">
-      <swiper-item class="wares-item" v-for="(ware, key) in wares">
+      <swiper-item class="wares-item" v-for="list of lists">
         <flexbox :gutter="0" wrap="wrap" align="flex-start">
-          <flexbox-item v-for="src in ware" class="ware-item" :span="1/2">
-            <div class="ware-item-content">
-              <img class="ware-thumbnail" :src="src">
-              <div>{{key}}</div>
-            </div>
+          <flexbox-item v-for="ware of list" class="ware-item" :span="1/2">
+            <router-link :to="`/ware/${ware._id}`">
+              <div class="ware-item-content">
+                <img class="ware-thumbnail" :src="`/upload/img/${ware.img}`">
+                <div>{{ware.name}}</div>
+              </div>
+            </router-link>
           </flexbox-item>
       </swiper-item>
     </swiper>
@@ -34,45 +36,44 @@ export default {
     return {
       index: 0,
       tab: '甜点',
-      list: ['甜点', '方形蛋糕', '圆形蛋糕', '鲜花'],
-      wares: {
-        cakeF: [
-          'http://123.206.9.219/upload/img/ae4348abce842ae6531f0478b5d225ac',
-          'http://123.206.9.219/upload/img/7bbd14a5b493a1cac019afa925b783c7',
-          'http://123.206.9.219/upload/img/e27d627532c7d5db45ae1556a985f9bd',
-          'http://123.206.9.219/upload/img/0bf5e346f4dffd2bef115d7c0a8b74b7',
-          'http://123.206.9.219/upload/img/5e6658f242e9ad623f37375722979b11',
-        ],
-        cakeY: [
-          'http://123.206.9.219/upload/img/ae4348abce842ae6531f0478b5d225ac',
-          'http://123.206.9.219/upload/img/7bbd14a5b493a1cac019afa925b783c7',
-          'http://123.206.9.219/upload/img/e27d627532c7d5db45ae1556a985f9bd',
-          'http://123.206.9.219/upload/img/0bf5e346f4dffd2bef115d7c0a8b74b7',
-          'http://123.206.9.219/upload/img/5e6658f242e9ad623f37375722979b11',
-        ],
-        mousse: [
-          'http://123.206.9.219/upload/img/ae4348abce842ae6531f0478b5d225ac',
-          'http://123.206.9.219/upload/img/7bbd14a5b493a1cac019afa925b783c7',
-          'http://123.206.9.219/upload/img/e27d627532c7d5db45ae1556a985f9bd',
-          'http://123.206.9.219/upload/img/0bf5e346f4dffd2bef115d7c0a8b74b7',
-          'http://123.206.9.219/upload/img/5e6658f242e9ad623f37375722979b11',
-        ],
-        flower: [
-          'http://123.206.9.219/upload/img/ae4348abce842ae6531f0478b5d225ac',
-          'http://123.206.9.219/upload/img/7bbd14a5b493a1cac019afa925b783c7',
-          'http://123.206.9.219/upload/img/e27d627532c7d5db45ae1556a985f9bd',
-          'http://123.206.9.219/upload/img/0bf5e346f4dffd2bef115d7c0a8b74b7',
-          'http://123.206.9.219/upload/img/5e6658f242e9ad623f37375722979b11',
-        ],
+      titles: ['甜点', '方形蛋糕', '圆形蛋糕', '鲜花'],
+      lists: {
+        mousse: [],
+        cakeF: [],
+        cakeY: [],
+        flower: [],
       },
       height: `${document.body.clientHeight - 99}px`,
     };
   },
   mounted() {
     this.$nextTick(() => {
+      this.getWares();
     });
   },
   methods: {
+    async getWares() {
+      const wares = await this.$http
+        .get('/request/ware')
+        .then(res => res.body.wares);
+      wares.forEach((ware) => {
+        switch (ware.type) {
+          case 0:
+            this.lists.cakeF.push(ware);
+            break;
+          case 1:
+            this.lists.cakeY.push(ware);
+            break;
+          case 2:
+            this.lists.mousse.push(ware);
+            break;
+          case 3:
+            this.lists.flower.push(ware);
+            break;
+          default:
+        }
+      });
+    },
   },
 };
 </script>
@@ -80,6 +81,9 @@ export default {
 <style lang="less">
 .wares-item {
   overflow: auto;
+  a {
+    color: #000;
+  }
 }
 
 .ware-item-content {

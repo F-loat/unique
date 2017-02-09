@@ -1,6 +1,9 @@
 <template>
-  <div>
+  <div class="unique">
     <x-header>我的订单</x-header>
+    <div class="x-content">
+
+    </div>
   </div>
 </template>
 
@@ -8,7 +11,7 @@
 import { XHeader } from 'vux';
 
 export default {
-  name: '',
+  name: 'order-list',
   components: {
     XHeader,
   },

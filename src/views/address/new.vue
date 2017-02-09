@@ -1,6 +1,8 @@
 <template>
-  <div>
+  <div class="unique">
     <x-header>添加地址</x-header>
+    <div class="x-content">
+    </div>
   </div>
 </template>
 
@@ -8,7 +10,7 @@
 import { XHeader } from 'vux';
 
 export default {
-  name: '',
+  name: 'address-new',
   components: {
     XHeader,
   },

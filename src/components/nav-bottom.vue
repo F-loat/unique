@@ -1,5 +1,5 @@
 <template>
-  <div class="unique">
+  <div class="main-tabbar">
     <div class="tabbar-content">
       <keep-alive>
         <router-view name="alive"></router-view>
@@ -44,10 +44,12 @@ export default {
 </script>
 
 <style lang="less">
-@import '~styles/theme.less';
+.main-tabbar {
+  width: 100%;
+  height: 100%;
+}
 
-/*底部导航颜色*/
-.unique .weui_tabbar {
+.main-tabbar .weui_tabbar {
   background-color: @tabbar-background-color;
   .weui_tabbar_item, .weui_tabbar_label {
     color: @tabbar-text-color;

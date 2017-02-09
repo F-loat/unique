@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div class="unique">
     <x-header>登录</x-header>
-    <group>
-      <x-input title="手机号码：" name="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
-      <x-input title="密码：" name="mobile" placeholder="请输入密码" type="password"></x-input>
-    </group>
-    <x-button style="margin-top: 15px;">登录</x-button>
-    <router-link class="user-turn" to="/user/regist">还没有账号？去注册~</router-link>
+    <div class="x-content">
+      <group>
+        <x-input title="手机号码：" name="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
+        <x-input title="密码：" name="mobile" placeholder="请输入密码" type="password"></x-input>
+      </group>
+      <x-button style="margin-top: 15px;">登录</x-button>
+      <router-link class="user-turn" to="/user/regist">还没有账号？去注册~</router-link>
+      </div>
   </div>
 </template>
 
@@ -14,7 +16,7 @@
 import { XHeader, XInput, Group, XButton } from 'vux';
 
 export default {
-  name: '',
+  name: 'user-login',
   components: {
     XHeader,
     XInput,

@@ -1,6 +1,9 @@
 module.exports = {
   root: true,
   parser: 'babel-eslint',
+  'env': {
+    'browser': true,
+  },
   parserOptions: {
     sourceType: 'module'
   },
@@ -17,19 +20,15 @@ module.exports = {
       }
     }
   },
-  'globals': {
-    'document': true,
-    'window': true
-  },
   // add your custom rules here
   'rules': {
     // don't require .vue extension when importing
-    'import/extensions': ['off', 'always', {
+    'import/extensions': ['error', 'always', {
       'js': 'never',
       'vue': 'never'
     }],
-    'import/no-unresolved': [0, {commonjs: true, amd: true}],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-console': process.env.NODE_ENV === 'production' ? 2 : 0,
   }
 }

@@ -18,19 +18,19 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 3000,
+    port: 8080,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/request': {
-        target: 'http://127.0.0.1:8080/request',
+        target: 'http://cakeees.top/request',
         changeOrigin: true,
         pathRewrite: {
           '^/request': ''
         }
       },
       '/upload': {
-        target: 'http://127.0.0.1:8080/upload',
+        target: 'http://cakeees.top/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/upload': ''
