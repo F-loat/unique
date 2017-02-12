@@ -8,13 +8,19 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'unique-cake',
-  methods: {
-  },
   mounted() {
     this.$nextTick(() => {
+      this.getUser();
     });
+  },
+  methods: {
+    ...mapActions([
+      'getUser',
+    ]),
   },
 };
 </script>

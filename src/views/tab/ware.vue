@@ -1,7 +1,7 @@
 <template>
   <div class="unique">
     <tab :line-width=2 active-color='#444a5a' v-model="index">
-      <tab-item :selected="tab === title" v-for="title of titles" @click="tab = title">{{title}}</tab-item>
+      <tab-item v-for="title of titles">{{title}}</tab-item>
     </tab>
     <swiper v-model="index" :show-dots="false" :height="height">
       <swiper-item class="wares-item" v-for="list of lists">
@@ -14,6 +14,7 @@
               </div>
             </router-link>
           </flexbox-item>
+        </flexbox>
       </swiper-item>
     </swiper>
   </div>
@@ -35,7 +36,6 @@ export default {
   data() {
     return {
       index: 0,
-      tab: '甜点',
       titles: ['甜点', '方形蛋糕', '圆形蛋糕', '鲜花'],
       lists: {
         mousse: [],

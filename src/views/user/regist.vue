@@ -3,10 +3,10 @@
     <x-header>注册</x-header>
     <div class="x-content">
       <group>
-        <x-input title="手机号码：" name="mobile" placeholder="请输入手机号码" keyboard="number" is-type="china-mobile"></x-input>
-        <x-input title="密码：" name="mobile" placeholder="请输入密码" type="password"></x-input>
-        <x-input title="确认密码：" name="mobile" placeholder="请再次输入密码" type="password"></x-input>
-        <x-input title="验证码：" placeholder="请输入验证码" class="weui_vcode">
+        <x-input title="手机号码：" name="mobile" placeholder="请输入手机号码" keyboard="number" required is-type="china-mobile"></x-input>
+        <x-input title="密码：" name="mobile" placeholder="请输入密码" type="password" required></x-input>
+        <x-input title="确认密码：" name="mobile" placeholder="请再次输入密码" type="password" required></x-input>
+        <x-input title="验证码：" placeholder="请输入验证码" required class="weui_vcode">
           <x-button slot="right" type="primary" class="get-identify">发送验证码</x-button>
         </x-input>
       </group>

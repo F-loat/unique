@@ -91,7 +91,7 @@ const routes = [
   {
     path: '/address/new',
     components: {
-      alive: requireViewsAsync('address/new'),
+      reset: requireViewsAsync('address/new'),
     },
   },
   {

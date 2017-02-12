@@ -1,9 +1,10 @@
 <template>
   <div class="unique">
-    <blur :blur-amount="40" url="http://cakeees.top/static/img/logo.b8e1e82.png">
+    <blur :blur-amount="40" :url="user.headimgurl || defaultHeadimg">
       <div class="person-headimg">
-        <p><img src="~assets/img/logo.png"></p>
-        <p><router-link to="/user/fastlogin">登录/注册</router-link></p>
+        <p><img :src="user.headimgurl || defaultHeadimg"></p>
+        <p v-if="user._id" @click="confirmLogout">{{user.nickname}}</p>
+        <p v-else><router-link to="/user/fastlogin">登录/注册</router-link></p>
       </div>
     </blur>
     <group class="person-function-list">
@@ -32,6 +33,7 @@
 
 <script>
 import { Blur, Cell, Group } from 'vux';
+import { mapState } from 'vuex';
 
 export default {
   name: 'tab-person',
@@ -42,18 +44,45 @@ export default {
   },
   data() {
     return {
-      images: [
-        'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg',
-        'https://o3e85j0cv.qnssl.com/waterway-107810__340.jpg',
-        'https://o3e85j0cv.qnssl.com/hot-chocolate-1068703__340.jpg',
-      ],
+      defaultHeadimg: 'http://cakeees.top/static/img/logo.b8e1e82.png',
     };
+  },
+  computed: {
+    ...mapState([
+      'user',
+    ]),
   },
   mounted() {
     this.$nextTick(() => {
     });
   },
   methods: {
+    confirmLogout() {
+      this.$vux.confirm.show({
+        title: '确认注销？',
+        onConfirm: this.logout,
+      });
+    },
+    logout() {
+      this.$http
+        .get('/request/user/logout')
+        .then((res) => {
+          if (res.body.state === 1) {
+            this.toast('注销成功');
+            this.$store.commit('USER', {});
+          } else {
+            this.toast('注销失败，请重试');
+          }
+        })
+        .catch(err => this.toast(`出错了：${err.status}`));
+    },
+    toast(text) {
+      this.$vux.toast.show({
+        type: 'text',
+        width: '11em',
+        text,
+      });
+    },
   },
 };
 </script>

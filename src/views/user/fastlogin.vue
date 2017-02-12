@@ -3,8 +3,8 @@
     <x-header>快速登录</x-header>
     <div class="x-content">
       <group>
-        <x-input ref="phone" v-model="phone" title="手机号码：" placeholder="请输入手机号码" keyboard="number" required is-type="china-mobile"></x-input>
-        <x-input ref="identify" v-model="identify" title="验证码：" placeholder="请输入验证码" keyboard="number" required :min="5" :max="6" class="weui_vcode">
+        <x-input name="phone" ref="phone" v-model="phone" title="手机号码：" placeholder="请输入手机号码" keyboard="number" required is-type="china-mobile"></x-input>
+        <x-input name="identify" ref="identify" v-model="identify" title="验证码：" placeholder="请输入验证码" keyboard="number" required :min="5" :max="6" class="weui_vcode">
           <x-button slot="right" type="primary" class="get-identify" :disabled="inCountdown" @click.native="getIdentify">{{inCountdown ? `${time}秒后重试` : '发送验证码'}}</x-button>
         </x-input>
       </group>
@@ -16,6 +16,7 @@
 
 <script>
 import { XHeader, XInput, Group, XButton } from 'vux';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'user-fastlogin',
@@ -38,6 +39,9 @@ export default {
     });
   },
   methods: {
+    ...mapActions([
+      'getUser',
+    ]),
     fastLogin() {
       if (!this.$refs.phone.valid || !this.$refs.identify.valid) {
         this.toast(this.$refs.phone.valid ? '请输入正确的验证码' : '请输入正确的手机号');
@@ -51,16 +55,14 @@ export default {
         })
         .then((res) => {
           if (res.body.state === 1) {
+            this.getUser();
             this.toast('登录成功，正在跳转');
-            setTimeout(() => this.$router.push('/person'), 400);
-            this.$store.commit('USER', res.body.user);
+            setTimeout(() => this.$router.push('/person'), 500);
           } else {
             this.toast(res.body.err);
           }
         })
-        .catch((err) => {
-          this.toast(`出错了：${err.status}`);
-        });
+        .catch(err => this.toast(`出错了：${err.status}`));
     },
     getIdentify() {
       if (!this.$refs.phone.valid) {
@@ -82,10 +84,7 @@ export default {
             this.inCountdown = false;
           }
         })
-        .catch((err) => {
-          this.toast(`出错了：${err.status}`);
-          this.inCountdown = false;
-        });
+        .catch(err => this.toast(`出错了：${err.status}`));
     },
     countdown() {
       if (this.time > 1 && this.inCountdown === true) {

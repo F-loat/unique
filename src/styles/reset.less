@@ -37,9 +37,20 @@ a {
   left: 0;
   right: 0;
   overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .weui_toast_text .weui_toast_content {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+// 动画
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-active {
+  transform: translateX(10px);
+  opacity: 0;
 }

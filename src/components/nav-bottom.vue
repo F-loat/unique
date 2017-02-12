@@ -58,11 +58,11 @@ export default {
   .weui_tabbar_icon {
     text-align: center;
     .iconfont {
-      font-size: 1.2rem;
+      font-size: 19px;
     }
   }
   .weui_tabbar_label {
-    font-size: 0.45rem;
+    font-size: 12px;
   }
   .weui_bar_item_on {
     color: @tabbar-text-active-color;
