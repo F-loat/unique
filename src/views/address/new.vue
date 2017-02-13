@@ -43,7 +43,7 @@ export default {
   methods: {
     addAddress() {
       if (!this.$refs.name.valid) {
-        this.toast('请输入收货人姓名');
+        this.toast('请正确输入收货人');
         return;
       }
       if (!this.$refs.phone.valid) {

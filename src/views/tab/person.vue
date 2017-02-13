@@ -44,7 +44,7 @@ export default {
   },
   data() {
     return {
-      defaultHeadimg: 'http://cakeees.top/static/img/logo.b8e1e82.png',
+      defaultHeadimg: 'http://123.206.9.219/static/img/logo.b8e1e82.png',
     };
   },
   computed: {
@@ -89,6 +89,8 @@ export default {
 
 <style lang="less">
 .person-headimg {
+  height: 100%;
+  box-sizing: border-box;
   text-align: center;
   padding-top: 36px;
   color: #fff;

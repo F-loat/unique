@@ -41,6 +41,12 @@ const routes = [
     ],
   },
   {
+    path: '/shopcar/order',
+    components: {
+      reset: requireViewsAsync('ware/order'),
+    },
+  },
+  {
     path: '/ware/:id',
     components: {
       reset: requireViewsAsync('ware/detail'),

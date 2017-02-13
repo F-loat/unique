@@ -3,7 +3,7 @@
     <x-header>收货地址</x-header>
     <div class="x-content">
       <transition-group name="slide-fade" tag="ul">
-        <li class="clearfix ready-address" :class="{ active: address.state }" v-for="(address, index) of user.addresses" key="address._id" @click="defaultAddress(index)">
+        <li class="clearfix ready-address" :class="{ active: address.state }" v-for="(address, index) of user.addresses" :key="address._id" @click="defaultAddress(index)">
           <span class="pull-left address-detail">
             <p>{{`${address.phone}（${address.receiver}）`}}</p>
             <p class="address-site">{{address.site}}</p>
@@ -125,6 +125,6 @@ export default {
 
 .address-turn {
   display: block;
-  color: #454545;
+  color: @second-color;
 }
 </style>

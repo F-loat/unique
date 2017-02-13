@@ -41,9 +41,23 @@ a {
   overflow-y: scroll;
 }
 
+.weui-loadmore_line.no-data {
+  margin-top: 40vh;
+}
+
 .weui_toast_text .weui_toast_content {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+.vux-indicator {
+  z-index: 1;
+}
+
+// swiper提示点颜色
+div.vux-slider > .vux-indicator > a > .vux-icon-dot.active,
+div.vux-slider .vux-indicator-right > a > .vux-icon-dot.active {
+  background-color: @second-color;
 }
 
 // 动画

@@ -20,7 +20,7 @@
               </div>
               <div class="weui-form-preview__item">
                 <label class="weui-form-preview__label">收货时间</label>
-                <span class="weui-form-preview__value">{{order.receive}}</span>
+                <span class="weui-form-preview__value">{{dateFormat(order.receive)}}</span>
               </div>
             </div>
             <div class="weui-form-preview__ft">
@@ -36,7 +36,7 @@
               </div>
               <div class="weui-form-preview__item">
                 <label class="weui-form-preview__label">下单时间</label>
-                <span class="weui-form-preview__value">{{order.orderDate}}</span>
+                <span class="weui-form-preview__value">{{dateFormat(order.orderDate)}}</span>
               </div>
               <div class="weui-form-preview__item">
                 <label class="weui-form-preview__label">支付方式</label>
@@ -67,13 +67,14 @@
 </template>
 
 <script>
-import { XHeader, FormPreview } from 'vux';
+import { XHeader, FormPreview, dateFormat } from 'vux';
 
 export default {
   name: 'order-detail',
   components: {
     XHeader,
     FormPreview,
+    dateFormat,
   },
   data() {
     return {
@@ -94,6 +95,9 @@ export default {
     },
     turnTo(url) {
       this.$router.push(url);
+    },
+    dateFormat(date) {
+      return dateFormat(new Date(date), 'YYYY-MM-DD HH:mm:ss');
     },
   },
 };

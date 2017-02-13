@@ -7,32 +7,33 @@
       </tab>
       <swiper v-model="index" :show-dots="false" :height="height">
         <swiper-item class="orders-item" v-for="list of lists">
-            <div class="weui-form-preview order-item" v-for="order of list">
-              <router-link :to="`/order/${order._id}`" class="order-turn">
-                <div class="weui-form-preview__hd">
-                  <label class="weui-form-preview__label">付款金额</label>
-                  <em class="weui-form-preview__value">¥{{order.fee}}</em>
-                </div>
-                <div class="weui-form-preview__bd">
-                  <div class="weui-form-preview__item" v-for="ware of order.wares">
-                    <label class="weui-form-preview__label">商品</label>
-                    <span class="weui-form-preview__value">{{ware.info.name}}</span>
-                  </div>
-                  <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">订单备注</label>
-                    <span class="weui-form-preview__value">{{order.msg || '无'}}</span>
-                  </div>
-                  <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">收货时间</label>
-                    <span class="weui-form-preview__value">{{order.receive}}</span>
-                  </div>
-                </div>
-              </router-link>
-              <div class="weui-form-preview__ft">
-                <a href="javascript:" class="weui-form-preview__btn weui-form-preview__btn_default">取消订单</a>
-                <a href="javascript:" class="weui-form-preview__btn weui-form-preview__btn_default">再次购买</a>
+          <load-more v-if="!list.length" class="no-data" :show-loading="false" tip="暂无数据"></load-more>
+          <div v-else class="weui-form-preview order-item" v-for="order of list">
+            <router-link :to="`/order/${order._id}`" class="order-turn">
+              <div class="weui-form-preview__hd">
+                <label class="weui-form-preview__label">付款金额</label>
+                <em class="weui-form-preview__value">¥{{order.fee}}</em>
               </div>
+              <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item" v-for="ware of order.wares">
+                  <label class="weui-form-preview__label">商品</label>
+                  <span class="weui-form-preview__value">{{ware.info.name}}</span>
+                </div>
+                <div class="weui-form-preview__item">
+                  <label class="weui-form-preview__label">订单备注</label>
+                  <span class="weui-form-preview__value">{{order.msg || '无'}}</span>
+                </div>
+                <div class="weui-form-preview__item">
+                  <label class="weui-form-preview__label">收货时间</label>
+                  <span class="weui-form-preview__value">{{dateFormat(order.receive)}}</span>
+                </div>
+              </div>
+            </router-link>
+            <div class="weui-form-preview__ft">
+              <a href="javascript:" class="weui-form-preview__btn weui-form-preview__btn_default">取消订单</a>
+              <a href="javascript:" class="weui-form-preview__btn weui-form-preview__btn_default">再次购买</a>
             </div>
+          </div>
         </swiper-item>
       </swiper>
     </div>
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { XHeader, Tab, TabItem, Swiper, SwiperItem, FormPreview } from 'vux';
+import { XHeader, Tab, TabItem, Swiper, SwiperItem, FormPreview, LoadMore, dateFormat } from 'vux';
 import { mapState } from 'vuex';
 
 export default {
@@ -52,6 +53,8 @@ export default {
     Swiper,
     SwiperItem,
     FormPreview,
+    LoadMore,
+    dateFormat,
   },
   data() {
     return {
@@ -72,6 +75,9 @@ export default {
     },
   },
   methods: {
+    dateFormat(date) {
+      return dateFormat(new Date(date), 'YYYY-MM-DD HH:mm:ss');
+    },
   },
 };
 </script>

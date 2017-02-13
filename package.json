@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "fastclick": "^1.0.6",
+    "pingpp-js": "^2.1.7",
     "vue": "^2.1.10",
     "vue-router": "^2.2.0",
     "vue-superagent": "^1.0.0",
