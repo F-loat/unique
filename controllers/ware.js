@@ -45,19 +45,21 @@ exports.addWare = function (req, res) {
 
 exports.wareInfo = function (req, res) {
   Ware
-    .findById(req.params.wareId)
+    .findById(req.params.id)
     .exec((err, ware) => {
-      res.send(ware)
+      res.json({ ware })
     })
 }
 exports.waresInfo = function (req, res) {
-  var option = {}
+  var option = {
+    type: { $gte: 0 },
+  }
   if (req.query.type) option.type = req.query.type
   Ware
     .find(option)
     .sort({ stock: -1, uploadDate: -1})
     .then(wares => {
-      res.send(wares)
+      res.json({ state: 1, wares })
     })
     .catch(err => {
       res.json({ state: 0, err: err })
@@ -162,12 +164,11 @@ exports.shopcarSumChange = function (req, res) {
 }
 
 exports.pay = function (req, res) {
-  var order = JSON.parse(req.body.order)
-  var wares = order.wares
-  var msg = order.msg
-  var addressId = order.addressId
-  var receivingTime = order.receivingTime
-  var payway = order.payway
+  var wares = req.body.wares
+  var msg = req.body.msg
+  var addressId = req.body.addressId
+  var receive = req.body.receive
+  var payway = req.body.payway
   var time = new Date()
   time = time.getFullYear().toString() + (time.getMonth() + 1 > 9 ? '' : '0').toString() + (time.getMonth() + 1).toString() + (time.getDate() > 9 ? '' : '0').toString() + time.getDate().toString() + (time.getHours() > 9 ? '' : '0').toString() + time.getHours().toString() + (time.getMinutes() > 9 ? '' : '0').toString() + time.getMinutes().toString() + (time.getSeconds() > 9 ? '' : '0').toString() + time.getSeconds().toString() + time.getMilliseconds().toString()
   var order_no = time + req.session.userId.slice(9, 11)
@@ -207,7 +208,7 @@ exports.pay = function (req, res) {
         'userId': req.session.userId,
         'openid': req.session.openid,
         'wares': wares,
-        'receive': receivingTime,
+        'receive': receive,
         'address': addressId,
         'msg': msg,
         'fee': price,
@@ -228,9 +229,10 @@ exports.pay = function (req, res) {
     }
     pingpp.charges.create(option, (err, charge) => {
       if (err) {
-        return console.log(err)
+        res.json({ state: 0 })
+        return;
       }
-      res.send(charge)
+      res.json({ state: 1, charge })
     })
   }
 }
@@ -258,7 +260,7 @@ exports.buyAgain = function (req, res) {
           'userId': req.session.userId,
           'openid': req.session.openid,
           'wares': order.wares,
-          'receive': order.receivingTime,
+          'receive': order.receive,
           'address': order.addressId,
           'msg': order.msg,
           'fee': order.price,

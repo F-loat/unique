@@ -17,10 +17,10 @@ exports.findAll = function (req, res) {
 
 exports.findOne = function (req, res) {
   Order
-    .findById(req.query._id)
+    .findById(req.params.id)
     .populate({ path: 'address wares.info' })
     .then(order => {
-      res.json({ state: 1, order: order })
+      res.json({ state: 1, order })
     })
 }
 

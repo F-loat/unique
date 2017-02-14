@@ -61,10 +61,10 @@ exports.info = function (req, res) {
       populate: { path: 'info' }
     })
     .then(user => {
-      res.json({ state: 1, user: user })
+      res.json({ state: 1, user })
     })
     .catch(err => {
-      res.json({ state: 0, err: err })
+      res.json({ state: 0, err })
     })
 }
 
@@ -124,7 +124,7 @@ exports.identify = function (req, res) {
               }
             })
         } else if (body.respCode === "00104") {
-          res.json({ "state": 0, "err": "该手机号当天接受短信次数已达上限" })
+          res.json({ "state": 0, "err": "该手机号当天接受<br />短信次数已达上限" })
         } else {
           res.json({ "state": 0, "errCode": body.respCode })
         }
@@ -146,11 +146,11 @@ exports.fastLogin = function(req, res) {
       if (identify != user.identify) return res.json({ "state": 0, "err": "验证码输入错误" })
       req.session.userId = user._id;
       req.session.type = user.type;
-      res.json({ "state": 1 });
-  })
-  .catch(err => {
-    res.json({ state: 0, err: err })
-  })
+      res.json({ state: 1 });
+    })
+    .catch(err => {
+      res.json({ state: 0, err: err })
+    })
 }
 
 exports.regist = function (req, res) {
@@ -223,7 +223,7 @@ exports.logout = function (req, res) {
 }
 
 exports.newAddress = function (req, res) {
-  var addressInfo = JSON.parse(req.body.addressInfo)
+  var addressInfo = req.body.addressInfo
   Address
     .create({
       onwer: req.session.userId,
@@ -243,7 +243,7 @@ exports.newAddress = function (req, res) {
       return address
     })
     .then(address => {
-      res.json({ "state": 1 ,"address": address})
+      res.json({ state: 1 , address })
     })
     .catch(err => {
       res.json({ state: 0, err: err })
@@ -254,23 +254,22 @@ exports.defaultAddress = function (req, res) {
   var addressId = req.body.addressId
   Address
     .find({ onwer: req.session.userId })
-    .then(addresses => {
+    .exec((err, addresses) => {
       for (let address of addresses) {
         address.state = 0
+        address.save()
       }
-      addresses.save()
-      return Address
+    })
+    .then(() => {
+      Address
         .update({
             _id: addressId
           }, {
             $set: { state: 1 }
           })
-    })
-    .exec((err) => {
-      res.json({ "state": 1 })
-    })
-    .catch(err => {
-      res.json({ state: 0, err: err })
+        .exec((err) => {
+          res.json({ "state": 1 })
+        })
     })
 }
 

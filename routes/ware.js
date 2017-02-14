@@ -5,7 +5,7 @@ var Ware = require('../controllers/ware')
 var multer  = require('multer')
 var upload = multer({ dest: 'public/upload/img/' })
 
-router.get('/:wareId', Ware.wareInfo)
+router.get('/:id', Ware.wareInfo)
 router.get('/', Ware.waresInfo)
 router.post('/', Filter.admin, Ware.addWare)
 router.patch('/', Filter.admin, Ware.recoverWare)
