@@ -29,14 +29,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/request': {
-        target: 'http://cakeees.top/request',
+        target: 'http://127.0.0.1:3000/request',
         changeOrigin: true,
         pathRewrite: {
           '^/request': ''
         }
       },
       '/upload': {
-        target: 'http://cakeees.top/upload',
+        target: 'http://123.206.9.219/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/upload': ''
