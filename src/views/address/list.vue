@@ -35,8 +35,16 @@ export default {
       'user',
     ]),
   },
-  mounted() {
+  activated() {
     this.$nextTick(() => {
+      if (!this.user.addresses) {
+        this.toast('请先登录');
+        this.$router.replace('/user/fastlogin');
+        return;
+      }
+      if (!this.user.addresses.length) {
+        this.$router.replace('/address/new');
+      }
     });
   },
   methods: {

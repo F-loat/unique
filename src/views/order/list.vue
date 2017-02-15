@@ -7,7 +7,7 @@
       </tab>
       <swiper v-model="index" :show-dots="false" :height="height">
         <swiper-item class="orders-item" v-for="list of lists">
-          <load-more v-if="!list.length" class="no-data" :show-loading="false" tip="暂无数据"></load-more>
+          <load-more v-if="!(list && list.length)" class="no-data" :show-loading="false" tip="暂无数据"></load-more>
           <div v-else class="weui-form-preview order-item" v-for="order of list">
             <router-link :to="`/order/${order._id}`" class="order-turn">
               <div class="weui-form-preview__hd">

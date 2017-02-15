@@ -60,7 +60,10 @@ export default {
     confirmLogout() {
       this.$vux.confirm.show({
         title: '确认注销？',
+        confirmText: '确定',
+        cancelText: '取消',
         onConfirm: this.logout,
+        onCancel: () => {},
       });
     },
     logout() {
