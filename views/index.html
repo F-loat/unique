@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>优力克</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="css/sm.min.css">
+    <link rel="stylesheet" type="text/css" href="css/cropper.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+
+<body>
+    <div class="page-group">
+        <div id="main" class="page">
+            <div class="content">
+                <div class="content-block">
+                    <div id="main-tabs" class="tabs">
+                        <div id="tab1" class="tab active">
+                            <div class="content webFont">
+                                <a id="tab1-turn1" href="#tab2" class="tab-link"><span>鲜花</span></a>
+                                <a id="tab1-turn2" href="#tab3" class="tab-link"><span>定制</span></a>
+                                <a id="tab1-turn3" href="#tab2" class="tab-link"><span>甜点</span></a>
+                                <a id="tab1-turn4" href="#tab2" class="tab-link"><span>蛋糕</span></a>
+                            </div>
+                        </div>
+                        <div id="tab2" class="tab">
+                            <div class="content">
+                                <header class="buttons-tab">
+                                    <a href="#mTab1" class="tab-link button" style="width:20rem">甜点</a>
+                                    <a href="#mTab2" class="tab-link button active" style="width:20rem">方形蛋糕</a>
+                                    <a href="#mTab3" class="tab-link button" style="width:20rem">圆形蛋糕</a>
+                                    <a href="#mTab4" class="tab-link button" style="width:20rem">鲜花</a>
+                                </header>
+                                <div class="content">
+                                    <div class="tabs">
+                                        <div id="mTab1" class="tab">
+                                            <div id="mousse-list" class="content" data-type="js">
+                                                <ul class="clearfix">
+                                                    <li class="ware-wrap" v-for="ware in wares" v-if="ware.type===2">
+                                                        <a href="/ware/orderDetail" data-id="{{$index}}" data-no-cache="true"><img v-bind:src="ware.img"></a>
+                                                        <div class="ware-detail">
+                                                            <div>
+                                                                <h5>{{ware.name}}</h5>
+                                                                <p class="webFont">{{ware.nameEn}}</p>
+                                                            </div>
+                                                            <div class="ware-buy">
+                                                                <span class="icon icon-cart pull-right"></span>
+                                                                <p>￥{{ware.price}}/磅</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="mTab2" class="tab active">
+                                            <div id="cake-f-list" class="content" data-type="js">
+                                                <ul class="clearfix">
+                                                    <li class="ware-wrap" v-for="ware in wares" v-if="ware.type===0">
+                                                        <a href="/ware/orderDetail" data-id="{{$index}}" data-no-cache="true"><img v-bind:src="ware.img"></a>
+                                                        <div class="ware-detail">
+                                                            <div>
+                                                                <h5>{{ware.name}}</h5>
+                                                                <p class="webFont">{{ware.nameEn}}</p>
+                                                            </div>
+                                                            <div class="ware-buy">
+                                                                <span class="icon icon-cart pull-right"></span>
+                                                                <p>￥{{ware.price}}/磅</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="mTab3" class="tab">
+                                            <div id="cake-y-list" class="content" data-type="js">
+                                                <ul class="clearfix">
+                                                    <li class="ware-wrap" v-for="ware in wares" v-if="ware.type===1">
+                                                        <a href="/ware/orderDetail" data-id="{{$index}}" data-no-cache="true"><img v-bind:src="ware.img"></a>
+                                                        <div class="ware-detail">
+                                                            <div>
+                                                                <h5>{{ware.name}}</h5>
+                                                                <p class="webFont">{{ware.nameEn}}</p>
+                                                            </div>
+                                                            <div class="ware-buy">
+                                                                <span class="icon icon-cart pull-right"></span>
+                                                                <p>￥{{ware.price}}/磅</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="mTab4" class="tab">
+                                            <div id="flower-list" class="content" data-type="js">
+                                                <ul class="clearfix">
+                                                    <li class="ware-wrap" v-for="ware in wares" v-if="ware.type===3">
+                                                        <a href="/ware/orderDetail" data-id="{{$index}}" data-no-cache="true"><img v-bind:src="ware.img"></a>
+                                                        <div class="ware-detail">
+                                                            <div>
+                                                                <h5>{{ware.name}}</h5>
+                                                                <p class="webFont">{{ware.nameEn}}</p>
+                                                            </div>
+                                                            <div class="ware-buy">
+                                                                <span class="icon icon-cart pull-right"></span>
+                                                                <p>￥{{ware.price}}/磅</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab3" class="tab">
+                            <header class="bar bar-nav">
+                                <h1 class="title">照片蛋糕</h1>
+                            </header>
+                            <div id="canvasWrap" class="content">
+                                <div>
+                                    <canvas id="canvas">您的设备不支持canvas元素</canvas>
+                                </div>
+                            </div>
+                            <nav class="bar bar-tab">
+                                <span id="upload" class="tab-item">
+                                    <input type="file" accept="image/*"  onchange="drawImage(this);">
+                                    <span class="icon icon-picture"></span>
+                                </span>
+                                <span class="tab-item create-actions">
+                                    <span class="icon icon-star"></span>
+                                </span>
+                                <span class="tab-item">
+                                    <span class="icon icon-cart"></span>
+                                </span>
+                            </nav>
+                        </div>
+                        <div id="tab4" class="tab">
+                            <div class="content">
+                                <header class="bar bar-nav">
+                                    <h1 class="title">购物车</h1>
+                                </header>
+                                <div class="content">
+                                    <div id="no-ware" v-if="!orders">
+                                        <span class="icon icon-cart"></span>
+                                        <h4>购物车空空如也</h4>
+                                    </div>
+                                    <header class="bar bar-nav bar-sec row" v-if="orders">
+                                        <span class="col-50">
+                                            <span class="icon icon-app"></span> 方形蜡烛
+                                        <span class="icon icon-check"></span>
+                                        </span>
+                                        <span class="col-50">
+                                            <span class="icon icon-computer"></span> 餐具套餐
+                                        <span class="icon icon-check"></span>
+                                        </span>
+                                    </header>
+                                    <div class="content" v-if="orders">
+                                        <ul class="order-list list-block media-list">
+                                            <li>
+                                                <label class="label-checkbox item-content">
+                                                    <input type="checkbox" name="checkbox">
+                                                    <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                                                    <div class="item-media"><img src="/img/cake1.jpg"></div>
+                                                    <div class="item-inner">
+                                                        <div class="item-title">Brownie Cake</div>
+                                                        <div class="item-subtitle">情人蛋糕</div>
+                                                        <div class="item-subtitle">规格：6寸</div>
+                                                        <div class="item-text pull-left">￥198</div>
+                                                        <div class="pull-right">
+                                                            <span class="icon icon-down"></span> 3
+                                                            <span class="icon icon-up"></span>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="buy-now" v-if="orders">
+                                <div class="list-block media-list pull-left">
+                                    <label class="label-checkbox item-content">
+                                        <input id="check-all" type="checkbox" name="checkbox">
+                                        <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-title pull-left">全选</div>
+                                            <div class="pull-right">￥198</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div id="order">下单</div>
+                            </div>
+                        </div>
+                        <div id="tab5" class="tab">
+                            <header class="bar bar-nav">
+                                <img src="/img/cake1.jpg">
+                                <div class="webFont" v-if="!nickname">
+                                    <a href="/user/fastLoginPage" data-no-cache="true">登录/注册</a>
+                                </div>
+                                <div v-else>
+                                    {{nickname}}
+                                    <span id="logout" v-on:click="logout">[注销]</span>
+                                </div>
+                            </header>
+                            <div class="content" data-type="js">
+                                <div class="list-block">
+                                    <ul>
+                                        <li class="item-content item-link">
+                                            <a href="user/myOrders" data-no-cache="true">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-edit"></i>
+                                                        <i>我的订单</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="item-content item-link">
+                                            <a href="user/myAddress" data-no-cache="true">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-card"></i>
+                                                        <i>收货地址</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="item-content item-link">
+                                            <a href="user/myCoupons" data-no-cache="true">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-code"></i>
+                                                        <i>我的优惠券</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="item-content item-link">
+                                            <a href="user/fedBack">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-emoji"></i>
+                                                        <i>意见反馈</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="item-content item-link">
+                                            <a href="/aboutUs">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-friends"></i>
+                                                        <i>关于我们</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="item-content item-link">
+                                            <a href="/userAgreement">
+                                                <div class="item-inner">
+                                                    <div class="item-title">
+                                                        <i class="icon icon-app"></i>
+                                                        <i>用户使用协议</i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div id="Tel">
+                                        <a href="tel:15822922123" class="call">
+                                            <span class="icon icon-phone"></span>
+                                            <span>客服电话</span>
+                                            <span>15822922123</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="bar bar-tab">
+                <a class="tab-item  tab-link active" href="#tab1">
+                    <span class="icon icon-home"></span>
+                    <span class="tab-label">首页</span>
+                </a>
+                <a class="tab-item tab-link" href="#tab2">
+                    <span class="icon icon-gift"></span>
+                    <span class="tab-label">分类列表</span>
+                </a>
+                <a class="tab-item tab-link" href="#tab3">
+                    <span class="icon icon-picture"></span>
+                    <span class="tab-label">照片蛋糕</span>
+                </a>
+                <a class="tab-item tab-link" href="#tab4">
+                    <span class="icon icon-cart"></span>
+                    <span class="tab-label">购物车</span>
+                </a>
+                <a class="tab-item tab-link" href="#tab5">
+                    <span class="icon icon-me"></span>
+                    <span class="tab-label">我</span>
+                </a>
+            </nav>
+            <script type="text/javascript">
+            window.onload = function() {
+                vmWare.getInfo();
+                vmUser.getInfo();
+            }
+            </script>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/zepto.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/sm.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/sm-city-picker.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/vue.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/md5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/index.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/cropper.min.js" charset="utf-8"></script>
+</body>
+
+</html>

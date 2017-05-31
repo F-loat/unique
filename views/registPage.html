@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>用户注册</title>
+</head>
+
+<body>
+    <div class="page-group">
+        <div id="regist" class="page">
+            <style type="text/css">
+            #regist .content {
+                background-color: #fdfefe;
+            }
+            
+            #regist .list-block .item-inner {
+                padding-right: 0
+            }
+            
+            #regist .address {
+                margin: .4rem 1.4rem;
+                height: 2.4rem;
+            }
+            
+            #regist .address .label {
+                width: 28% !important
+            }
+            
+            #regist .input {
+                font-size: .8rem !important;
+                line-height: 2.15rem !importane
+            }
+            
+            #regist-now {
+                text-align: center;
+                background-color: #1a7ace;
+                margin: 1.2rem auto 0;
+                height: 1.8rem;
+                line-height: 1.8rem
+            }
+            
+            #regist .signin-turn {
+                font-size: .75rem;
+                color: #ccc;
+                margin: .6rem
+            }
+            
+            #reg-identify {
+                width: 55%
+            }
+            
+            #get-identify {
+                width: 45%;
+                line-height: 1.5rem;
+                margin-top: .2rem;
+                padding: 0;
+                background-color: #1a7ace;
+                border: none;
+                transition: all ease .3s
+            }
+            
+            #get-identify:active {
+                background-color: #176ab3;
+            }
+            
+            @media screen and (min-width: 614px) {
+                #regist {
+                    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+                }
+                #regist {
+                    width: 24rem;
+                    margin: 0 auto
+                }
+            }
+            </style>
+            <header class="bar bar-nav">
+                <a class="icon icon-left pull-left back"></a>
+                <h1 class="title">注册</h1>
+            </header>
+            <div class="content">
+                <ul>
+                    <li class="address list-block">
+                        <div class="item-inner">
+                            <div class="item-title label">手机号：</div>
+                            <div class="item-input">
+                                <input id="reg-phone" class="input" type="number" placeholder="请输入您的手机号">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="address list-block">
+                        <div class="item-inner">
+                            <div class="item-title label">密码：</div>
+                            <div class="item-input">
+                                <input id="reg-password" class="input" type="password" placeholder="请输入密码">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="address list-block">
+                        <div class="item-inner">
+                            <div class="item-title label">确认密码：</div>
+                            <div class="item-input">
+                                <input id="reg-pswagain" class="input" type="password" placeholder="请再次输入密码">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="address list-block">
+                        <div class="item-inner">
+                            <div class="item-title label">验证码：</div>
+                            <div class="item-input">
+                                <input id="reg-identify" class="input pull-left" type="number" placeholder="请输入验证码">
+                                <input id="get-identify" class="pull-right" type="button" value="获取验证码">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div id="regist-now">注册 </div>
+                <a href="/user/loginPage" class="signin-turn pull-right">已有账号？去登陆~</a>
+            </div>
+            <script type="text/javascript">
+            $(document).on('click', '#get-identify', function() {
+                if ($('#get-identify').val() == "获取验证码") {
+                    var phone = $('#reg-phone').val();
+                    if (phone.length === 11) {
+                        $.ajax({
+                            type: 'post',
+                            url: '/user/regist/identify',
+                            data: {
+                                phone: phone
+                            },
+                            success: function(data) {
+                                if (data.state === 1) {
+                                    $.toast('验证码已下发至您的手机，请查收');
+                                    var t = 60;
+                                    var countdown = setInterval(function() {
+                                        if (t === 0) {
+                                            clearInterval(countdown);
+                                            $('#get-identify').val("获取验证码");
+                                        } else {
+                                            $('#get-identify').val(t + "s后重试");
+                                            t--;
+                                        }
+                                    }, 1000)
+                                } else {
+                                    $.toast('验证码发送失败，请检查号码或稍后再试')
+                                }
+                            }
+                        })
+                    } else {
+                        $.toast('请输入正确的手机号')
+                    }
+                } else {
+                    return false;
+                }
+            })
+            $(document).on('click', '#regist-now', function() {
+                var phone = $('#reg-phone').val(),
+                    password = $('#reg-password').val(),
+                    pswagain = $('#reg-pswagain').val(),
+                    identify = $('#reg-identify').val();
+                if (phone.length != 11) {
+                    $.toast("请输入正确的手机号");
+                } else if (!password) {
+                    $.toast("请输入密码");
+                } else if (password != pswagain) {
+                    $.toast("两次密码输入不一致");
+                } else if (!identify) {
+                    $.toast("请输入验证码");
+                } else {
+                    $.ajax({
+                        type: 'post',
+                        url: '/user/regist',
+                        dataType: 'json',
+                        data: {
+                            phone: phone,
+                            password: md5(password),
+                            identify: identify
+                        },
+                        success: function(data) {
+                            if (data.state === 1) {
+                                $.toast('注册成功，正在为您登录')
+                                setTimeout(function() {
+                                    window.location.href = "/";
+                                }, 1000)
+                            } else {
+                                $.toast(data.err)
+                            }
+                        }
+                    })
+                }
+            });
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>

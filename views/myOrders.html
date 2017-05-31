@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>我的订单</title>
+</head>
+
+<body>
+    <div class="page-group">
+        <div id="myOrders" class="page">
+            <style type="text/css">
+            #myOrders .content{
+                background-color: #f8fafc
+            }
+            .content-block {
+                margin: 0;
+                padding: 0;
+            }
+            
+            #no-order {
+                text-align: center;
+                margin-top: 8rem
+            }
+            
+            #no-order a {
+                display: block;
+                width: 4.8rem;
+                height: 2.4rem;
+                background-color: #1975c8;
+                color: #000;
+                line-height: 2.4rem;
+                margin: 0 auto
+            }
+            
+            @media screen and (min-width: 614px) {
+                #myOrders {
+                    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+                }
+                #myOrders {
+                    width: 24rem;
+                    margin: 0 auto
+                }
+            }
+            </style>
+            <header class="bar bar-nav">
+                <a class="icon icon-left pull-left back"></a>
+                <a class="icon icon-refresh pull-right"></a>
+                <h1 class="title">我的订单</h1>
+            </header>
+            <div class="content">
+                <div class="buttons-tab">
+                    <a href="#mTab1" class="tab-link active button">全部</a>
+                    <a href="#mTab2" class="tab-link button">待付款</a>
+                    <a href="#mTab3" class="tab-link button">待发货</a>
+                </div>
+                <div class="content-block">
+                    <div class="tabs">
+                        <div id="mTab1" class="tab active">
+                            <div class="content-block">
+                                <div id="no-order">
+                                    <p>暂无相关订单</p>
+                                    <p><a onclick="shopping()">去逛逛~</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mTab2" class="tab">
+                            <div class="content-block">
+                                <div id="no-order">
+                                    <p>暂无相关订单</p>
+                                    <p><a onclick="shopping()">去逛逛~</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mTab3" class="tab">
+                            <div class="content-block">
+                                <div id="no-order">
+                                    <p>暂无相关订单</p>
+                                    <p><a onclick="shopping()">去逛逛~</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+            function shopping() {
+                $.router.load('/');
+                $('#main-tabs .tab').removeClass('active');
+                $('nav.bar .tab-item').removeClass('active');
+                $('#tab2').addClass('active');
+                $('nav.bar .tab-item:nth-child(2)').addClass('active');
+                $('#mTab1').addClass('active');
+            };
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>
